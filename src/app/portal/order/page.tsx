@@ -1,0 +1,283 @@
+"use client";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+type Product = {
+  id: number;
+  name: string;
+  category: string | null;
+  sakaMai: string | null;
+  seimaiWari: string | null;
+  alcohol: string | null;
+  price1800: number | null;
+  unit1800: string | null;
+  stock1800: number | null;
+  price720: number | null;
+  unit720: string | null;
+  stock720: number | null;
+};
+
+type VariantKey = string;
+
+function PortalOrderContent() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [quantities, setQuantities] = useState<Record<VariantKey, number>>({});
+  const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [approved, setApproved] = useState(false);
+  const [pendingApprovals, setPendingApprovals] = useState(0);
+  const [companies, setCompanies] = useState<{ companyId: number; companyName: string }[]>([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
+  const [productsLoaded, setProductsLoaded] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    fetch("/api/customer/me").then((r) => {
+      if (!r.ok) { router.push("/portal/login"); return; }
+      fetch("/api/portal/companies").then((r2) => r2.ok ? r2.json() : null).then((d) => {
+        if (d?.companies?.length) {
+          setCompanies(d.companies);
+          setApproved(d.approved);
+          setPendingApprovals(d.pendingApprovals ?? 0);
+          const urlCompanyId = searchParams.get("companyId");
+          const target = urlCompanyId ? d.companies.find((c: { companyId: number }) => c.companyId === Number(urlCompanyId)) : null;
+          setSelectedCompanyId(target ? target.companyId : null);
+        }
+      });
+    });
+  }, [router]);
+
+  useEffect(() => {
+    if (!selectedCompanyId) { setProducts([]); setProductsLoaded(false); return; }
+    setProductsLoaded(false);
+    fetch(`/api/portal/products?companyId=${selectedCompanyId}`).then((r) => {
+      if (r.ok) r.json().then((data) => { setProducts(data); setProductsLoaded(true); });
+      else { setProducts([]); setProductsLoaded(true); }
+    });
+    setQuantities({});
+  }, [selectedCompanyId]);
+
+  const setQty = (key: VariantKey, val: number) =>
+    setQuantities((p) => ({ ...p, [key]: Math.max(0, isNaN(val) ? 0 : val) }));
+
+  type Variant = { key: string; product: Product; volume: string; price: number; lot: number; stock: number };
+  const variants: Variant[] = products.flatMap((p) => {
+    const list: Variant[] = [];
+    if (p.price1800 != null) list.push({ key: `${p.id}_1800`, product: p, volume: "1800ml", price: p.price1800, lot: parseInt(p.unit1800 ?? "1") || 1, stock: p.stock1800 ?? 0 });
+    if (p.price720  != null) list.push({ key: `${p.id}_720`,  product: p, volume: "720ml",  price: p.price720,  lot: parseInt(p.unit720  ?? "1") || 1, stock: p.stock720  ?? 0 });
+    return list;
+  });
+
+  const selected = variants.filter((v) => (quantities[v.key] ?? 0) > 0);
+  const total = selected.reduce((s, v) => s + (quantities[v.key] ?? 0) * v.lot * v.price, 0);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      const items = selected.map((v) => ({
+        productId: v.product.id,
+        quantity: quantities[v.key],
+        unitPrice: v.price,
+        volume: v.volume,
+      }));
+      const res = await fetch("/api/portal/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items, notes, companyId: selectedCompanyId }),
+      });
+      if (res.status === 401 || res.redirected) { router.push("/portal/login"); return; }
+      const data = await res.json();
+      if (res.ok) router.push("/portal/orders");
+      else { alert(data.error ?? "送信に失敗しました"); setSubmitting(false); }
+    } catch {
+      alert("送信に失敗しました");
+      setSubmitting(false);
+    }
+  };
+
+  if (confirming) return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">注文確認</h1>
+        <button onClick={() => setConfirming(false)} className="text-sm text-blue-600 hover:underline">← 修正する</button>
+      </div>
+
+      <div className="bg-white rounded-xl shadow overflow-x-auto">
+        <table className="w-full text-sm whitespace-nowrap">
+          <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+              <th className="px-4 py-3 text-left min-w-[140px]">商品名</th>
+              <th className="px-3 py-3 text-left min-w-[100px]">種別</th>
+              <th className="px-3 py-3 text-left min-w-[80px]">酒米</th>
+              <th className="px-3 py-3 text-center w-20">精米歩合</th>
+              <th className="px-3 py-3 text-center w-24">アルコール</th>
+              <th className="px-3 py-3 text-center w-24">容量</th>
+              <th className="px-3 py-3 text-center w-24">単価</th>
+              <th className="px-3 py-3 text-right w-16">ロット</th>
+              <th className="px-3 py-3 text-right w-16">在庫</th>
+              <th className="px-3 py-3 text-center w-20">注文数</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {selected.map((v) => {
+              const qty = quantities[v.key] ?? 0;
+              return (
+                <tr key={v.key} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 font-medium text-gray-900">{v.product.name}</td>
+                  <td className="px-3 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
+                  <td className="px-3 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
+                  <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
+                  <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
+                  <td className="px-3 py-3 text-center">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                  </td>
+                  <td className="px-3 py-3 text-center text-gray-600">¥{v.price.toLocaleString()}</td>
+                  <td className="px-3 py-3 text-right text-gray-500">{v.lot}本</td>
+                  <td className="px-3 py-3 text-right text-gray-500">{v.stock}</td>
+                  <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{qty}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {notes && (
+        <div className="bg-white rounded-xl shadow p-4">
+          <p className="text-xs text-gray-400 mb-1">備考</p>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap">{notes}</p>
+        </div>
+      )}
+
+      <div className="flex gap-3">
+        <button onClick={handleSubmit} disabled={submitting}
+          className="px-8 py-3 rounded-lg text-sm font-bold text-white disabled:opacity-50" style={{ background: "#1e3a8a" }}>
+          {submitting ? "送信中..." : "この内容で注文する"}
+        </button>
+        <button onClick={() => setConfirming(false)} disabled={submitting}
+          className="px-6 py-3 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
+          戻る
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold text-gray-900">発注先</h1>
+          <select
+            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={!approved}
+            value={selectedCompanyId ?? ""}
+            onChange={(e) => setSelectedCompanyId(e.target.value ? Number(e.target.value) : null)}
+          >
+            <option value="">選択してください</option>
+            {approved && companies.map((c) => (
+              <option key={c.companyId} value={c.companyId}>{c.companyName}</option>
+            ))}
+          </select>
+          {(!approved || pendingApprovals > 0) && (
+            <span className="text-red-500 text-sm font-medium">
+              ＊承認待ちの発注先があります。管理者の承認をお待ちください。
+            </span>
+          )}
+        </div>
+        {selected.length > 0 && (
+          <button onClick={() => setConfirming(true)}
+            className="px-6 py-2 rounded-lg text-sm font-bold text-white" style={{ background: "#1e3a8a" }}>
+            確認画面へ（{selected.length}商品）
+          </button>
+        )}
+      </div>
+
+      {selectedCompanyId && productsLoaded && variants.length === 0 && (
+        <div className="bg-white rounded-xl shadow p-8 text-center text-red-500 font-medium">
+          商品が登録されていません
+        </div>
+      )}
+
+      {variants.length > 0 && (
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+            <tr>
+              <th className="px-4 py-3 text-left">商品名</th>
+              <th className="px-4 py-3 text-left">種別</th>
+              <th className="px-4 py-3 text-left">酒米</th>
+              <th className="px-4 py-3 text-center">精米歩合</th>
+              <th className="px-4 py-3 text-center">アルコール</th>
+              <th className="px-4 py-3 text-center">容量</th>
+              <th className="px-4 py-3 text-right">単価</th>
+              <th className="px-4 py-3 text-right">ロット</th>
+              <th className="px-4 py-3 text-right">在庫</th>
+              <th className="px-4 py-3 text-center w-36">ケース数</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {variants.map((v) => {
+              const qty = quantities[v.key] ?? 0;
+              const isSelected = qty > 0;
+              return (
+                <tr key={v.key} className={isSelected ? "bg-blue-50" : "hover:bg-gray-50"}>
+                  <td className="px-4 py-3 font-medium text-gray-900">{v.product.name}</td>
+                  <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
+                  <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
+                  <td className="px-4 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
+                  <td className="px-4 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                  </td>
+                  <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-right text-gray-500">{v.lot}本</td>
+                  <td className="px-4 py-3 text-right text-gray-500">{v.stock}</td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <button onClick={() => setQty(v.key, qty - 1)} disabled={qty === 0}
+                        className="w-7 h-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center disabled:opacity-25 hover:bg-gray-200">−</button>
+                      <input type="number" min="0" value={qty === 0 ? "" : qty}
+                        onChange={(e) => setQty(v.key, parseInt(e.target.value))}
+                        placeholder="0"
+                        className="w-12 text-center text-sm font-bold border-b-2 border-gray-200 focus:border-blue-800 outline-none py-1 bg-transparent" />
+                      <button onClick={() => setQty(v.key, qty + 1)}
+                        className="w-7 h-7 rounded-full text-white flex items-center justify-center" style={{ background: "#1e3a8a" }}>+</button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      )}
+
+      {approved && variants.length > 0 && (
+        <div className="bg-white rounded-xl shadow p-4 max-w-xl">
+          <label className="block text-sm font-medium text-gray-700 mb-1">備考・納品希望日など</label>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+      )}
+
+      {approved && variants.length > 0 && selected.length > 0 && (
+        <div className="flex items-center gap-6">
+          <button onClick={() => setConfirming(true)}
+            className="px-8 py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#1e3a8a" }}>
+            確認画面へ
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PortalOrderPage() {
+  return (
+    <Suspense>
+      <PortalOrderContent />
+    </Suspense>
+  );
+}

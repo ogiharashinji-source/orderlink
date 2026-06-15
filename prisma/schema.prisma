@@ -1,0 +1,244 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// 管理者アカウント
+model Admin {
+  id           Int      @id @default(autoincrement())
+  loginId      String   @unique
+  password     String   @default("")
+  name         String?
+  companyId    Int      @default(1)
+  company      Company  @relation(fields: [companyId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+// 管理者設定（会社情報）
+model AdminSetting {
+  id          Int     @id @default(autoincrement())
+  companyId   Int     @unique @default(1)
+  company     Company @relation(fields: [companyId], references: [id])
+  companyName String  @default("山三酒造")
+  companyUrl  String?
+  address     String?
+  phone       String?
+  faxNumber   String?
+  email       String?
+}
+
+// 会社モデル（マルチテナント）
+model Company {
+  id            Int               @id @default(autoincrement())
+  name          String
+  code          String            @unique
+  createdAt     DateTime          @default(now())
+  invites       CompanyInvite[]
+  memberships   CustomerCompany[]
+  admins        Admin[]
+  setting       AdminSetting?
+  customers     Customer[]    @relation("CustomerTenant")
+  products      Product[]
+  orders        Order[]
+  orderRequests OrderRequest[]
+  orderLinks    OrderLink[]
+}
+
+// 会社ごとの招待トークン
+model CompanyInvite {
+  id        Int               @id @default(autoincrement())
+  token     String            @unique
+  companyId Int
+  company   Company           @relation(fields: [companyId], references: [id])
+  createdAt DateTime          @default(now())
+  expiresAt DateTime?
+  memberships CustomerCompany[]
+}
+
+// 顧客と会社の紐づけ
+model CustomerCompany {
+  id         Int            @id @default(autoincrement())
+  customerId Int
+  companyId  Int
+  inviteId   Int?
+  approved   Boolean        @default(false)
+  company    Company        @relation(fields: [companyId], references: [id])
+  invite     CompanyInvite? @relation(fields: [inviteId], references: [id])
+  joinedAt   DateTime       @default(now())
+
+  @@unique([customerId, companyId])
+}
+
+model Customer {
+  id                   Int            @id @default(autoincrement())
+  companyId            Int            @default(1)
+  tenant               Company        @relation("CustomerTenant", fields: [companyId], references: [id])
+  name                 String
+  email                String?        @unique
+  phone                String?
+  address              String?
+  company              String?
+  notes                String?
+  faxNumber            String?
+  loginId              String?        @unique
+  password             String?
+  referralCode         String?        @unique
+  inviteToken          String?        @unique
+  inviteEmail          String?
+  approved             Boolean        @default(false)
+  deleted              Boolean        @default(false)
+  passwordResetToken   String?        @unique
+  passwordResetExpiry  DateTime?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  orders               Order[]
+  orderLinks           OrderLink[]
+  orderRequests        OrderRequest[]
+}
+
+// QRコード付き発注書リンク
+model OrderLink {
+  id          Int           @id @default(autoincrement())
+  companyId   Int           @default(1)
+  company     Company       @relation(fields: [companyId], references: [id])
+  token       String        @unique
+  customerId  Int?
+  customer    Customer?     @relation(fields: [customerId], references: [id])
+  title       String?
+  message     String?
+  productIds  String        // JSON array, empty = all products
+  expiresAt   DateTime?
+  submittedAt DateTime?
+  requestId   Int?          @unique
+  request     OrderRequest? @relation(fields: [requestId], references: [id])
+  createdAt   DateTime      @default(now())
+}
+
+// 酒販店からのリクエスト（未確定）
+model OrderRequest {
+  id            Int           @id @default(autoincrement())
+  companyId     Int           @default(1)
+  company       Company       @relation(fields: [companyId], references: [id])
+  requestNumber String        @unique
+  customerId    Int?
+  customer      Customer?     @relation(fields: [customerId], references: [id])
+  status        RequestStatus @default(PENDING)
+  notes           String?
+  sellerName      String?
+  sellerAddress   String?
+  sellerPhone     String?
+  sellerFax       String?
+  sellerEmail     String?
+  requestedAt   DateTime      @default(now())
+  confirmedAt   DateTime?
+  orderId       Int?          @unique
+  order         Order?        @relation(fields: [orderId], references: [id])
+  orderLink     OrderLink?
+  items         RequestItem[]
+}
+
+model RequestItem {
+  id              Int          @id @default(autoincrement())
+  requestId       Int
+  request         OrderRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  productId       Int?
+  product         Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName       String?
+  productCategory   String?
+  productSakaMai    String?
+  productSeimaiWari String?
+  productAlcohol    String?
+  volume          String?      // "1800ml" or "720ml"
+  requestedQty    Int
+  confirmedQty    Int?
+  unitPrice       Float
+  createdAt       DateTime     @default(now())
+}
+
+model Product {
+  id           Int           @id @default(autoincrement())
+  companyId    Int           @default(1)
+  company      Company       @relation(fields: [companyId], references: [id])
+  name         String
+  category     String?       // 純米大吟醸、大吟醸 etc.
+  sakaMai      String?       // 酒米
+  seimaiWari   String?       // 精米歩合
+  alcohol      String?       // アルコール度数
+  description  String?
+  price1800    Float?
+  unit1800     String?       @default("本")
+  stock1800    Int?          @default(0)
+  price720     Float?
+  unit720      String?       @default("本")
+  stock720     Int?          @default(0)
+  price        Float         @default(0)
+  unit         String        @default("本")
+  stock        Int           @default(0)
+  deleted      Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  orderItems   OrderItem[]
+  requestItems RequestItem[]
+}
+
+// 受注（確定済み）
+model Order {
+  id           Int           @id @default(autoincrement())
+  companyId    Int           @default(1)
+  company      Company       @relation(fields: [companyId], references: [id])
+  orderNumber  String        @unique
+  customerId   Int?
+  customer     Customer?     @relation(fields: [customerId], references: [id])
+  status          OrderStatus   @default(PENDING)
+  totalAmount     Float         @default(0)
+  notes           String?
+  customerName    String?
+  customerCompany String?
+  customerAddress String?
+  customerPhone   String?
+  customerFax     String?
+  customerEmail   String?
+  orderDate    DateTime      @default(now())
+  deliveryDate DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  items        OrderItem[]
+  orderRequest OrderRequest?
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       Int?
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName      String?
+  productCategory  String?
+  productSakaMai   String?
+  productSeimaiWari String?
+  productAlcohol   String?
+  quantity        Int
+  unitPrice       Float
+  volume          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+enum RequestStatus {
+  PENDING    // 未確認
+  CONFIRMED  // 受注確定済み
+  REJECTED   // 却下
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
