@@ -17,26 +17,20 @@ export async function getCustomerSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE)?.value;
   if (!token) return null;
-  const customer = await prisma.customer.findFirst({
-    where: { passwordResetToken: null, loginId: { not: null } },
-    select: { id: true },
-  });
-  // トークンはloginIdとcustomer idのHMAC
-  const customers = await prisma.customer.findMany({
-    where: { loginId: { not: null } },
-    select: { id: true, loginId: true },
-  });
-  for (const c of customers) {
-    const expected = crypto.createHmac("sha256", SECRET).update(String(c.id)).digest("hex");
-    if (expected === token) {
-      return await prisma.customer.findUnique({ where: { id: c.id } });
-    }
-  }
-  return null;
+
+  const [idStr, hmac] = token.split(".");
+  const customerId = parseInt(idStr);
+  if (!idStr || !hmac || isNaN(customerId)) return null;
+
+  const expected = crypto.createHmac("sha256", SECRET).update(String(customerId)).digest("hex");
+  if (expected !== hmac) return null;
+
+  return await prisma.customer.findUnique({ where: { id: customerId } });
 }
 
 export function makeSessionToken(customerId: number): string {
-  return crypto.createHmac("sha256", SECRET).update(String(customerId)).digest("hex");
+  const hmac = crypto.createHmac("sha256", SECRET).update(String(customerId)).digest("hex");
+  return `${customerId}.${hmac}`;
 }
 
 export const CUSTOMER_COOKIE = COOKIE;

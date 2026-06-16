@@ -9,6 +9,7 @@ type LinkItem = {
   createdAt: string;
   expiresAt: string | null;
   submittedAt: string | null;
+  attachmentPath: string | null;
   customer: { name: string; company: string | null };
   request: { id: number; requestNumber: string; status: string } | null;
 };
@@ -48,6 +49,11 @@ export default function FaxLinkList() {
                   <span>作成: {new Date(link.createdAt).toLocaleDateString("ja-JP")}</span>
                   {link.expiresAt && <span>期限: {new Date(link.expiresAt).toLocaleDateString("ja-JP")}</span>}
                   {link.submittedAt && <span>受信: {new Date(link.submittedAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>}
+                  {link.attachmentPath && (
+                    <a href={link.attachmentPath} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                      📎 添付あり
+                    </a>
+                  )}
                 </div>
               </div>
               <div className="flex items-center gap-3 shrink-0">

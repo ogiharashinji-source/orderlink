@@ -139,7 +139,7 @@ export default function OrdersPage() {
 
                       {/* 会社名 */}
                       {idx === 0 && (
-                        <td className="px-4 py-3 text-left align-top" rowSpan={o.items.length}>
+                        <td className="px-4 py-3 text-left align-middle" rowSpan={o.items.length}>
                           <div className="font-medium text-gray-900">{o.customerName ?? o.customer?.name ?? "—"}</div>
                         </td>
                       )}

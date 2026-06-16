@@ -9,7 +9,7 @@ export default function CompanyEditPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState({
-    companyName: "", address: "", phone: "", email: "", loginId: "", password: "",
+    companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", password: "",
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -25,6 +25,7 @@ export default function CompanyEditPage() {
           companyName: s.companyName ?? "",
           address: s.address ?? "",
           phone: s.phone ?? "",
+          faxNumber: s.faxNumber ?? "",
           email: s.email ?? "",
           loginId: a.loginId ?? "",
           password: a.password ?? "",
@@ -76,6 +77,10 @@ export default function CompanyEditPage() {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
           <input value={form.phone} onChange={set("phone")} className={inputCls} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
+          <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>

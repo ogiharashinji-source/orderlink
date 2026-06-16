@@ -19,7 +19,7 @@ type Product = {
 };
 
 type LinkData = {
-  link: { title: string | null; message: string | null; customer: { name: string; company: string | null } };
+  link: { title: string | null; message: string | null; attachmentPath: string | null; customer: { name: string; company: string | null } };
   products: Product[];
 };
 
@@ -116,7 +116,7 @@ export default function MobileOrderPage() {
   const Header = () => (
     <div className="sticky top-0 z-10 bg-slate-800">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-        <h1 className="text-sm font-bold text-white">発注システム</h1>
+        <h1 className="text-sm font-bold text-white">OderLink</h1>
         {customerMe && (
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold text-white">{customerMe.name}</span>
@@ -349,6 +349,27 @@ export default function MobileOrderPage() {
             {link.message}
           </div>
         )}
+        {link.attachmentPath && (() => {
+          const ext = link.attachmentPath.split(".").pop()?.toLowerCase() ?? "";
+          const isImage = ["png", "jpg", "jpeg", "gif", "webp"].includes(ext);
+          return (
+            <div className="mx-4 mt-3 bg-white border border-gray-200 rounded-xl p-3">
+              <p className="text-xs font-semibold text-gray-500 mb-2">添付ファイル</p>
+              {isImage ? (
+                <img src={link.attachmentPath} alt="添付画像" className="max-w-full rounded-lg" />
+              ) : (
+                <a
+                  href={link.attachmentPath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                >
+                  📎 {link.attachmentPath.split("/").pop()}
+                </a>
+              )}
+            </div>
+          );
+        })()}
         <div className="mx-4 mt-6 mb-8">
           <p className="text-base font-bold text-gray-900 mb-2">発注先</p>
           <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full" style={{ color: "#1e3a8a" }}>

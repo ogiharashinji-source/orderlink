@@ -64,14 +64,15 @@ export default function CustomerForm({ initialData, customerId, onSuccess }: Pro
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="会社名 *" required><input required value={form.name} onChange={set("name")} className={inputCls} /></Field>
         <div className="sm:col-span-2">
-          <Field label="住所"><input value={form.address} onChange={set("address")} className={inputCls} /></Field>
+          <Field label="住所 *" required><input required value={form.address} onChange={set("address")} className={inputCls} /></Field>
         </div>
-        <Field label="電話番号"><input value={form.phone} onChange={set("phone")} className={inputCls} /></Field>
+        <Field label="電話番号 *" required><input required value={form.phone} onChange={set("phone")} className={inputCls} /></Field>
         <Field label="FAX番号"><input value={form.faxNumber} onChange={set("faxNumber")} placeholder="03-XXXX-XXXX" className={inputCls} /></Field>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
           <input
             type="email"
+            required
             value={form.email}
             onChange={set("email")}
             onBlur={checkEmail}

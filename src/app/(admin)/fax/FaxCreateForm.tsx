@@ -1,51 +1,77 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Customer = { id: number; name: string; company: string | null; faxNumber: string | null };
-type Product = { id: number; name: string; price: number; unit: string };
 
 export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [sendMode, setSendMode] = useState<"全体" | "個別">("全体");
   const [customerId, setCustomerId] = useState("");
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-  const [allProducts, setAllProducts] = useState(true);
   const [expiresAt, setExpiresAt] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetch("/api/customers").then((r) => r.json()).then(setCustomers);
-    fetch("/api/products").then((r) => r.json()).then((data) => {
-      setProducts(data);
-      setSelectedProducts(data.map((p: Product) => p.id));
-    });
   }, []);
 
-  const toggleProduct = (id: number) => {
-    setSelectedProducts((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
-    );
+  const uploadFile = async (): Promise<string | null> => {
+    if (!attachmentFile) return null;
+    const fd = new FormData();
+    fd.append("file", attachmentFile);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    if (!res.ok) throw new Error("ファイルアップロード失敗");
+    const data = await res.json();
+    return data.path as string;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerId) return alert("顧客を選択してください");
     setSaving(true);
-    const res = await fetch("/api/order-links", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        customerId,
-        title: title || null,
-        message: message || null,
-        productIds: allProducts ? [] : selectedProducts,
-        expiresAt: expiresAt || null,
-      }),
-    });
-    if (res.ok) onCreated();
-    else { alert("作成に失敗しました"); setSaving(false); }
+
+    let attachmentPath: string | null = null;
+    try {
+      attachmentPath = await uploadFile();
+    } catch {
+      alert("ファイルのアップロードに失敗しました");
+      setSaving(false);
+      return;
+    }
+
+    const payload = {
+      title: title || null,
+      message: message || null,
+      productIds: [],
+      expiresAt: expiresAt || null,
+      attachmentPath,
+    };
+
+    if (sendMode === "全体") {
+      if (customers.length === 0) { alert("顧客が登録されていません"); setSaving(false); return; }
+      const results = await Promise.all(
+        customers.map((c) =>
+          fetch("/api/order-links", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, customerId: c.id }),
+          })
+        )
+      );
+      if (results.every((r) => r.ok)) onCreated();
+      else { alert("一部の作成に失敗しました"); setSaving(false); }
+    } else {
+      if (!customerId) { alert("顧客を選択してください"); setSaving(false); return; }
+      const res = await fetch("/api/order-links", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, customerId }),
+      });
+      if (res.ok) onCreated();
+      else { alert("作成に失敗しました"); setSaving(false); }
+    }
   };
 
   return (
@@ -53,21 +79,41 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       <div className="bg-white rounded-lg shadow p-5 space-y-4">
         <h2 className="font-semibold text-gray-800">基本設定</h2>
 
+        {/* 送信先 */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">送付先 (酒屋) *</label>
-          <select
-            required
-            value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            className={selectCls}
-          >
-            <option value="">顧客を選択...</option>
-            {customers.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}{c.company ? ` (${c.company})` : ""}{c.faxNumber ? ` FAX: ${c.faxNumber}` : ""}
-              </option>
+          <label className="block text-sm font-medium text-gray-700 mb-2">送信先</label>
+          <div className="flex gap-2 mb-3">
+            {(["全体", "個別"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setSendMode(mode)}
+                className={`px-5 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                  sendMode === mode
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
+                }`}
+              >
+                {mode}
+              </button>
             ))}
-          </select>
+          </div>
+          {sendMode === "個別" ? (
+            <select
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
+              className={selectCls}
+            >
+              <option value="">顧客を選択...</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}{c.company ? ` (${c.company})` : ""}{c.faxNumber ? ` FAX: ${c.faxNumber}` : ""}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p className="text-sm text-gray-500">登録済みの全顧客（{customers.length}件）に発注書リンクを作成します</p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -101,49 +147,41 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
             className={inputCls}
           />
         </div>
-      </div>
 
-      <div className="bg-white rounded-lg shadow p-5 space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="font-semibold text-gray-800">掲載商品</h2>
-          <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={allProducts}
-              onChange={(e) => setAllProducts(e.target.checked)}
-              className="rounded"
-            />
-            すべての商品を掲載
-          </label>
-        </div>
-
-        {!allProducts && (
-          <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
-            {products.map((p) => (
-              <label
-                key={p.id}
-                className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                  selectedProducts.includes(p.id)
-                    ? "border-blue-400 bg-blue-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedProducts.includes(p.id)}
-                  onChange={() => toggleProduct(p.id)}
-                  className="rounded"
-                />
-                <span className="font-medium text-gray-800">{p.name}</span>
-                <span className="text-gray-500 text-sm ml-auto">¥{p.price.toLocaleString()} / {p.unit}</span>
-              </label>
-            ))}
+        {/* データ添付 */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">データ添付</label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+            >
+              ファイルを選択
+            </button>
+            {attachmentFile ? (
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <span className="truncate max-w-xs">{attachmentFile.name}</span>
+                <button
+                  type="button"
+                  onClick={() => { setAttachmentFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                  className="text-red-400 hover:text-red-600 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <span className="text-sm text-gray-400">PDF・画像・Excelなど</span>
+            )}
           </div>
-        )}
-
-        {!allProducts && selectedProducts.length === 0 && (
-          <p className="text-sm text-red-500">商品を1つ以上選択してください</p>
-        )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv"
+            className="hidden"
+            onChange={(e) => setAttachmentFile(e.target.files?.[0] ?? null)}
+          />
+        </div>
       </div>
 
       <button
@@ -151,7 +189,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
         disabled={saving}
         className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
       >
-        {saving ? "作成中..." : "発注書リンクを作成"}
+        {saving ? "作成中..." : sendMode === "全体" ? `発注書リンクを一括作成（${customers.length}件）` : "発注書リンクを作成"}
       </button>
     </form>
   );

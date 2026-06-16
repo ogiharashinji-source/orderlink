@@ -8,9 +8,14 @@ export async function GET() {
 
   const customerData = await prisma.customer.findUnique({
     where: { id: customer.id },
-    select: { companyId: true, approved: true },
+    select: { companyId: true, approved: true, deleted: true },
   });
   if (!customerData) return NextResponse.json([], { status: 200 });
+
+  // 削除済み（管理者に拒否された）場合は承認待ちなし
+  if (customerData.deleted) {
+    return NextResponse.json({ companies: [], approved: false, pendingApprovals: 0 });
+  }
 
   // 主所属会社
   const primarySetting = await prisma.adminSetting.findUnique({

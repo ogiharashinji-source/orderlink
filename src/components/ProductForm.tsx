@@ -93,7 +93,7 @@ export default function ProductForm({ initialData, productId }: Props) {
         </div>
       )}
       {/* 商品名 */}
-      <Field label="商品名 *">
+      <Field label="商品名" required>
         <input required value={form.name} onChange={set("name")} onBlur={blur("name")} className={inputCls} />
       </Field>
 
@@ -118,14 +118,14 @@ export default function ProductForm({ initialData, productId }: Props) {
 
       {/* 説明 */}
       <Field label="説明">
-        <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={3} className={inputCls} />
+        <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={6} className={inputCls} />
       </Field>
 
       {/* 1800ml */}
       <div>
         <p className="text-sm font-semibold text-gray-700 mb-2">1800ml</p>
         <div className="grid grid-cols-3 gap-4">
-          <Field label="単価 (円)">
+          <Field label="単価 (円)" required>
             <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
@@ -141,7 +141,7 @@ export default function ProductForm({ initialData, productId }: Props) {
       <div>
         <p className="text-sm font-semibold text-gray-700 mb-2">720ml</p>
         <div className="grid grid-cols-3 gap-4">
-          <Field label="単価 (円)">
+          <Field label="単価 (円)" required>
             <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
@@ -168,10 +168,13 @@ export default function ProductForm({ initialData, productId }: Props) {
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 const noSpinCls = `${inputCls} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
       {children}
     </div>
   );

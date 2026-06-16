@@ -28,34 +28,11 @@ function getVariants(p: Product): Variant[] {
   return list;
 }
 
-const CSV_HEADERS = "商品名,種別,酒米,精米歩合,アルコール,説明,1800ml単価,1800mlロット,1800ml在庫,720ml単価,720mlロット,720ml在庫";
-const CSV_SAMPLE = `山三純米大吟醸,純米大吟醸,山田錦,50,16,フラッグシップ商品,5000,6,20,2800,12,30
-山三純米吟醸,純米吟醸,山田錦,55,15,,4000,6,30,2200,12,40
-山三純米酒,純米酒,美山錦,60,15,,2500,6,50,,,,
-山三本醸造,本醸造,一般米,70,15,,2000,6,60,,,,
-山三大吟醸,大吟醸,山田錦,35,17,限定品,8000,6,10,4500,12,20
-山三吟醸酒,吟醸酒,五百万石,60,16,,3000,6,30,1800,12,40
-山三純米大吟醸 斗瓶,純米大吟醸,愛山,40,17,斗瓶囲い,12000,6,5,,,,
-山三にごり酒,純米酒,美山錦,65,13,冬季限定,,,,2000,12,25
-山三古酒,純米酒,山田錦,60,18,3年熟成,6000,6,15,3500,12,20
-山三リキュール,リキュール,,,12,梅使用,3000,6,20,1800,12,30`;
-
-function downloadTemplate() {
-  const bom = "﻿";
-  const blob = new Blob([bom + CSV_HEADERS + "\n" + CSV_SAMPLE], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "商品登録フォーマット.csv"; a.click();
-  URL.revokeObjectURL(url);
-}
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
-  const [importing, setImporting] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
-  const [importResult, setImportResult] = useState<{ created: number; errors: string[] } | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const allCheckRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -91,20 +68,6 @@ export default function ProductsPage() {
     });
   };
 
-  const handleCsvImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImporting(true);
-    setImportResult(null);
-    const text = await file.text();
-    const res = await fetch("/api/products/import", { method: "POST", body: text });
-    const data = await res.json();
-    setImportResult(data);
-    setImporting(false);
-    e.target.value = "";
-    if (data.created > 0) load();
-  };
-
   const handleDelete = async (id: number) => {
     if (!confirm("この商品を削除しますか？")) return;
     await fetch(`/api/products/${id}`, { method: "DELETE" });
@@ -125,15 +88,6 @@ export default function ProductsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">商品管理</h1>
         <div className="flex items-center gap-2">
-          <button onClick={downloadTemplate}
-            className="border border-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
-            CSVフォーマット
-          </button>
-          <input ref={fileInputRef} type="file" accept=".csv" style={{ display: "none" }} onChange={handleCsvImport} />
-          <button onClick={() => fileInputRef.current?.click()} disabled={importing}
-            className={`px-4 py-2 rounded-lg text-sm font-medium text-white ${importing ? "bg-gray-400" : "bg-green-600 hover:bg-green-700"}`}>
-            {importing ? "取込中..." : "CSV取込"}
-          </button>
           <button
             onClick={handleBulkDelete}
             disabled={selected.size === 0 || bulkDeleting}
@@ -146,18 +100,6 @@ export default function ProductsPage() {
           </Link>
         </div>
       </div>
-
-      {importResult && (
-        <div className={`rounded-lg p-4 text-sm ${importResult.errors.length === 0 ? "bg-green-50 border border-green-200" : "bg-yellow-50 border border-yellow-200"}`}>
-          <p className="font-medium text-gray-800">{importResult.created}件を登録しました</p>
-          {importResult.errors.length > 0 && (
-            <ul className="mt-1 text-red-600 list-disc list-inside">
-              {importResult.errors.map((e, i) => <li key={i}>{e}</li>)}
-            </ul>
-          )}
-          <button onClick={() => setImportResult(null)} className="mt-2 text-xs text-gray-500 hover:underline">閉じる</button>
-        </div>
-      )}
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="w-full text-sm">
@@ -178,7 +120,7 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-center">精米歩合</th>
               <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
-              <th className="px-4 py-3 text-right">単価</th>
+              <th className="px-4 py-3 text-center">単価</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-right">在庫</th>
               <th className="px-4 py-3 text-right">操作</th>
@@ -206,7 +148,7 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.seimaiWari ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.alcohol ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
-                      <td className="px-4 py-3 text-right text-gray-400">—</td>
+                      <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-right text-gray-400">—</td>
                       <td className="px-4 py-3 text-right space-x-2">
@@ -251,7 +193,7 @@ export default function ProductsPage() {
                         <td className="px-4 py-3 text-center">
                           <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{v.volume}</span>
                         </td>
-                        <td className="px-4 py-3 text-right font-medium">¥{v.price.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-center font-medium">¥{v.price.toLocaleString()}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.unit}</td>
                         <td className="px-4 py-3 text-right">
                           <span className={`font-semibold ${v.stock === 0 ? "text-red-500" : "text-gray-700"}`}>{v.stock}</span>

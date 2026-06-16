@@ -52,7 +52,7 @@ function CustomerLoginForm() {
     <div className="min-h-screen bg-slate-800 flex items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-4">
         <div className="text-center mb-2">
-          <h1 className="text-2xl font-bold text-white tracking-wide">日本酒発注システム</h1>
+          <h1 className="text-2xl font-bold text-white tracking-wide">OderLink</h1>
           <p className="text-white text-xl font-semibold mt-1">販売店ログイン</p>
         </div>
         <div className="bg-white rounded-2xl shadow p-8 space-y-6">

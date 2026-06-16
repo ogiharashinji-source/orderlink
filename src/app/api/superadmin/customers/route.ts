@@ -1,6 +1,28 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export async function POST(req: Request) {
+  const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
+  if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
+
+  try {
+    const customer = await prisma.customer.create({
+      data: {
+        name,
+        email: email || null,
+        phone: phone || null,
+        faxNumber: faxNumber || null,
+        address: address || null,
+        loginId: loginId || null,
+        password: password || null,
+      },
+    });
+    return NextResponse.json(customer, { status: 201 });
+  } catch {
+    return NextResponse.json({ error: "登録に失敗しました（IDまたはメールが重複している可能性があります）" }, { status: 400 });
+  }
+}
+
 export async function GET() {
   const customers = await prisma.customer.findMany({
     orderBy: { createdAt: "desc" },

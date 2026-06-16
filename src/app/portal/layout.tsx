@@ -37,7 +37,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       <nav className="bg-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center h-16 gap-6">
-            <span className="text-base font-bold text-white whitespace-nowrap">発注システム</span>
+            <span className="text-base font-bold text-white whitespace-nowrap">OderLink</span>
             <div className="flex items-center gap-3 flex-1">
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));

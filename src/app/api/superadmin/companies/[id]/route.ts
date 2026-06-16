@@ -19,7 +19,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const companyId = parseInt(id);
-  const { companyName, address, phone, email, loginId, password } = await req.json();
+  const { companyName, address, phone, faxNumber, email, loginId, password } = await req.json();
 
   await prisma.adminSetting.updateMany({
     where: { companyId },
@@ -27,6 +27,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       ...(companyName !== undefined && { companyName }),
       ...(address !== undefined && { address }),
       ...(phone !== undefined && { phone }),
+      ...(faxNumber !== undefined && { faxNumber }),
       ...(email !== undefined && { email }),
     },
   });

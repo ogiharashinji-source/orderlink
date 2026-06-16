@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const navItems = [
   { href: "/requests", label: "リクエスト", badge: true },
@@ -9,7 +9,6 @@ const navItems = [
   { href: "/products", label: "商品管理" },
   { href: "/customers", label: "顧客管理", customerBadge: true },
   { href: "/fax", label: "FAX発注書" },
-  { href: "/", label: "ダッシュボード" },
 ];
 
 export default function Navbar() {
@@ -25,14 +24,7 @@ export default function Navbar() {
     router.push("/login");
   };
 
-  useEffect(() => {
-    fetch("/api/admin/settings")
-      .then((r) => {
-        if (!r.ok || r.redirected) { router.push("/admin/login"); return null; }
-        return r.json();
-      })
-      .then((d) => { if (d?.companyName) setCompanyName(d.companyName); })
-      .catch(() => { router.push("/admin/login"); });
+  const fetchBadges = useCallback(() => {
     fetch("/api/requests")
       .then((r) => r.json())
       .then((data: Array<{ status: string }>) => {
@@ -43,13 +35,29 @@ export default function Navbar() {
       .then((r) => r.ok ? r.json() : [])
       .then((data: Array<unknown>) => { setApprovalCount(data.length); })
       .catch(() => {});
-  }, [pathname]);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then((r) => {
+        if (!r.ok || r.redirected) { router.push("/admin/login"); return null; }
+        return r.json();
+      })
+      .then((d) => { if (d?.companyName) setCompanyName(d.companyName); })
+      .catch(() => { router.push("/admin/login"); });
+    fetchBadges();
+  }, [pathname, fetchBadges]);
+
+  useEffect(() => {
+    const id = setInterval(fetchBadges, 15000);
+    return () => clearInterval(id);
+  }, [fetchBadges]);
 
   return (
     <nav className="bg-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center h-16 gap-6">
-          <span className="text-base font-bold text-white whitespace-nowrap">受注システム</span>
+          <span className="text-base font-bold text-white whitespace-nowrap">OderLink</span>
           <div className="flex gap-3 flex-1">
             {navItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));

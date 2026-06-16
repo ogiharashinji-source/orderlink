@@ -9,6 +9,7 @@ type LinkData = {
     title: string | null;
     message: string | null;
     expiresAt: string | null;
+    attachmentPath: string | null;
     customer: { name: string; company: string | null; address: string | null; faxNumber: string | null };
   };
   products: Array<{ id: number; name: string; price: number; unit: string; description: string | null }>;
@@ -98,6 +99,29 @@ export default function FaxPrintPage() {
             )}
           </div>
         </div>
+
+        {/* Attachment */}
+        {link.attachmentPath && (() => {
+          const ext = link.attachmentPath.split(".").pop()?.toLowerCase() ?? "";
+          const isImage = ["png", "jpg", "jpeg", "gif", "webp"].includes(ext);
+          return (
+            <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+              <p className="text-sm font-semibold text-gray-700 mb-2">添付ファイル</p>
+              {isImage ? (
+                <img src={link.attachmentPath} alt="添付画像" className="max-w-full max-h-96 rounded" />
+              ) : (
+                <a
+                  href={link.attachmentPath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline"
+                >
+                  📎 {link.attachmentPath.split("/").pop()}
+                </a>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Product List */}
         <table className="w-full border-collapse text-sm">

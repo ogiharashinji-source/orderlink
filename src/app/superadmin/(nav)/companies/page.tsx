@@ -80,13 +80,21 @@ export default function SuperAdminCompaniesPage() {
                     </td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.memberships}</td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.orders}</td>
-                    <td className="px-4 py-3 text-right">
-                      <a
-                        href={`/superadmin/companies/${c.id}`}
-                        className="text-blue-600 hover:underline text-xs whitespace-nowrap"
-                      >
-                        編集
-                      </a>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-4">
+                        <a
+                          href={`/superadmin/companies/${c.id}`}
+                          className="text-blue-600 hover:underline text-xs"
+                        >
+                          編集
+                        </a>
+                        <button
+                          onClick={() => handleDelete(c.id, c.setting?.companyName || c.name)}
+                          className="text-red-500 hover:underline text-xs"
+                        >
+                          削除
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Product = {
@@ -33,6 +33,15 @@ function PortalOrderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const fetchCompanies = useCallback(() => {
+    fetch("/api/portal/companies").then((r2) => r2.ok ? r2.json() : null).then((d) => {
+      if (!d) return;
+      setCompanies(d.companies ?? []);
+      setApproved(d.approved);
+      setPendingApprovals(d.pendingApprovals ?? 0);
+    });
+  }, []);
+
   useEffect(() => {
     fetch("/api/customer/me").then((r) => {
       if (!r.ok) { router.push("/portal/login"); return; }
@@ -48,6 +57,11 @@ function PortalOrderContent() {
       });
     });
   }, [router]);
+
+  useEffect(() => {
+    const id = setInterval(fetchCompanies, 15000);
+    return () => clearInterval(id);
+  }, [fetchCompanies]);
 
   useEffect(() => {
     if (!selectedCompanyId) { setProducts([]); setProductsLoaded(false); return; }
@@ -125,7 +139,9 @@ function PortalOrderContent() {
               const qty = quantities[v.key] ?? 0;
               return (
                 <tr key={v.key} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{v.product.name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900" title={v.product.name}>
+                    {v.product.name.length > 14 ? v.product.name.slice(0, 14) + "…" : v.product.name}
+                  </td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
@@ -180,7 +196,7 @@ function PortalOrderContent() {
               <option key={c.companyId} value={c.companyId}>{c.companyName}</option>
             ))}
           </select>
-          {(!approved || pendingApprovals > 0) && (
+          {pendingApprovals > 0 && (
             <span className="text-red-500 text-sm font-medium">
               ＊承認待ちの発注先があります。管理者の承認をお待ちください。
             </span>
@@ -194,18 +210,11 @@ function PortalOrderContent() {
         )}
       </div>
 
-      {selectedCompanyId && productsLoaded && variants.length === 0 && (
-        <div className="bg-white rounded-xl shadow p-8 text-center text-red-500 font-medium">
-          商品が登録されていません
-        </div>
-      )}
-
-      {variants.length > 0 && (
       <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+        <table className="w-full text-sm table-fixed">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
-              <th className="px-4 py-3 text-left">商品名</th>
+              <th className="px-4 py-3 text-left w-44">商品名</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">精米歩合</th>
@@ -218,12 +227,21 @@ function PortalOrderContent() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
+            {selectedCompanyId && productsLoaded && variants.length === 0 && (
+              <tr>
+                <td colSpan={10} className="px-4 py-8 text-center text-red-500 font-medium">
+                  商品が登録されていません
+                </td>
+              </tr>
+            )}
             {variants.map((v) => {
               const qty = quantities[v.key] ?? 0;
               const isSelected = qty > 0;
               return (
                 <tr key={v.key} className={isSelected ? "bg-blue-50" : "hover:bg-gray-50"}>
-                  <td className="px-4 py-3 font-medium text-gray-900">{v.product.name}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900" title={v.product.name}>
+                    {v.product.name.length > 14 ? v.product.name.slice(0, 14) + "…" : v.product.name}
+                  </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
                   <td className="px-4 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
@@ -252,9 +270,8 @@ function PortalOrderContent() {
           </tbody>
         </table>
       </div>
-      )}
 
-      {approved && variants.length > 0 && (
+      {selectedCompanyId && approved && variants.length > 0 && (
         <div className="bg-white rounded-xl shadow p-4 max-w-xl">
           <label className="block text-sm font-medium text-gray-700 mb-1">備考・納品希望日など</label>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
@@ -262,7 +279,7 @@ function PortalOrderContent() {
         </div>
       )}
 
-      {approved && variants.length > 0 && selected.length > 0 && (
+      {selectedCompanyId && approved && variants.length > 0 && selected.length > 0 && (
         <div className="flex items-center gap-6">
           <button onClick={() => setConfirming(true)}
             className="px-8 py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#1e3a8a" }}>

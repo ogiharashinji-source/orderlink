@@ -110,7 +110,8 @@ model OrderLink {
   customer    Customer?     @relation(fields: [customerId], references: [id])
   title       String?
   message     String?
-  productIds  String        // JSON array, empty = all products
+  productIds      String        // JSON array, empty = all products
+  attachmentPath  String?
   expiresAt   DateTime?
   submittedAt DateTime?
   requestId   Int?          @unique
