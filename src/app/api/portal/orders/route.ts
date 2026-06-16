@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }
 
   const productIds = items.map((i) => i.productId);
-  const products = await prisma.product.findMany({ where: { id: { in: productIds } }, select: { id: true, name: true, category: true, sakaMai: true } });
+  const products = await prisma.product.findMany({ where: { id: { in: productIds } }, select: { id: true, name: true, category: true, sakaMai: true, seimaiWari: true, alcohol: true } });
   const productMap = Object.fromEntries(products.map((p) => [p.id, p]));
 
   const setting = await prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true, address: true, phone: true, faxNumber: true, email: true } });

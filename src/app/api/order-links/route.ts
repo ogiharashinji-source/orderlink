@@ -33,12 +33,12 @@ export async function POST(req: NextRequest) {
     include: { customer: true },
   });
 
-  if (link.customer.email) {
+  if (link.customer?.email) {
     const origin = req.nextUrl.origin;
     const orderUrl = `${origin}/order/${token}`;
     sendOrderLinkEmail({
       to: link.customer.email,
-      customerName: link.customer.name,
+      customerName: link.customer?.name ?? "",
       title: link.title,
       message: link.message,
       orderUrl,
