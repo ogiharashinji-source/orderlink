@@ -49,9 +49,6 @@ export default function SuperAdminCompaniesPage() {
                 <th className="px-4 py-3 text-left">会社名</th>
                 <th className="px-4 py-3 text-left">住所</th>
                 <th className="px-4 py-3 text-left">電話番号</th>
-                <th className="px-4 py-3 text-left">メールアドレス</th>
-                <th className="px-4 py-3 text-left">ID</th>
-                <th className="px-4 py-3 text-left">PASS</th>
                 <th className="px-4 py-3 text-center">顧客数</th>
                 <th className="px-4 py-3 text-center">受注数</th>
                 <th className="px-4 py-3 text-right">操作</th>
@@ -59,7 +56,7 @@ export default function SuperAdminCompaniesPage() {
             </thead>
             <tbody>
               {companies.length === 0 ? (
-                <tr><td colSpan={10} className="text-center py-8 text-gray-400">データがありません</td></tr>
+                <tr><td colSpan={7} className="text-center py-8 text-gray-400">データがありません</td></tr>
               ) : (
                 companies.map((c) => (
                   <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
@@ -71,13 +68,6 @@ export default function SuperAdminCompaniesPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-600 text-xs">{c.setting?.address || "—"}</td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{c.setting?.phone || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.setting?.email || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                      {c.admins.map((a) => a.loginId).join(", ") || "—"}
-                    </td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                      {c.admins.map((a) => a.password).join(", ") || "—"}
-                    </td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.memberships}</td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.orders}</td>
                     <td className="px-4 py-3">
