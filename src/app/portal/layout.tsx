@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const navItems = [
-  { href: "/portal/order",  label: "注文依頼" },
-  { href: "/portal/orders", label: "注文管理" },
+  { href: "/portal/order",  label: "発注依頼" },
+  { href: "/portal/orders", label: "発注管理" },
 ];
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
