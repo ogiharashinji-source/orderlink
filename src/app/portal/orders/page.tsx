@@ -39,7 +39,7 @@ type OrderRequest = {
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   PENDING:   { label: "確認待ち", cls: "bg-yellow-100 text-yellow-700" },
-  CONFIRMED: { label: "確定", cls: "bg-green-100 text-green-700" },
+  CONFIRMED: { label: "確定", cls: "bg-gray-100 text-gray-500" },
   REJECTED:  { label: "キャンセル", cls: "bg-red-100 text-red-600" },
 };
 
@@ -192,7 +192,7 @@ export default function PortalOrdersPage() {
                               )}
                               {o.status === "CONFIRMED" && (
                                 <button onClick={() => router.push(`/portal/orders/${o.id}`)}
-                                  className="text-xs font-medium text-white bg-green-600 hover:bg-green-700 px-3 py-1 rounded-lg">確認</button>
+                                  className="text-xs font-medium text-green-600 hover:underline">確認</button>
                               )}
                               {o.status === "REJECTED" && (
                                 <button onClick={() => router.push(`/portal/orders/${o.id}`)}
