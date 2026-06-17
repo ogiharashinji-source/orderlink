@@ -192,13 +192,14 @@ export default function SuperAdminCustomersPage() {
                 <th className="px-4 py-3 text-left">会社名</th>
                 <th className="px-4 py-3 text-left">住所</th>
                 <th className="px-4 py-3 text-left">電話番号</th>
+                <th className="px-4 py-3 text-left">メールアドレス</th>
                 <th className="px-4 py-3 text-center">登録酒蔵数</th>
                 <th className="px-4 py-3 text-right">操作</th>
               </tr>
             </thead>
             <tbody>
               {customers.length === 0 ? (
-                <tr><td colSpan={6} className="text-center py-8 text-gray-400">データがありません</td></tr>
+                <tr><td colSpan={7} className="text-center py-8 text-gray-400">データがありません</td></tr>
               ) : (
                 customers.map((c) => (
                   <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
@@ -208,6 +209,7 @@ export default function SuperAdminCustomersPage() {
                     <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{c.name}</td>
                     <td className="px-4 py-3 text-gray-600 text-xs">{c.address || "—"}</td>
                     <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{c.phone || "—"}</td>
+                    <td className="px-4 py-3 text-gray-600 text-xs">{c.email || "—"}</td>
                     <td className="px-4 py-3 text-center text-gray-700 font-medium">{c.companyCount}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-4">
