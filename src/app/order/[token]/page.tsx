@@ -116,7 +116,7 @@ export default function MobileOrderPage() {
   const Header = () => (
     <div className="sticky top-0 z-10 bg-slate-800">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
-        <h1 className="text-sm font-bold text-white">OderLink</h1>
+        <h1 className="text-sm font-bold text-white">OrderLink</h1>
         {customerMe && (
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold text-white">{customerMe.name}</span>

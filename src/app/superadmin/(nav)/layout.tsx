@@ -22,7 +22,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
       <nav className="bg-slate-800 text-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center h-14 gap-6">
-            <span className="text-sm font-bold text-white whitespace-nowrap">運営管理システム</span>
+            <span className="text-sm font-bold text-white whitespace-nowrap">OrderLink</span>
             <div className="flex gap-2 flex-1">
               {navItems.map((item) => {
                 const active = pathname.startsWith(item.href);

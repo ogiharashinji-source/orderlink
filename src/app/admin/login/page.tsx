@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-800 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white tracking-wide">OderLink</h1>
+          <h1 className="text-2xl font-bold text-white tracking-wide">OrderLink</h1>
           <p className="text-white text-xl font-semibold mt-1">酒蔵ログイン</p>
         </div>
 
