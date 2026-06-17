@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function CustomerLoginForm() {
@@ -9,12 +9,7 @@ function CustomerLoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [inviteToken, setInviteToken] = useState("");
-
-  useEffect(() => {
-    const token = searchParams.get("token");
-    if (token) setInviteToken(token);
-  }, [searchParams]);
+  const inviteToken = searchParams.get("token") ?? "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
