@@ -26,7 +26,7 @@ type OrderRequest = {
 type ModalState = {
   req: OrderRequest;
   freshReq: OrderRequest;
-  freshQtys: Record<number, string>;
+  modalQtys: Record<number, string>;
 } | null;
 
 export default function RequestsPage() {
@@ -65,20 +65,19 @@ export default function RequestsPage() {
     const freshData: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
     const freshReq = freshData.find((r) => r.id === req.id);
     if (!freshReq) { alert("リクエストが見つかりません"); return; }
-    const freshQtys: Record<number, string> = {};
-    freshReq.items.forEach((item) => { freshQtys[item.id] = String(item.requestedQty); });
-    setEditedQtys((prev) => ({ ...prev, ...freshQtys }));
-    setModal({ req, freshReq, freshQtys });
+    const modalQtys: Record<number, string> = {};
+    freshReq.items.forEach((item) => { modalQtys[item.id] = String(item.requestedQty); });
+    setModal({ req, freshReq, modalQtys });
   };
 
   const handleModalOk = async () => {
     if (!modal) return;
-    const { req, freshReq, freshQtys } = modal;
+    const { req, freshReq, modalQtys } = modal;
     setModal(null);
     setConfirming(req.id);
     const confirmedItems = freshReq.items.map((item) => ({
       requestItemId: item.id,
-      confirmedQty: parseInt(freshQtys[item.id] ?? "0") || 0,
+      confirmedQty: parseInt(modalQtys[item.id] ?? "0") || 0,
       unitPrice: item.unitPrice,
     }));
     const res = await fetch(`/api/requests/${req.id}/confirm`, {
@@ -111,7 +110,8 @@ export default function RequestsPage() {
                   <th className="px-3 py-2 text-center">精米歩合</th>
                   <th className="px-3 py-2 text-center">アルコール</th>
                   <th className="px-3 py-2 text-center">容量</th>
-                  <th className="px-3 py-2 text-right">ケース数</th>
+                  <th className="px-3 py-2 text-center">希望ケース</th>
+                  <th className="px-3 py-2 text-center">販売数</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -123,7 +123,18 @@ export default function RequestsPage() {
                     <td className="px-3 py-2 text-center text-gray-500">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
                     <td className="px-3 py-2 text-center text-gray-500">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                     <td className="px-3 py-2 text-center">{item.volume ?? "—"}</td>
-                    <td className="px-3 py-2 text-right font-bold">{modal.freshQtys[item.id] ?? item.requestedQty}</td>
+                    <td className="px-3 py-2 text-center text-gray-700">{item.requestedQty}</td>
+                    <td className="px-3 py-2 text-center">
+                      <select
+                        value={modal.modalQtys[item.id] ?? String(item.requestedQty)}
+                        onChange={(e) => setModal((m) => m ? { ...m, modalQtys: { ...m.modalQtys, [item.id]: e.target.value } } : m)}
+                        className="border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      >
+                        {Array.from({ length: Math.max(item.requestedQty, 30) + 1 }, (_, i) => (
+                          <option key={i} value={i}>{i}</option>
+                        ))}
+                      </select>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -167,14 +178,13 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-center">金額</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-center">希望ケース</th>
-              <th className="px-4 py-3 text-center">販売数</th>
               <th className="px-4 py-3 text-center">操作</th>
             </tr>
           </thead>
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center py-12 text-gray-400">
+                <td colSpan={10} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
@@ -242,23 +252,7 @@ export default function RequestsPage() {
                         {item.requestedQty}
                       </td>
 
-                      {/* 販売数（プルダウン） */}
-                      <td className="px-4 py-3 text-center">
-                        <select
-                          value={editedQtys[item.id] ?? String(item.requestedQty)}
-                          onChange={(e) =>
-                            setEditedQtys((p) => ({ ...p, [item.id]: e.target.value }))
-                          }
-                          className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                        >
-                          {Array.from(
-                            { length: Math.max(item.requestedQty, 30) + 1 },
-                            (_, i) => <option key={i} value={i}>{i}</option>
-                          )}
-                        </select>
-                      </td>
-
-                      {/* 備考 + 確定ボタン（先頭行のみ rowspan） */}
+                      {/* 確定ボタン（先頭行のみ rowspan） */}
                       {idx === 0 && (
                         <>
                           <td className="px-4 py-3 align-middle text-center" rowSpan={req.items.length}>
