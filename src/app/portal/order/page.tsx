@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 type Product = {
   id: number;
   name: string;
+  description: string | null;
   category: string | null;
   sakaMai: string | null;
   seimaiWari: string | null;
@@ -32,6 +33,7 @@ function PortalOrderContent() {
   const [companies, setCompanies] = useState<{ companyId: number; companyName: string }[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
   const [productsLoaded, setProductsLoaded] = useState(false);
+  const [descModal, setDescModal] = useState<{ name: string; description: string } | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -192,6 +194,17 @@ function PortalOrderContent() {
 
   return (
     <div className="space-y-6">
+      {descModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setDescModal(null)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-base font-bold text-gray-900">{descModal.name}</h2>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>
+            <div className="flex justify-end pt-1">
+              <button onClick={() => setDescModal(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">閉じる</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold text-gray-900">発注先</h1>
@@ -263,7 +276,17 @@ function PortalOrderContent() {
                   <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{v.lot}</td>
-                  <td className="px-4 py-3 text-right text-gray-500">{v.stock != null && v.stock !== 0 ? v.stock : ""}</td>
+                  <td className="px-4 py-3 text-right text-gray-500">
+                    <span className="inline-flex items-center gap-1.5">
+                      <span>{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>
+                      {v.product.description && (
+                        <button
+                          onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
+                          className="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center hover:bg-gray-300 flex-shrink-0"
+                        >?</button>
+                      )}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
                       <button onClick={() => setQty(v.key, qty - 1)} disabled={qty === 0}
