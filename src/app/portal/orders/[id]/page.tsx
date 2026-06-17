@@ -120,7 +120,7 @@ export default function PortalOrderDetailPage() {
 
       {/* パンくず */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/portal/orders" className="hover:text-blue-600">注文管理</Link>
+        <Link href="/portal/orders" className="hover:text-blue-600">発注管理</Link>
         <span>›</span>
         <span>{order.requestNumber}</span>
       </div>

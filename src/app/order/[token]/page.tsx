@@ -136,7 +136,7 @@ export default function MobileOrderPage() {
         <button
           onClick={() => { setTab("history"); setHistoryDetail(null); }}
           className={`flex-1 py-2 text-xs font-bold transition-colors ${tab === "history" ? "bg-slate-600 text-white" : "text-slate-300 hover:bg-slate-700 hover:text-white"}`}
-        >注文管理</button>
+        >発注管理</button>
       </div>
     </div>
   );
@@ -166,7 +166,7 @@ export default function MobileOrderPage() {
           onClick={() => { setSubmitted(""); setQuantities({}); setNotes(""); setConfirming(false); setSubmitting(false); setTab("history"); }}
           className="w-full py-3 rounded-xl text-sm font-bold text-white" style={{ background: "#1e3a8a" }}
         >
-          注文管理を見る
+          発注管理を見る
         </button>
       </div>
     </div>
