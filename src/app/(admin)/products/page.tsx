@@ -21,12 +21,12 @@ type Product = {
   stock720: number | null;
 };
 
-type Variant = { volume: string; price: number; wholesalePrice: number | null; unit: string; stock: number };
+type Variant = { volume: string; price: number; wholesalePrice: number | null; unit: string; stock: number | null };
 
 function getVariants(p: Product): Variant[] {
   const list: Variant[] = [];
-  if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, unit: p.unit1800 ?? "本", stock: p.stock1800 ?? 0 });
-  if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  unit: p.unit720  ?? "本", stock: p.stock720  ?? 0 });
+  if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, unit: p.unit1800 ?? "本", stock: p.stock1800 });
+  if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  unit: p.unit720  ?? "本", stock: p.stock720  });
   return list;
 }
 
@@ -125,7 +125,7 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-center">小売値</th>
               <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
-              <th className="px-4 py-3 text-right">在庫</th>
+              <th className="px-4 py-3 text-right">限定</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
@@ -201,7 +201,7 @@ export default function ProductsPage() {
                         <td className="px-4 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.unit}</td>
                         <td className="px-4 py-3 text-right">
-                          <span className={`font-semibold ${v.stock === 0 ? "text-red-500" : "text-gray-700"}`}>{v.stock}</span>
+                          <span className="font-semibold text-gray-700">{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>
                         </td>
                         {idx === 0 && (
                           <td className="px-4 py-3 text-right space-x-2 align-top" rowSpan={variants.length}>
