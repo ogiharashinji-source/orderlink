@@ -107,7 +107,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
               ))}
             </select>
           ) : (
-            <p className="text-sm text-gray-500">登録済みの全顧客（{customers.length}件）に発注書リンクを作成します</p>
+            <p className="text-sm text-gray-500">登録済みの全顧客（{customers.length}件）にメールリンクを作成します</p>
           )}
         </div>
 
