@@ -167,9 +167,9 @@ export default function PortalOrderDetailPage() {
       </div>
 
       {/* 発注明細 */}
-      <div className="bg-white rounded-lg shadow p-5">
+      <div className="bg-white rounded-lg shadow p-5 overflow-x-auto">
         <h2 className="font-semibold text-gray-800 mb-3">発注明細</h2>
-        <table className="w-full text-sm">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead className="text-gray-500 text-xs uppercase bg-gray-50">
             <tr>
               <th className="px-3 py-2 text-left">商品名</th>
