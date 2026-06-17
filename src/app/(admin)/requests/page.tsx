@@ -151,11 +151,11 @@ export default function RequestsPage() {
                 className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
                 キャンセル
               </button>
-              <button onClick={() => { setModal(null); handleDelete(modal.req.id); }}
+              <button onClick={() => { if (!confirm("在庫なしとして処理しますか？")) return; setModal(null); handleDelete(modal.req.id); }}
                 className="px-5 py-2 rounded-lg text-sm font-medium text-red-500 border border-red-300 hover:bg-red-50">
                 在庫なし
               </button>
-              <button onClick={handleModalOk}
+              <button onClick={() => { if (!confirm("受注を確定しますか？")) return; handleModalOk(); }}
                 className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700">
                 確定する
               </button>
