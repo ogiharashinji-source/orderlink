@@ -21,6 +21,8 @@ type RequestItem = {
     alcohol: string | null;
     unit1800: string | null;
     unit720: string | null;
+    wholesalePrice1800: number | null;
+    wholesalePrice720: number | null;
   } | null;
 };
 
@@ -126,7 +128,8 @@ export default function PortalOrdersPage() {
               <th className="px-4 py-3 text-center">精米歩合</th>
               <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
-              <th className="px-4 py-3 text-right">単価</th>
+              <th className="px-4 py-3 text-right">小売値</th>
+              <th className="px-4 py-3 text-right">卸売値</th>
               <th className="px-4 py-3 text-right">ロット</th>
               <th className="px-4 py-3 text-right">ケース数</th>
               <th className="px-4 py-3 text-center">ステータス</th>
@@ -135,7 +138,7 @@ export default function PortalOrdersPage() {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={13} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
+              <tr><td colSpan={14} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
             ) : (
               filtered.map((o) => {
                 const st = STATUS_LABEL[o.status] ?? { label: o.status, cls: "bg-gray-100 text-gray-500" };
@@ -171,6 +174,13 @@ export default function PortalOrdersPage() {
                             <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume}</span>
                           </td>
                           <td className="px-4 py-3 text-right text-gray-600">¥{item.unitPrice.toLocaleString()}</td>
+                          <td className="px-4 py-3 text-right text-gray-600">
+                            {item.product
+                              ? item.volume === "1800ml"
+                                ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
+                                : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
+                              : "—"}
+                          </td>
                           <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
                           <td className="px-4 py-3 text-right font-semibold">{item.confirmedQty ?? item.requestedQty}</td>
                           {idx === 0 && (
