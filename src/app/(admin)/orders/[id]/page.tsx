@@ -91,7 +91,8 @@ export default function OrderDetailPage() {
               <th className="px-3 py-2 text-center">精米歩合</th>
               <th className="px-3 py-2 text-center">アルコール</th>
               <th className="px-3 py-2 text-center">容量</th>
-              <th className="px-3 py-2 text-right">単価</th>
+              <th className="px-3 py-2 text-right">小売値</th>
+              <th className="px-3 py-2 text-right">卸売値</th>
               <th className="px-3 py-2 text-right">ロット</th>
               <th className="px-3 py-2 text-right">ケース数</th>
               <th className="px-3 py-2 text-right">小計</th>
@@ -114,6 +115,13 @@ export default function OrderDetailPage() {
                     </span>
                   </td>
                   <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right text-gray-600">
+                    {item.product
+                      ? item.volume === "1800ml"
+                        ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
+                        : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
+                      : "—"}
+                  </td>
                   <td className="px-3 py-2 text-right">{lot}</td>
                   <td className="px-3 py-2 text-right">{item.quantity}</td>
                   <td className="px-3 py-2 text-right font-medium">¥{subtotal.toLocaleString()}</td>
@@ -123,7 +131,7 @@ export default function OrderDetailPage() {
           </tbody>
           <tfoot className="bg-gray-50">
             <tr>
-              <td colSpan={9} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
+              <td colSpan={10} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
               <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{order.items.reduce((sum, item) => sum + item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice, 0).toLocaleString()}</td>
             </tr>
           </tfoot>
