@@ -55,7 +55,17 @@ export default function RequestsPage() {
   useEffect(() => { load(); }, [load]);
 
   const handleConfirm = async (req: OrderRequest) => {
-    const lines = req.items.map((item) => {
+    // 最新データを取得してポップアップに反映
+    const freshData: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
+    const freshReq = freshData.find((r) => r.id === req.id);
+    if (!freshReq) { alert("リクエストが見つかりません"); return; }
+
+    // 最新の希望数量でeditedQtysを上書き
+    const freshQtys: Record<number, string> = {};
+    freshReq.items.forEach((item) => { freshQtys[item.id] = String(item.requestedQty); });
+    setEditedQtys((prev) => ({ ...prev, ...freshQtys }));
+
+    const lines = freshReq.items.map((item) => {
       const parts = [
         item.productName ?? item.product?.name,
         item.productCategory ?? item.product?.category,
@@ -63,14 +73,14 @@ export default function RequestsPage() {
         item.productSeimaiWari ?? item.product?.seimaiWari ?? null,
         item.volume,
       ].filter(Boolean).join("　");
-      return `・${parts}　ケース数: ${editedQtys[item.id] ?? item.requestedQty}`;
+      return `・${parts}　ケース数: ${freshQtys[item.id] ?? item.requestedQty}`;
     }).join("\n");
-    const notesLine = req.notes ? `\n\n備考: ${req.notes}` : "";
+    const notesLine = freshReq.notes ? `\n\n備考: ${freshReq.notes}` : "";
     if (!confirm(`以下の内容で受注を確定しますか？\n\n${lines}${notesLine}`)) return;
     setConfirming(req.id);
-    const confirmedItems = req.items.map((item) => ({
+    const confirmedItems = freshReq.items.map((item) => ({
       requestItemId: item.id,
-      confirmedQty: parseInt(editedQtys[item.id] ?? "0") || 0,
+      confirmedQty: parseInt(freshQtys[item.id] ?? "0") || 0,
       unitPrice: item.unitPrice,
     }));
     const res = await fetch(`/api/requests/${req.id}/confirm`, {
@@ -79,7 +89,7 @@ export default function RequestsPage() {
       body: JSON.stringify({ confirmedItems }),
     });
     if (res.ok) {
-      router.push("/orders");
+      window.location.href = "/orders";
     } else {
       const result = await res.json();
       alert(result.error ?? "エラーが発生しました");
