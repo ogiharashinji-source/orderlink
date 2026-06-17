@@ -52,11 +52,10 @@ export default function Navbar() {
   }, [fetchBadges]);
 
   return (
-    <nav className="bg-slate-800 text-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center h-16 gap-6">
-          <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
-          <div className="flex gap-3 flex-1">
+    <nav className="bg-slate-800 text-white overflow-x-auto">
+      <div className="flex items-center h-16 gap-6 px-4 w-max">
+        <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
+          <div className="flex gap-3">
             {navItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
               return (
@@ -82,14 +81,13 @@ export default function Navbar() {
               );
             })}
           </div>
-          <a href="/settings" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</a>
+          <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</a>
           <button
             onClick={handleLogout}
-            className="text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"
+            className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"
           >
             ログアウト
           </button>
-        </div>
       </div>
     </nav>
   );
