@@ -14,7 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
 };
 
 type OrderRequest = {
@@ -178,7 +178,8 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-center">精米歩合</th>
               <th className="px-3 py-2 text-center">アルコール</th>
               <th className="px-3 py-2 text-center">容量</th>
-              <th className="px-3 py-2 text-right">単価</th>
+              <th className="px-3 py-2 text-right">小売値</th>
+              <th className="px-3 py-2 text-right">卸売値</th>
               <th className="px-3 py-2 text-right">ロット</th>
               <th className="px-3 py-2 text-right">ケース数</th>
               <th className="px-3 py-2 text-right">小計</th>
@@ -199,6 +200,13 @@ export default function PortalOrderDetailPage() {
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume ?? "—"}</span>
                   </td>
                   <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right text-gray-600">
+                    {item.product
+                      ? item.volume === "1800ml"
+                        ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
+                        : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
+                      : "—"}
+                  </td>
                   <td className="px-3 py-2 text-right">
                     {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
                   </td>
@@ -221,7 +229,7 @@ export default function PortalOrderDetailPage() {
           </tbody>
           <tfoot className="bg-gray-50">
             <tr>
-              <td colSpan={9} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
+              <td colSpan={10} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
               <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{total.toLocaleString()}</td>
             </tr>
           </tfoot>
