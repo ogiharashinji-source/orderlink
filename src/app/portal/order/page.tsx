@@ -210,8 +210,8 @@ function PortalOrderContent() {
         )}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm table-fixed">
+      <div className="bg-white rounded-xl shadow overflow-x-auto">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
               <th className="px-4 py-3 text-left w-44">商品名</th>
