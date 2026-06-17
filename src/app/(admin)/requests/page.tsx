@@ -23,10 +23,17 @@ type OrderRequest = {
   items: RequestItem[];
 };
 
+type ModalState = {
+  req: OrderRequest;
+  freshReq: OrderRequest;
+  freshQtys: Record<number, string>;
+} | null;
+
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
   const [editedQtys, setEditedQtys] = useState<Record<number, string>>({});
   const [confirming, setConfirming] = useState<number | null>(null);
+  const [modal, setModal] = useState<ModalState>(null);
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
@@ -55,28 +62,19 @@ export default function RequestsPage() {
   useEffect(() => { load(); }, [load]);
 
   const handleConfirm = async (req: OrderRequest) => {
-    // 最新データを取得してポップアップに反映
     const freshData: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
     const freshReq = freshData.find((r) => r.id === req.id);
     if (!freshReq) { alert("リクエストが見つかりません"); return; }
-
-    // 最新の希望数量でeditedQtysを上書き
     const freshQtys: Record<number, string> = {};
     freshReq.items.forEach((item) => { freshQtys[item.id] = String(item.requestedQty); });
     setEditedQtys((prev) => ({ ...prev, ...freshQtys }));
+    setModal({ req, freshReq, freshQtys });
+  };
 
-    const lines = freshReq.items.map((item) => {
-      const parts = [
-        item.productName ?? item.product?.name,
-        item.productCategory ?? item.product?.category,
-        item.productSakaMai ?? item.product?.sakaMai,
-        item.productSeimaiWari ?? item.product?.seimaiWari ?? null,
-        item.volume,
-      ].filter(Boolean).join("　");
-      return `・${parts}　ケース数: ${freshQtys[item.id] ?? item.requestedQty}`;
-    }).join("\n");
-    const notesLine = freshReq.notes ? `\n\n備考: ${freshReq.notes}` : "";
-    if (!confirm(`以下の内容で受注を確定しますか？\n\n${lines}${notesLine}`)) return;
+  const handleModalOk = async () => {
+    if (!modal) return;
+    const { req, freshReq, freshQtys } = modal;
+    setModal(null);
     setConfirming(req.id);
     const confirmedItems = freshReq.items.map((item) => ({
       requestItemId: item.id,
@@ -99,6 +97,49 @@ export default function RequestsPage() {
 
   return (
     <div className="space-y-4">
+      {/* 確認モーダル */}
+      {modal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 space-y-4">
+            <h2 className="text-base font-bold text-gray-900">以下の内容で受注を確定しますか？</h2>
+            <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+              <thead className="bg-gray-50 text-gray-500 text-xs">
+                <tr>
+                  <th className="px-3 py-2 text-left">商品名</th>
+                  <th className="px-3 py-2 text-left">種別</th>
+                  <th className="px-3 py-2 text-left">酒米</th>
+                  <th className="px-3 py-2 text-center">容量</th>
+                  <th className="px-3 py-2 text-right">ケース数</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {modal.freshReq.items.map((item) => (
+                  <tr key={item.id}>
+                    <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                    <td className="px-3 py-2 text-gray-500">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                    <td className="px-3 py-2 text-gray-500">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-3 py-2 text-center">{item.volume ?? "—"}</td>
+                    <td className="px-3 py-2 text-right font-bold">{modal.freshQtys[item.id] ?? item.requestedQty}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {modal.freshReq.notes && (
+              <p className="text-sm text-gray-600">備考: {modal.freshReq.notes}</p>
+            )}
+            <div className="flex justify-end gap-3 pt-2">
+              <button onClick={() => setModal(null)}
+                className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
+                キャンセル
+              </button>
+              <button onClick={handleModalOk}
+                className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700">
+                確定する
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
         {requests.length > 0 && (
