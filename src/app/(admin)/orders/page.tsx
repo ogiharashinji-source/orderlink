@@ -12,7 +12,7 @@ type OrderItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
 };
 
 type Order = {
@@ -105,7 +105,8 @@ export default function OrdersPage() {
               <th className="px-4 py-3 text-center">精米歩合</th>
               <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
-              <th className="px-4 py-3 text-center">金額</th>
+              <th className="px-4 py-3 text-center">小売値</th>
+              <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-center">販売数</th>
               <th className="px-4 py-3 text-left">備考</th>
@@ -115,7 +116,7 @@ export default function OrdersPage() {
           <tbody>
             {orders.length === 0 ? (
               <tr>
-                <td colSpan={12} className="text-center py-12 text-gray-400">受注データがありません</td>
+                <td colSpan={14} className="text-center py-12 text-gray-400">受注データがありません</td>
               </tr>
             ) : (
               orders.map((o) => (
@@ -166,9 +167,18 @@ export default function OrdersPage() {
                         {item.volume ?? "—"}
                       </td>
 
-                      {/* 金額 */}
+                      {/* 小売値 */}
                       <td className="px-4 py-3 text-center text-sm text-gray-700">
                         ¥{item.unitPrice.toLocaleString()}
+                      </td>
+
+                      {/* 卸売値 */}
+                      <td className="px-4 py-3 text-center text-sm text-gray-700">
+                        {item.product
+                          ? item.volume === "1800ml"
+                            ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
+                            : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
+                          : "—"}
                       </td>
 
                       {/* ロット */}
