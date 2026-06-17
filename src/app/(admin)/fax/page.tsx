@@ -30,7 +30,7 @@ export default function FaxPage() {
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
-          発行済み一覧
+          送信済み一覧
         </button>
       </div>
 

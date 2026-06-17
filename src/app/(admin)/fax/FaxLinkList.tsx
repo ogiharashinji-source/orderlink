@@ -25,14 +25,14 @@ export default function FaxLinkList() {
     if (link.request?.status === "CONFIRMED") return { label: "受注確定済", color: "bg-green-100 text-green-800" };
     if (link.submittedAt) return { label: "リクエスト受信済", color: "bg-blue-100 text-blue-800" };
     if (link.expiresAt && new Date(link.expiresAt) < new Date()) return { label: "期限切れ", color: "bg-gray-100 text-gray-500" };
-    return { label: "未送信", color: "bg-yellow-100 text-yellow-800" };
+    return { label: "注文待ち", color: "bg-yellow-100 text-yellow-800" };
   };
 
   return (
     <div className="space-y-3">
       {links.length === 0 ? (
         <div className="bg-white rounded-xl shadow p-8 text-center text-gray-400">
-          発行済みの発注書がありません
+          送信済みのメールはありません
         </div>
       ) : (
         links.map((link) => {
