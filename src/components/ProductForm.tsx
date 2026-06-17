@@ -32,8 +32,8 @@ type Props = {
 const empty: ProductData = {
   name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "",
   description: "",
-  price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "0",
-  price720: "",  wholesalePrice720: "", unit720: "12", stock720: "0",
+  price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "",
+  price720: "",  wholesalePrice720: "", unit720: "12", stock720: "",
 };
 
 export default function ProductForm({ initialData, productId }: Props) {
