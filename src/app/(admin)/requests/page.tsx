@@ -12,7 +12,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null } | null;
+  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
 };
 type OrderRequest = {
   id: number;
@@ -175,7 +175,8 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">容量</th>
-              <th className="px-4 py-3 text-center">金額</th>
+              <th className="px-4 py-3 text-center">小売値</th>
+              <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-center">希望ケース</th>
               <th className="px-4 py-3 text-center">操作</th>
@@ -184,7 +185,7 @@ export default function RequestsPage() {
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-400">
+                <td colSpan={11} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
@@ -237,9 +238,18 @@ export default function RequestsPage() {
                         {item.volume ?? "—"}
                       </td>
 
-                      {/* 金額 */}
+                      {/* 小売値 */}
                       <td className="px-4 py-3 text-center text-sm text-gray-700">
                         ¥{item.unitPrice.toLocaleString()}
+                      </td>
+
+                      {/* 卸売値 */}
+                      <td className="px-4 py-3 text-center text-sm text-gray-700">
+                        {item.product
+                          ? item.volume === "1800ml"
+                            ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
+                            : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
+                          : "—"}
                       </td>
 
                       {/* ロット */}
