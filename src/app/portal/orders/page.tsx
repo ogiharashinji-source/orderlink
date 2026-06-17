@@ -37,7 +37,7 @@ type OrderRequest = {
 
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   PENDING:   { label: "確認待ち", cls: "bg-yellow-100 text-yellow-700" },
-  CONFIRMED: { label: "受注確定", cls: "bg-green-100 text-green-700" },
+  CONFIRMED: { label: "確定", cls: "bg-green-100 text-green-700" },
   REJECTED:  { label: "キャンセル", cls: "bg-red-100 text-red-600" },
 };
 
