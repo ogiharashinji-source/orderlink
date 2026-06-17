@@ -125,7 +125,7 @@ export default function RequestDetailPage() {
       </div>
 
       {/* 明細テーブル */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
+      <div className="bg-white rounded-xl shadow overflow-x-auto">
         <div className="px-5 py-4 border-b border-gray-100">
           <h2 className="font-semibold text-gray-800">リクエスト内容</h2>
           {isPending && (
@@ -135,7 +135,7 @@ export default function RequestDetailPage() {
           )}
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
               <tr>
                 <th className="px-4 py-2.5 text-left">商品</th>
