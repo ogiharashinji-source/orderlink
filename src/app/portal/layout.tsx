@@ -33,14 +33,14 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-slate-800 text-white overflow-x-auto">
-        <div className="flex items-center h-16 gap-6 px-4 min-w-max">
+        <div className="flex flex-nowrap items-center h-16 gap-6 px-4 w-max">
             <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
-            <div className="flex items-center gap-3 flex-1">
+            <div className="flex flex-nowrap items-center gap-3">
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));
                 return (
                   <a key={item.href} href={item.href}
-                    className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
+                    className={`whitespace-nowrap px-3 py-2 rounded text-sm font-medium transition-colors ${
                       active ? "bg-slate-600 text-white" : "text-slate-300 hover:bg-slate-700 hover:text-white"
                     }`}>
                     {item.label}
@@ -49,12 +49,12 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               })}
             </div>
             {customerName && (
-              <a href="/portal/profile" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 hover:text-slate-300 transition-colors">
+              <a href="/portal/profile" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 hover:text-slate-300 transition-colors">
                 {customerName}
               </a>
             )}
             <button onClick={handleLogout}
-              className="text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors">
+              className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors">
               ログアウト
             </button>
         </div>
