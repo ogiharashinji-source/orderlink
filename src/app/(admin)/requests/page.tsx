@@ -158,8 +158,6 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-left">商品</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
-              <th className="px-4 py-3 text-center">精米歩合</th>
-              <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-center">金額</th>
               <th className="px-4 py-3 text-center">ロット</th>
@@ -172,7 +170,7 @@ export default function RequestsPage() {
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={14} className="text-center py-12 text-gray-400">
+                <td colSpan={12} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
@@ -219,12 +217,6 @@ export default function RequestsPage() {
 
                       {/* 酒米 */}
                       <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
-
-                      {/* 精米歩合 */}
-                      <td className="px-4 py-3 text-center text-gray-500 text-xs">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
-
-                      {/* アルコール */}
-                      <td className="px-4 py-3 text-center text-gray-500 text-xs">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
 
                       {/* 容量 */}
                       <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
