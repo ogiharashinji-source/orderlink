@@ -141,7 +141,6 @@ function PortalOrderContent() {
               <th className="px-3 py-3 text-center w-24">小売値</th>
               <th className="px-3 py-3 text-center w-24">卸売値</th>
               <th className="px-3 py-3 text-right w-16">ロット</th>
-              <th className="px-3 py-3 text-right w-16">限定</th>
               <th className="px-3 py-3 text-center w-20">注文数</th>
             </tr>
           </thead>
@@ -163,7 +162,6 @@ function PortalOrderContent() {
                   <td className="px-3 py-3 text-center text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-3 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                   <td className="px-3 py-3 text-right text-gray-500">{v.lot}</td>
-                  <td className="px-3 py-3 text-right text-gray-500">{v.stock != null && v.stock !== 0 ? v.stock : ""}</td>
                   <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{qty}</td>
                 </tr>
               );
