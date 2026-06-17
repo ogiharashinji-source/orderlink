@@ -194,10 +194,6 @@ export default function PortalOrdersPage() {
                                 <button onClick={() => router.push(`/portal/orders/${o.id}`)}
                                   className="text-xs font-medium text-green-600 hover:underline">確認</button>
                               )}
-                              {o.status === "REJECTED" && (
-                                <button onClick={() => router.push(`/portal/orders/${o.id}`)}
-                                  className="text-xs font-medium text-gray-500 border border-gray-300 hover:bg-gray-50 px-3 py-1 rounded-lg">詳細</button>
-                              )}
                             </td>
                           )}
                         </tr>
