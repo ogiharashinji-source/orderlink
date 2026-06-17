@@ -12,19 +12,21 @@ type Product = {
   seimaiWari: string | null;
   alcohol: string | null;
   price1800: number | null;
+  wholesalePrice1800: number | null;
   unit1800: string | null;
   stock1800: number | null;
   price720: number | null;
+  wholesalePrice720: number | null;
   unit720: string | null;
   stock720: number | null;
 };
 
-type Variant = { volume: string; price: number; unit: string; stock: number };
+type Variant = { volume: string; price: number; wholesalePrice: number | null; unit: string; stock: number };
 
 function getVariants(p: Product): Variant[] {
   const list: Variant[] = [];
-  if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, unit: p.unit1800 ?? "本", stock: p.stock1800 ?? 0 });
-  if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  unit: p.unit720  ?? "本", stock: p.stock720  ?? 0 });
+  if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, unit: p.unit1800 ?? "本", stock: p.stock1800 ?? 0 });
+  if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  unit: p.unit720  ?? "本", stock: p.stock720  ?? 0 });
   return list;
 }
 
@@ -120,7 +122,8 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-center">精米歩合</th>
               <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
-              <th className="px-4 py-3 text-center">単価</th>
+              <th className="px-4 py-3 text-center">小売値</th>
+              <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-right">在庫</th>
               <th className="px-4 py-3 text-right">操作</th>
@@ -128,7 +131,7 @@ export default function ProductsPage() {
           </thead>
           <tbody>
             {products.length === 0 ? (
-              <tr><td colSpan={11} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
+              <tr><td colSpan={12} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
               products.map((p) => {
                 const variants = getVariants(p);
@@ -147,6 +150,7 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.seimaiWari ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.alcohol ?? "—"}</td>
+                      <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
@@ -194,6 +198,7 @@ export default function ProductsPage() {
                           <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{v.volume}</span>
                         </td>
                         <td className="px-4 py-3 text-center font-medium">¥{v.price.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.unit}</td>
                         <td className="px-4 py-3 text-right">
                           <span className={`font-semibold ${v.stock === 0 ? "text-red-500" : "text-gray-700"}`}>{v.stock}</span>
