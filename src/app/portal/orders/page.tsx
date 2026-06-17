@@ -178,7 +178,7 @@ export default function PortalOrdersPage() {
                               : "—"}
                           </td>
                           <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
-                          <td className="px-4 py-3 text-right font-semibold">{item.confirmedQty ?? item.requestedQty}</td>
+                          <td className="px-4 py-3 text-right font-semibold">{o.status === "REJECTED" ? 0 : (item.confirmedQty ?? item.requestedQty)}</td>
                           {idx === 0 && (
                             <td className="px-4 py-3 text-center align-middle" rowSpan={o.items.length}>
                               <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${st.cls}`}>{st.label}</span>
