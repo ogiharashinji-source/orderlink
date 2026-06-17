@@ -108,6 +108,8 @@ export default function RequestsPage() {
                   <th className="px-3 py-2 text-left">商品名</th>
                   <th className="px-3 py-2 text-left">種別</th>
                   <th className="px-3 py-2 text-left">酒米</th>
+                  <th className="px-3 py-2 text-center">精米歩合</th>
+                  <th className="px-3 py-2 text-center">アルコール</th>
                   <th className="px-3 py-2 text-center">容量</th>
                   <th className="px-3 py-2 text-right">ケース数</th>
                 </tr>
@@ -118,15 +120,18 @@ export default function RequestsPage() {
                     <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
                     <td className="px-3 py-2 text-gray-500">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-3 py-2 text-gray-500">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-3 py-2 text-center text-gray-500">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
+                    <td className="px-3 py-2 text-center text-gray-500">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                     <td className="px-3 py-2 text-center">{item.volume ?? "—"}</td>
                     <td className="px-3 py-2 text-right font-bold">{modal.freshQtys[item.id] ?? item.requestedQty}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {modal.freshReq.notes && (
-              <p className="text-sm text-gray-600">備考: {modal.freshReq.notes}</p>
-            )}
+            <div className="bg-gray-50 rounded-lg px-4 py-3">
+              <p className="text-xs text-gray-400 mb-1">備考</p>
+              <p className="text-sm text-gray-700 whitespace-pre-wrap">{modal.freshReq.notes || "—"}</p>
+            </div>
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => setModal(null)}
                 className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
