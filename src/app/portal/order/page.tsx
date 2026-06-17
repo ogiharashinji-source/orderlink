@@ -247,13 +247,14 @@ function PortalOrderContent() {
               <th className="px-4 py-3 text-right">卸売値</th>
               <th className="px-4 py-3 text-right">ロット</th>
               <th className="px-4 py-3 text-right">限定</th>
+              <th className="px-4 py-3 text-center w-8"></th>
               <th className="px-4 py-3 text-center w-36">ケース数</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {selectedCompanyId && productsLoaded && variants.length === 0 && (
               <tr>
-                <td colSpan={11} className="px-4 py-8 text-center text-red-500 font-medium">
+                <td colSpan={12} className="px-4 py-8 text-center text-red-500 font-medium">
                   商品が登録されていません
                 </td>
               </tr>
@@ -276,16 +277,14 @@ function PortalOrderContent() {
                   <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{v.lot}</td>
-                  <td className="px-4 py-3 text-right text-gray-500">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span>{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>
-                      {v.product.description && (
-                        <button
-                          onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
-                          className="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center hover:bg-gray-300 flex-shrink-0"
-                        >?</button>
-                      )}
-                    </span>
+                  <td className="px-4 py-3 text-right text-gray-500">{v.stock != null && v.stock !== 0 ? v.stock : ""}</td>
+                  <td className="px-2 py-3 text-center">
+                    {v.product.description && (
+                      <button
+                        onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
+                        className="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center hover:bg-gray-300"
+                      >?</button>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
