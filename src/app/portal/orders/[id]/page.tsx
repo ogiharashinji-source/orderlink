@@ -75,7 +75,11 @@ export default function PortalOrderDetailPage() {
   const getLot = (item: RequestItem) =>
     parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
 
-  const currentQtys = editing ? editQtys : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
+  const currentQtys = editing
+    ? editQtys
+    : order.status === "REJECTED"
+    ? Object.fromEntries(order.items.map((i) => [i.id, 0]))
+    : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
   const total = order.items.reduce((sum, item) => sum + (currentQtys[item.id] ?? item.requestedQty) * getLot(item) * item.unitPrice, 0);
 
   const st = STATUS_LABEL[order.status] ?? { label: order.status, cls: "bg-gray-100 text-gray-500" };

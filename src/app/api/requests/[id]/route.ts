@@ -18,8 +18,15 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { status } = await req.json();
+  const requestId = Number(id);
+  if (status === "REJECTED") {
+    await prisma.requestItem.updateMany({
+      where: { requestId },
+      data: { confirmedQty: 0 },
+    });
+  }
   const request = await prisma.orderRequest.update({
-    where: { id: Number(id) },
+    where: { id: requestId },
     data: { status },
   });
   return NextResponse.json(request);
