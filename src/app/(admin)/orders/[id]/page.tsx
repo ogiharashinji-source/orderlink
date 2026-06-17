@@ -97,7 +97,7 @@ export default function OrderDetailPage() {
               <th className="px-3 py-2 text-right">小計</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody>
             {order.items.map((item) => {
               const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
               const subtotal = item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice;
