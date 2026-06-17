@@ -32,9 +32,8 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-slate-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 overflow-x-auto">
-          <div className="flex items-center h-16 gap-6 min-w-max">
+      <nav className="bg-slate-800 text-white overflow-x-auto">
+        <div className="flex items-center h-16 gap-6 px-4 min-w-max">
             <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
             <div className="flex items-center gap-3 flex-1">
               {navItems.map((item) => {
@@ -58,7 +57,6 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               className="text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors">
               ログアウト
             </button>
-          </div>
         </div>
       </nav>
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
