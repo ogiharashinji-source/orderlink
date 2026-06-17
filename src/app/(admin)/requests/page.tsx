@@ -168,14 +168,13 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-center">希望ケース</th>
               <th className="px-4 py-3 text-center">販売数</th>
-              <th className="px-4 py-3 text-left">備考</th>
               <th className="px-4 py-3 text-center">操作</th>
             </tr>
           </thead>
           <tbody>
             {requests.length === 0 ? (
               <tr>
-                <td colSpan={12} className="text-center py-12 text-gray-400">
+                <td colSpan={11} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
@@ -262,11 +261,6 @@ export default function RequestsPage() {
                       {/* 備考 + 確定ボタン（先頭行のみ rowspan） */}
                       {idx === 0 && (
                         <>
-                          <td className="px-4 py-3 align-middle text-center" rowSpan={req.items.length}>
-                            <span className="text-gray-500 text-xs max-w-[80px] truncate block mx-auto">
-                              {req.notes ? (req.notes.length > 10 ? req.notes.slice(0, 10) + "…" : req.notes) : ""}
-                            </span>
-                          </td>
                           <td className="px-4 py-3 align-middle text-center" rowSpan={req.items.length}>
                             <div className="flex flex-col items-center gap-1">
                               <button
