@@ -122,13 +122,6 @@ export default function PortalOrderDetailPage() {
   return (
     <div className="space-y-4 max-w-5xl">
 
-      {/* キャンセル注意書き */}
-      {order.status === "CONFIRMED" && (
-        <p className="text-sm text-red-600 font-medium">
-          ＊発注確定後のキャンセルは、売主様に依頼して削除してください。
-        </p>
-      )}
-
       {/* パンくず */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/portal/orders" className="hover:text-blue-600">発注管理</Link>
@@ -157,6 +150,9 @@ export default function PortalOrderDetailPage() {
                 {saving ? "保存中..." : "保存"}
               </button>
             </>
+          )}
+          {order.status === "CONFIRMED" && (
+            <span className="text-xs text-red-600 font-medium">＊発注確定後のキャンセルは、売主様に依頼して削除してください。</span>
           )}
           <button onClick={() => router.push("/portal/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
         </div>
