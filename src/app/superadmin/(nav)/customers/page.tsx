@@ -203,14 +203,14 @@ export default function SuperAdminCustomersPage() {
               ) : (
                 customers.map((c) => (
                   <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                    <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("ja-JP")}
                     </td>
-                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{c.name}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{c.address || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{c.phone || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{c.email || "—"}</td>
-                    <td className="px-4 py-3 text-center text-gray-700 font-medium">{c.companyCount}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{c.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{c.address || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{c.phone || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{c.email || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 font-medium">{c.companyCount}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-4">
                         <button onClick={() => openEdit(c)} className="text-blue-600 hover:underline text-xs">編集</button>

@@ -61,15 +61,15 @@ export default function SuperAdminCompaniesPage() {
               ) : (
                 companies.map((c) => (
                   <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                    <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("ja-JP")}
                     </td>
-                    <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
                       {c.setting?.companyName || c.name}
                     </td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{c.setting?.address || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{c.setting?.phone || "—"}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{c.setting?.email || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{c.setting?.address || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{c.setting?.phone || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{c.setting?.email || "—"}</td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.memberships}</td>
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.orders}</td>
                     <td className="px-4 py-3">
