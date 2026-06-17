@@ -125,8 +125,6 @@ export default function PortalOrdersPage() {
               <th className="px-4 py-3 text-left">商品名</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
-              <th className="px-4 py-3 text-center">精米歩合</th>
-              <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-right">小売値</th>
               <th className="px-4 py-3 text-right">卸売値</th>
@@ -138,7 +136,7 @@ export default function PortalOrdersPage() {
           </thead>
           <tbody>
             {filtered.length === 0 ? (
-              <tr><td colSpan={14} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
+              <tr><td colSpan={12} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
             ) : (
               filtered.map((o) => {
                 const st = STATUS_LABEL[o.status] ?? { label: o.status, cls: "bg-gray-100 text-gray-500" };
@@ -168,8 +166,6 @@ export default function PortalOrdersPage() {
                           {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 font-medium text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
                           <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                           <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
-                          <td className="px-4 py-3 text-center text-gray-500 text-xs">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
-                          <td className="px-4 py-3 text-center text-gray-500 text-xs">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                           <td className="px-4 py-3 text-center">
                             <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume}</span>
                           </td>
