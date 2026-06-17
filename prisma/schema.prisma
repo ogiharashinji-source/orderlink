@@ -170,12 +170,14 @@ model Product {
   seimaiWari   String?       // 精米歩合
   alcohol      String?       // アルコール度数
   description  String?
-  price1800    Float?
-  unit1800     String?       @default("本")
-  stock1800    Int?          @default(0)
-  price720     Float?
-  unit720      String?       @default("本")
-  stock720     Int?          @default(0)
+  price1800         Float?
+  wholesalePrice1800 Float?
+  unit1800          String?       @default("本")
+  stock1800         Int?          @default(0)
+  price720          Float?
+  wholesalePrice720  Float?
+  unit720           String?       @default("本")
+  stock720          Int?          @default(0)
   price        Float         @default(0)
   unit         String        @default("本")
   stock        Int           @default(0)

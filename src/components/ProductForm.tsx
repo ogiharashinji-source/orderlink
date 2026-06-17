@@ -15,9 +15,11 @@ type ProductData = {
   alcohol: string;
   description: string;
   price1800: string;
+  wholesalePrice1800: string;
   unit1800: string;
   stock1800: string;
   price720: string;
+  wholesalePrice720: string;
   unit720: string;
   stock720: string;
 };
@@ -30,8 +32,8 @@ type Props = {
 const empty: ProductData = {
   name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "",
   description: "",
-  price1800: "", unit1800: "6", stock1800: "0",
-  price720: "",  unit720: "12", stock720: "0",
+  price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "0",
+  price720: "",  wholesalePrice720: "", unit720: "12", stock720: "0",
 };
 
 export default function ProductForm({ initialData, productId }: Props) {
@@ -56,7 +58,7 @@ export default function ProductForm({ initialData, productId }: Props) {
     const errs: string[] = [];
     if (form.price1800 && (parseInt(form.stock1800) || 0) === 0) errs.push("1800ml の数量を入力してください");
     if (form.price720  && (parseInt(form.stock720)  || 0) === 0) errs.push("720ml の数量を入力してください");
-    if (!form.price1800 && !form.price720) errs.push("1800ml または 720ml の単価を入力してください");
+    if (!form.price1800 && !form.price720) errs.push("1800ml または 720ml の小売値を入力してください");
     if (errs.length > 0) { setErrors(errs); return; }
     setErrors([]);
     setSaving(true);
@@ -68,9 +70,11 @@ export default function ProductForm({ initialData, productId }: Props) {
       alcohol: form.alcohol || null,
       description: form.description || null,
       price1800: form.price1800 ? parseFloat(form.price1800) : null,
+      wholesalePrice1800: form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
       unit1800: form.unit1800 || "本",
       stock1800: parseInt(form.stock1800) || 0,
       price720: form.price720 ? parseFloat(form.price720) : null,
+      wholesalePrice720: form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
       unit720: form.unit720 || "本",
       stock720: parseInt(form.stock720) || 0,
       price: parseFloat(form.price1800 || form.price720 || "0") || 0,
@@ -92,12 +96,10 @@ export default function ProductForm({ initialData, productId }: Props) {
           ))}
         </div>
       )}
-      {/* 商品名 */}
       <Field label="商品名" required>
         <input required value={form.name} onChange={set("name")} onBlur={blur("name")} className={inputCls} />
       </Field>
 
-      {/* 種別・酒米・精米歩合・アルコール */}
       <div className="grid grid-cols-2 gap-4">
         <Field label="種別">
           <select value={form.category} onChange={set("category")} className={inputCls}>
@@ -116,7 +118,6 @@ export default function ProductForm({ initialData, productId }: Props) {
         </Field>
       </div>
 
-      {/* 説明 */}
       <Field label="説明">
         <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={6} className={inputCls} />
       </Field>
@@ -124,9 +125,12 @@ export default function ProductForm({ initialData, productId }: Props) {
       {/* 1800ml */}
       <div>
         <p className="text-sm font-semibold text-gray-700 mb-2">1800ml</p>
-        <div className="grid grid-cols-3 gap-4">
-          <Field label="単価 (円)" required>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
+          </Field>
+          <Field label="卸売値 (円)">
+            <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
             <input value={form.unit1800} onChange={set("unit1800")} className={inputCls} />
@@ -140,9 +144,12 @@ export default function ProductForm({ initialData, productId }: Props) {
       {/* 720ml */}
       <div>
         <p className="text-sm font-semibold text-gray-700 mb-2">720ml</p>
-        <div className="grid grid-cols-3 gap-4">
-          <Field label="単価 (円)" required>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
+          </Field>
+          <Field label="卸売値 (円)">
+            <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
             <input value={form.unit720} onChange={set("unit720")} className={inputCls} />

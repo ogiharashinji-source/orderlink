@@ -32,9 +32,11 @@ export default function EditProductPage() {
           alcohol: String(product.alcohol ?? ""),
           description: String(product.description ?? ""),
           price1800: product.price1800 != null ? String(product.price1800) : "",
+          wholesalePrice1800: product.wholesalePrice1800 != null ? String(product.wholesalePrice1800) : "",
           unit1800: String(product.unit1800 ?? "6"),
           stock1800: String(product.stock1800 ?? "0"),
           price720: product.price720 != null ? String(product.price720) : "",
+          wholesalePrice720: product.wholesalePrice720 != null ? String(product.wholesalePrice720) : "",
           unit720: String(product.unit720 ?? "12"),
           stock720: String(product.stock720 ?? "0"),
         }}
