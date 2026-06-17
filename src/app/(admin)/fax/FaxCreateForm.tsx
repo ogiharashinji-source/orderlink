@@ -137,7 +137,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
           <textarea
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            rows={2}
+            rows={8}
             placeholder="例: いつもお世話になっております。ご注文をQRコードよりお願いいたします。"
             className={inputCls}
           />

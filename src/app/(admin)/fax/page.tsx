@@ -9,7 +9,7 @@ export default function FaxPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-900">FAX発注書</h1>
+      <h1 className="text-2xl font-bold text-gray-900">メール送信</h1>
 
       <div className="flex border-b border-gray-200">
         <button

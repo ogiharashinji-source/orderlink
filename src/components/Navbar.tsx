@@ -8,7 +8,7 @@ const navItems = [
   { href: "/orders", label: "受注管理" },
   { href: "/products", label: "商品管理" },
   { href: "/customers", label: "顧客管理", customerBadge: true },
-  { href: "/fax", label: "FAX発注書" },
+  { href: "/fax", label: "メール送信" },
 ];
 
 export default function Navbar() {
