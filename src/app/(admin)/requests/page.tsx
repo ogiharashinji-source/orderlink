@@ -37,8 +37,11 @@ export default function RequestsPage() {
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
-    if (!confirm("このリクエストを削除しますか？")) return;
-    await fetch(`/api/requests/${id}`, { method: "DELETE" });
+    await fetch(`/api/requests/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "REJECTED" }),
+    });
     load();
   };
 
