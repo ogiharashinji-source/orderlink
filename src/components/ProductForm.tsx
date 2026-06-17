@@ -39,7 +39,6 @@ const empty: ProductData = {
 export default function ProductForm({ initialData, productId }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
   const router = useRouter();
 
   const toHalf = (str: string) =>
@@ -55,14 +54,10 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errs: string[] = [];
-    if (!form.price1800 && !form.price720) errs.push("1800ml または 720ml の小売値を入力してください");
-    if (form.price1800 && !form.wholesalePrice1800) errs.push("1800ml の卸売値を入力してください");
-    if (form.price720  && !form.wholesalePrice720)  errs.push("720ml の卸売値を入力してください");
-    if (form.price1800 && !form.unit1800) errs.push("1800ml の単位を入力してください");
-    if (form.price720  && !form.unit720)  errs.push("720ml の単位を入力してください");
-    if (errs.length > 0) { setErrors(errs); return; }
-    setErrors([]);
+    if (!form.price1800 && !form.price720) {
+      alert("1800ml または 720ml の小売値を入力してください");
+      return;
+    }
     setSaving(true);
     const payload = {
       name: form.name,
@@ -91,13 +86,6 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-5 max-w-2xl">
-      {errors.length > 0 && (
-        <div className="bg-red-50 border border-red-300 rounded-lg px-4 py-3 space-y-1">
-          {errors.map((err) => (
-            <p key={err} className="text-sm text-red-600 font-medium">⚠ {err}</p>
-          ))}
-        </div>
-      )}
       <Field label="商品名" required>
         <input required value={form.name} onChange={set("name")} onBlur={blur("name")} className={inputCls} />
       </Field>
@@ -131,11 +119,11 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="卸売値 (円)" required>
-            <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
+          <Field label="卸売値 (円)" required={!!form.price1800}>
+            <input type="number" min="0" step="1" required={!!form.price1800} value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="単位" required>
-            <input value={form.unit1800} onChange={set("unit1800")} className={inputCls} />
+          <Field label="単位" required={!!form.price1800}>
+            <input required={!!form.price1800} value={form.unit1800} onChange={set("unit1800")} className={inputCls} />
           </Field>
           <Field label="限定">
             <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
@@ -150,11 +138,11 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="卸売値 (円)" required>
-            <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
+          <Field label="卸売値 (円)" required={!!form.price720}>
+            <input type="number" min="0" step="1" required={!!form.price720} value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="単位" required>
-            <input value={form.unit720} onChange={set("unit720")} className={inputCls} />
+          <Field label="単位" required={!!form.price720}>
+            <input required={!!form.price720} value={form.unit720} onChange={set("unit720")} className={inputCls} />
           </Field>
           <Field label="限定">
             <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
