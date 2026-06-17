@@ -153,7 +153,7 @@ export default function RequestsPage() {
               </button>
               <button onClick={() => { setModal(null); handleDelete(modal.req.id); }}
                 className="px-5 py-2 rounded-lg text-sm font-medium text-red-500 border border-red-300 hover:bg-red-50">
-                削除
+                在庫なし
               </button>
               <button onClick={handleModalOk}
                 className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700">
