@@ -9,14 +9,16 @@ type Setting = {
   faxNumber: string | null;
   email: string | null;
   loginId: string;
+  currentPassword: string;
   password: string;
+  confirmPassword: string;
 };
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function SettingsPage() {
   const [form, setForm] = useState<Setting>({
-    companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", password: "",
+    companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", currentPassword: "", password: "", confirmPassword: "",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -46,8 +48,11 @@ export default function SettingsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password) {
-      if (!confirm("パスワードを変更しますか？")) return;
+      if (!form.currentPassword) { alert("現在のパスワードを入力してください"); return; }
+      if (form.password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
+      if (form.password !== form.confirmPassword) { alert("新しいパスワードと確認用パスワードが一致しません"); return; }
     }
+    if (!confirm("設定を保存しますか？")) return;
     setSaving(true);
     const payload: Record<string, string | null> = {
       companyName: form.companyName,
@@ -57,7 +62,7 @@ export default function SettingsPage() {
       email: form.email || null,
     };
     if (form.loginId) payload.loginId = form.loginId;
-    if (form.password) payload.password = form.password;
+    if (form.password) { payload.password = form.password; payload.currentPassword = form.currentPassword; }
     const res = await fetch("/api/admin/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -65,7 +70,14 @@ export default function SettingsPage() {
     });
     setSaving(false);
     if (res.status === 401 || res.redirected) { router.push("/admin/login"); return; }
-    if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000); }
+    if (res.ok) {
+      setSaved(true);
+      setForm((f) => ({ ...f, currentPassword: "", password: "", confirmPassword: "" }));
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      const data = await res.json();
+      alert(data.error ?? "保存に失敗しました");
+    }
   };
 
   return (
@@ -101,8 +113,16 @@ export default function SettingsPage() {
             <input value={form.loginId} onChange={set("loginId")} className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">パスワード変更</label>
-            <input type="password" value={form.password} onChange={set("password")} placeholder="変更する場合のみ入力" className={inputCls} />
+            <label className="block text-sm font-medium text-gray-700 mb-1">現在のパスワード</label>
+            <input type="password" value={form.currentPassword} onChange={set("currentPassword")} placeholder="パスワードを変更する場合のみ入力" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード <span className="text-xs text-gray-400">（6文字以上）</span></label>
+            <input type="password" value={form.password} onChange={set("password")} placeholder="8文字以上" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード（確認）</label>
+            <input type="password" value={form.confirmPassword} onChange={set("confirmPassword")} placeholder="もう一度入力" className={inputCls} />
           </div>
         </div>
 

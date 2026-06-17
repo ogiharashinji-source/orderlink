@@ -16,7 +16,9 @@ const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm foc
 
 export default function PortalProfilePage() {
   const [form, setForm] = useState<Profile>({ name: "", company: null, phone: null, faxNumber: null, email: null, address: null, loginId: null });
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
@@ -41,19 +43,29 @@ export default function PortalProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password && password.length < 6) { alert("パスワードは6文字以上で入力してください"); return; }
+    if (password) {
+      if (!currentPassword) { alert("現在のパスワードを入力してください"); return; }
+      if (password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
+      if (password !== confirmPassword) { alert("新しいパスワードと確認用パスワードが一致しません"); return; }
+    }
     if (!confirm("会員情報を更新しますか？")) return;
     setSaving(true);
     const payload: Record<string, string | null> = Object.fromEntries(
       Object.entries(form).map(([k, v]) => [k, v === "" ? null : v])
     );
-    if (password) payload.password = password;
+    if (password) { payload.password = password; payload.currentPassword = currentPassword; }
     const res = await fetch("/api/portal/profile", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    if (res.ok) { setSaved(true); setPassword(""); setTimeout(() => setSaved(false), 3000); }
+    if (res.ok) {
+      setSaved(true); setCurrentPassword(""); setPassword(""); setConfirmPassword("");
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      const data = await res.json();
+      alert(data.error ?? "保存に失敗しました");
+    }
     setSaving(false);
   };
 
@@ -95,8 +107,16 @@ export default function PortalProfilePage() {
             <input value={form.loginId ?? ""} readOnly className={`${inputCls} bg-gray-50 text-gray-500`} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="変更する場合のみ入力" className={inputCls} />
+            <label className="block text-sm font-medium text-gray-700 mb-1">現在のパスワード</label>
+            <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="パスワードを変更する場合のみ入力" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード <span className="text-xs text-gray-400">（6文字以上）</span></label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="8文字以上" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード（確認）</label>
+            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="もう一度入力" className={inputCls} />
           </div>
         </div>
 

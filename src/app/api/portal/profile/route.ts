@@ -24,7 +24,15 @@ export async function PUT(req: NextRequest) {
   const customer = await getCustomerSession();
   if (!customer) return NextResponse.json({ error: "未ログイン" }, { status: 401 });
 
-  const { name, company, phone, faxNumber, email, address, password } = await req.json();
+  const { name, company, phone, faxNumber, email, address, password, currentPassword } = await req.json();
+
+  if (password) {
+    const record = await prisma.customer.findUnique({ where: { id: customer.id }, select: { password: true } });
+    if (!record?.password || record.password !== currentPassword) {
+      return NextResponse.json({ error: "現在のパスワードが正しくありません" }, { status: 400 });
+    }
+  }
+
   const data: Record<string, unknown> = {
     name: name || customer.name,
     company: company || null,

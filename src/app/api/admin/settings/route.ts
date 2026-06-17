@@ -25,7 +25,7 @@ export async function PUT(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { companyName, address, phone, faxNumber, email, loginId, password } = await req.json();
+  const { companyName, address, phone, faxNumber, email, loginId, password, currentPassword } = await req.json();
   const setting = await getOrCreateSetting(companyId);
 
   const updated = await prisma.adminSetting.update({
@@ -43,6 +43,12 @@ export async function PUT(req: NextRequest) {
     const token = req.cookies.get("auth_token")?.value ?? "";
     const adminId = verifyAdminToken(token);
     if (adminId) {
+      if (password) {
+        const admin = await prisma.admin.findUnique({ where: { id: adminId }, select: { password: true } });
+        if (!admin?.password || admin.password !== currentPassword) {
+          return NextResponse.json({ error: "現在のパスワードが正しくありません" }, { status: 400 });
+        }
+      }
       const data: Record<string, string> = {};
       if (loginId) data.loginId = loginId;
       if (password) data.password = password;
