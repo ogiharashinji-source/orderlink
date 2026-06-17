@@ -114,8 +114,8 @@ export default function PortalOrdersPage() {
         {query && <button onClick={() => { setSearch(""); setQuery(""); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
       </div>
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-white rounded-xl shadow overflow-x-auto">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
               <th className="px-4 py-3 text-left">発注日時</th>
