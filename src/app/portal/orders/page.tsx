@@ -132,7 +132,7 @@ export default function PortalOrdersPage() {
               <th className="px-4 py-3 text-right">小売値</th>
               <th className="px-4 py-3 text-right">卸売値</th>
               <th className="px-4 py-3 text-right">ロット</th>
-              <th className="px-4 py-3 text-right">ケース数</th>
+              <th className="px-4 py-3 text-center">ケース数</th>
               <th className="px-4 py-3 text-center">ステータス</th>
               <th className="px-4 py-3 text-center">操作</th>
             </tr>
@@ -181,7 +181,7 @@ export default function PortalOrdersPage() {
                               : "—"}
                           </td>
                           <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
-                          <td className="px-4 py-3 text-right font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>
+                          <td className="px-4 py-3 text-center font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>
                           {idx === 0 && (
                             <td className="px-4 py-3 text-center align-middle" rowSpan={o.items.length}>
                               <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${st.cls}`}>{st.label}</span>
