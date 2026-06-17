@@ -59,6 +59,8 @@ export default function ProductForm({ initialData, productId }: Props) {
     if (!form.price1800 && !form.price720) errs.push("1800ml または 720ml の小売値を入力してください");
     if (form.price1800 && !form.wholesalePrice1800) errs.push("1800ml の卸売値を入力してください");
     if (form.price720  && !form.wholesalePrice720)  errs.push("720ml の卸売値を入力してください");
+    if (form.price1800 && !form.unit1800) errs.push("1800ml の単位を入力してください");
+    if (form.price720  && !form.unit720)  errs.push("720ml の単位を入力してください");
     if (errs.length > 0) { setErrors(errs); return; }
     setErrors([]);
     setSaving(true);
@@ -132,7 +134,7 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="卸売値 (円)" required>
             <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="単位">
+          <Field label="単位" required>
             <input value={form.unit1800} onChange={set("unit1800")} className={inputCls} />
           </Field>
           <Field label="限定">
@@ -151,7 +153,7 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="卸売値 (円)" required>
             <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="単位">
+          <Field label="単位" required>
             <input value={form.unit720} onChange={set("unit720")} className={inputCls} />
           </Field>
           <Field label="限定">
