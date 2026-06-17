@@ -54,7 +54,13 @@ function PortalOrderContent() {
           setPendingApprovals(d.pendingApprovals ?? 0);
           const urlCompanyId = searchParams.get("companyId");
           const target = urlCompanyId ? d.companies.find((c: { companyId: number }) => c.companyId === Number(urlCompanyId)) : null;
-          setSelectedCompanyId(target ? target.companyId : null);
+          if (target) {
+            setSelectedCompanyId(target.companyId);
+          } else if (d.approved && d.companies.length === 1) {
+            setSelectedCompanyId(d.companies[0].companyId);
+          } else {
+            setSelectedCompanyId(null);
+          }
         }
       });
     });
