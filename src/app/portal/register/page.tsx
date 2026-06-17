@@ -1,6 +1,7 @@
 "use client";
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
@@ -50,9 +51,9 @@ function RegisterForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
               <input required value={form.name} onChange={set("name")} className={inputCls} />
             </div>
-            <a href={`/portal/login${inviteToken ? `?token=${inviteToken}` : ""}`} className="px-4 py-2 rounded-lg text-sm font-medium border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
+            <Link href={`/portal/login${inviteToken ? `?token=${inviteToken}` : ""}`} className="px-4 py-2 rounded-lg text-sm font-medium border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
               すでに登録されている方はこちら
-            </a>
+            </Link>
           </div>
 
           <div>
@@ -70,8 +71,8 @@ function RegisterForm() {
               <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
-              <input required type="email" value={form.email} onChange={set("email")} className={inputCls} />
+              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+              <input type="email" value={form.email} onChange={set("email")} className={inputCls} />
             </div>
           </div>
 
