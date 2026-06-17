@@ -101,7 +101,9 @@ export default function OrderDetailPage() {
           <tbody>
             {order.items.map((item) => {
               const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
-              const subtotal = item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice;
+              const lotNum = (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1);
+              const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
+              const subtotal = wp != null ? item.quantity * lotNum * wp : null;
               return (
                 <tr key={item.id} className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
@@ -116,15 +118,13 @@ export default function OrderDetailPage() {
                   </td>
                   <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right text-gray-600">
-                    {item.product
-                      ? item.volume === "1800ml"
-                        ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
-                        : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
-                      : "—"}
+                    {wp != null ? `¥${wp.toLocaleString()}` : "—"}
                   </td>
                   <td className="px-3 py-2 text-right">{lot}</td>
                   <td className="px-3 py-2 text-right">{item.quantity}</td>
-                  <td className="px-3 py-2 text-right font-medium">¥{subtotal.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right font-medium">
+                    {subtotal != null ? `¥${subtotal.toLocaleString()}` : "—"}
+                  </td>
                 </tr>
               );
             })}
@@ -132,7 +132,12 @@ export default function OrderDetailPage() {
           <tfoot className="bg-gray-50">
             <tr>
               <td colSpan={10} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
-              <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{order.items.reduce((sum, item) => sum + item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice, 0).toLocaleString()}</td>
+              <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{order.items.reduce((sum, item) => {
+                const lotNum = (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1);
+                const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
+                if (wp == null) return sum;
+                return sum + item.quantity * lotNum * wp;
+              }, 0).toLocaleString()}</td>
             </tr>
           </tfoot>
         </table>
