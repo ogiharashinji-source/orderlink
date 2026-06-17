@@ -304,14 +304,6 @@ function PortalOrderContent() {
         </table>
       </div>
 
-      {selectedCompanyId && approved && variants.length > 0 && selected.length > 0 && (
-        <div className="flex items-center gap-6">
-          <button onClick={() => setConfirming(true)}
-            className="px-8 py-2.5 rounded-lg text-sm font-bold text-white" style={{ background: "#1e3a8a" }}>
-            確認画面へ
-          </button>
-        </div>
-      )}
     </div>
   );
 }
