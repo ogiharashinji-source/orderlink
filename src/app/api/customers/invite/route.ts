@@ -9,7 +9,6 @@ export async function POST(req: NextRequest) {
   if (!companyId) return NextResponse.json({ error: "認証エラー" }, { status: 401 });
 
   const { email } = await req.json();
-  if (!email) return NextResponse.json({ error: "メールアドレスが必要です" }, { status: 400 });
 
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24時間有効
@@ -20,7 +19,9 @@ export async function POST(req: NextRequest) {
     data: { token, companyId, expiresAt },
   });
 
-  await sendInviteEmail(email, inviteUrl);
+  if (email) {
+    await sendInviteEmail(email, inviteUrl);
+  }
 
   return NextResponse.json({ ok: true, inviteUrl });
 }
