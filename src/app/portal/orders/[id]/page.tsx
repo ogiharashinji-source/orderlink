@@ -184,12 +184,12 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-right">小計</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody>
             {order.items.map((item) => {
               const lot = getLot(item);
               const qty = currentQtys[item.id] ?? item.requestedQty;
               return (
-                <tr key={item.id}>
+                <tr key={item.id} className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
