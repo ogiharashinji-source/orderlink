@@ -75,12 +75,15 @@ export default function PortalOrderDetailPage() {
   const getLot = (item: RequestItem) =>
     parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
 
+  const getWholesalePrice = (item: RequestItem) =>
+    (item.volume === "1800ml" ? item.product?.wholesalePrice1800 : item.product?.wholesalePrice720) ?? item.unitPrice;
+
   const currentQtys = editing
     ? editQtys
     : order.status === "REJECTED"
     ? Object.fromEntries(order.items.map((i) => [i.id, 0]))
     : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
-  const total = order.items.reduce((sum, item) => sum + (currentQtys[item.id] ?? item.requestedQty) * getLot(item) * item.unitPrice, 0);
+  const total = order.items.reduce((sum, item) => sum + (currentQtys[item.id] ?? item.requestedQty) * getLot(item) * getWholesalePrice(item), 0);
 
   const st = STATUS_LABEL[order.status] ?? { label: order.status, cls: "bg-gray-100 text-gray-500" };
 
@@ -235,7 +238,7 @@ export default function PortalOrderDetailPage() {
                       qty
                     )}
                   </td>
-                  <td className="px-3 py-2 text-right font-medium">¥{(qty * lot * item.unitPrice).toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right font-medium">¥{(qty * lot * getWholesalePrice(item)).toLocaleString()}</td>
                 </tr>
               );
             })}
