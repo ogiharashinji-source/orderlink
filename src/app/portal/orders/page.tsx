@@ -192,7 +192,7 @@ export default function PortalOrdersPage() {
                               )}
                               {o.status === "CONFIRMED" && (
                                 <button onClick={() => router.push(`/portal/orders/${o.id}`)}
-                                  className="text-xs font-medium text-green-600 hover:underline">確認</button>
+                                  className="text-xs font-medium text-gray-500 hover:underline">確認</button>
                               )}
                             </td>
                           )}
