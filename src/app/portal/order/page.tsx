@@ -83,8 +83,11 @@ function PortalOrderContent() {
     setQuantities({});
   }, [selectedCompanyId]);
 
-  const setQty = (key: VariantKey, val: number) =>
-    setQuantities((p) => ({ ...p, [key]: Math.max(0, isNaN(val) ? 0 : val) }));
+  const setQty = (key: VariantKey, val: number, maxStock?: number | null) => {
+    let v = Math.max(0, isNaN(val) ? 0 : val);
+    if (maxStock != null && maxStock > 0) v = Math.min(v, maxStock);
+    setQuantities((p) => ({ ...p, [key]: v }));
+  };
 
   type Variant = { key: string; product: Product; volume: string; price: number; wholesalePrice: number | null; lot: number; stock: number | null };
   const variants: Variant[] = products.flatMap((p) => {
@@ -285,14 +288,16 @@ function PortalOrderContent() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button onClick={() => setQty(v.key, qty - 1)} disabled={qty === 0}
+                      <button onClick={() => setQty(v.key, qty - 1, v.stock)} disabled={qty === 0}
                         className="w-7 h-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center disabled:opacity-25 hover:bg-gray-200">−</button>
-                      <input type="number" min="0" value={qty === 0 ? "" : qty}
-                        onChange={(e) => setQty(v.key, parseInt(e.target.value))}
+                      <input type="number" min="0" max={v.stock != null && v.stock > 0 ? v.stock : undefined}
+                        value={qty === 0 ? "" : qty}
+                        onChange={(e) => setQty(v.key, parseInt(e.target.value), v.stock)}
                         placeholder="0"
                         className="w-12 text-center text-sm font-bold border-b-2 border-gray-200 focus:border-blue-800 outline-none py-1 bg-transparent" />
-                      <button onClick={() => setQty(v.key, qty + 1)}
-                        className="w-7 h-7 rounded-full text-white flex items-center justify-center" style={{ background: "#1e3a8a" }}>+</button>
+                      <button onClick={() => setQty(v.key, qty + 1, v.stock)}
+                        disabled={v.stock != null && v.stock > 0 && qty >= v.stock}
+                        className="w-7 h-7 rounded-full text-white flex items-center justify-center disabled:opacity-40" style={{ background: "#1e3a8a" }}>+</button>
                     </div>
                   </td>
                 </tr>
