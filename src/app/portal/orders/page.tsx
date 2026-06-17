@@ -85,11 +85,14 @@ export default function PortalOrdersPage() {
 
   const filtered = orders
     .filter((o) => !month || o.requestedAt.startsWith(month))
-    .filter((o) => !query || o.items.some((i) =>
-      (i.product?.name ?? "").includes(query) ||
-      (i.product?.category ?? "").includes(query) ||
-      (i.product?.sakaMai ?? "").includes(query)
-    ));
+    .filter((o) => !query ||
+      o.requestNumber.includes(query) ||
+      o.items.some((i) =>
+        (i.product?.name ?? "").includes(query) ||
+        (i.product?.category ?? "").includes(query) ||
+        (i.product?.sakaMai ?? "").includes(query)
+      )
+    );
 
   return (
     <div className="space-y-6">
@@ -109,7 +112,7 @@ export default function PortalOrdersPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && setQuery(search)}
-          placeholder="商品名・種別・酒米で検索..."
+          placeholder="受注番号・商品名・種別・酒米で検索..."
           className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-56"
         />
         <button onClick={() => setQuery(search)} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
