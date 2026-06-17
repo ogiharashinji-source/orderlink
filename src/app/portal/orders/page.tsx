@@ -187,12 +187,8 @@ export default function PortalOrdersPage() {
                           {idx === 0 && (
                             <td className="px-4 py-3 text-center align-middle" rowSpan={o.items.length}>
                               {o.status === "PENDING" && (
-                                <div className="flex items-center gap-2 justify-center">
-                                  <button onClick={() => router.push(`/portal/orders/${o.id}?edit=1`)}
-                                    className="text-xs text-blue-600 hover:underline">編集</button>
-                                  <button onClick={() => handleDelete(o.id)}
-                                    className="text-xs text-red-500 hover:underline">削除</button>
-                                </div>
+                                <button onClick={() => router.push(`/portal/orders/${o.id}?edit=1`)}
+                                  className="text-xs text-blue-600 hover:underline">編集</button>
                               )}
                               {o.status === "CONFIRMED" && (
                                 <button onClick={() => router.push(`/portal/orders/${o.id}`)}

@@ -130,22 +130,22 @@ export default function PortalOrderDetailPage() {
         <p className="text-sm text-gray-900">注文日：{new Date(order.requestedAt).toLocaleDateString("ja-JP")}</p>
         <div className="flex items-center gap-2">
           {order.status === "PENDING" && !editing && (
+            <button onClick={() => setEditing(true)}
+              className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700">
+              編集
+            </button>
+          )}
+          {editing && (
             <>
               <button onClick={handleDelete} disabled={deleting}
                 className="text-sm text-red-500 border border-red-300 px-4 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">
                 {deleting ? "削除中..." : "削除"}
               </button>
-              <button onClick={() => setEditing(true)}
-                className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700">
-                編集
+              <button onClick={handleSave} disabled={saving}
+                className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                {saving ? "保存中..." : "保存"}
               </button>
             </>
-          )}
-          {editing && (
-            <button onClick={handleSave} disabled={saving}
-              className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
-              {saving ? "保存中..." : "保存"}
-            </button>
           )}
           <button onClick={() => router.push("/portal/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
         </div>
