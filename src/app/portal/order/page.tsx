@@ -154,7 +154,7 @@ function PortalOrderContent() {
                   </td>
                   <td className="px-3 py-3 text-center text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-3 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
-                  <td className="px-3 py-3 text-right text-gray-500">{v.lot}本</td>
+                  <td className="px-3 py-3 text-right text-gray-500">{v.lot}</td>
                   <td className="px-3 py-3 text-right text-gray-500">{v.stock}</td>
                   <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{qty}</td>
                 </tr>
@@ -256,7 +256,7 @@ function PortalOrderContent() {
                   </td>
                   <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
-                  <td className="px-4 py-3 text-right text-gray-500">{v.lot}本</td>
+                  <td className="px-4 py-3 text-right text-gray-500">{v.lot}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{v.stock}</td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
