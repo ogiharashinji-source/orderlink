@@ -1,6 +1,5 @@
 "use client";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 const navItems = [
@@ -13,7 +12,6 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
   const [companyName, setCompanyName] = useState("");
@@ -21,7 +19,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
     await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   const fetchBadges = useCallback(() => {
@@ -40,11 +38,11 @@ export default function Navbar() {
   useEffect(() => {
     fetch("/api/admin/settings")
       .then((r) => {
-        if (!r.ok || r.redirected) { router.push("/admin/login"); return null; }
+        if (!r.ok || r.redirected) { window.location.href = "/admin/login"; return null; }
         return r.json();
       })
       .then((d) => { if (d?.companyName) setCompanyName(d.companyName); })
-      .catch(() => { router.push("/admin/login"); });
+      .catch(() => { window.location.href = "/admin/login"; });
     fetchBadges();
   }, [pathname, fetchBadges]);
 
@@ -62,7 +60,7 @@ export default function Navbar() {
             {navItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
               return (
-                <Link
+                <a
                   key={item.href}
                   href={item.href}
                   className={`relative px-3 py-2 rounded text-sm font-medium transition-colors ${
@@ -80,11 +78,11 @@ export default function Navbar() {
                       {approvalCount > 9 ? "9+" : approvalCount}
                     </span>
                   )}
-                </Link>
+                </a>
               );
             })}
           </div>
-          <Link href="/settings" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</Link>
+          <a href="/settings" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</a>
           <button
             onClick={handleLogout}
             className="text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"

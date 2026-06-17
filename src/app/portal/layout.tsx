@@ -1,7 +1,6 @@
 "use client";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 const navItems = [
   { href: "/portal/order",  label: "発注依頼" },
@@ -10,18 +9,17 @@ const navItems = [
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [customerName, setCustomerName] = useState("");
 
   useEffect(() => {
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) return;
     fetch("/api/customer/me").then((r) => {
-      if (!r.ok) { router.push("/portal/login"); return null; }
+      if (!r.ok) { window.location.href = "/portal/login"; return null; }
       return r.json();
     }).then((d) => {
       if (d) setCustomerName(d.name);
     });
-  }, [pathname, router]);
+  }, [pathname]);
 
   if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) {
     return <>{children}</>;
@@ -29,7 +27,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   const handleLogout = async () => {
     await fetch("/api/customer/logout", { method: "POST" });
-    router.push("/portal/login");
+    window.location.href = "/portal/login";
   };
 
   return (
@@ -42,19 +40,19 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));
                 return (
-                  <Link key={item.href} href={item.href}
+                  <a key={item.href} href={item.href}
                     className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
                       active ? "bg-slate-600 text-white" : "text-slate-300 hover:bg-slate-700 hover:text-white"
                     }`}>
                     {item.label}
-                  </Link>
+                  </a>
                 );
               })}
             </div>
             {customerName && (
-              <Link href="/portal/profile" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 hover:text-slate-300 transition-colors">
+              <a href="/portal/profile" className="text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 hover:text-slate-300 transition-colors">
                 {customerName}
-              </Link>
+              </a>
             )}
             <button onClick={handleLogout}
               className="text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors">

@@ -1,15 +1,13 @@
 "use client";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
     await fetch("/api/superadmin/auth", { method: "DELETE" });
-    router.push("/superadmin/login");
+    window.location.href = "/superadmin/login";
   };
 
   const navItems = [
@@ -27,7 +25,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
               {navItems.map((item) => {
                 const active = pathname.startsWith(item.href);
                 return (
-                  <Link
+                  <a
                     key={item.href}
                     href={item.href}
                     className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
@@ -35,7 +33,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
                     }`}
                   >
                     {item.label}
-                  </Link>
+                  </a>
                 );
               })}
             </div>
