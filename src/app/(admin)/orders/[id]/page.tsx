@@ -102,7 +102,7 @@ export default function OrderDetailPage() {
               const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
               const subtotal = item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice;
               return (
-                <tr key={item.id}>
+                <tr key={item.id} className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
