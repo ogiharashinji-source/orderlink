@@ -24,7 +24,15 @@ type OrderDetail = {
     unitPrice: number;
     volume: string | null;
     productName: string | null;
-    product: { id: number; name: string; unit: string; unit1800: string | null; unit720: string | null } | null;
+    productCategory: string | null;
+    productSakaMai: string | null;
+    productSeimaiWari: string | null;
+    productAlcohol: string | null;
+    product: {
+      id: number; name: string; unit: string; unit1800: string | null; unit720: string | null;
+      category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null;
+      wholesalePrice1800: number | null; wholesalePrice720: number | null;
+    } | null;
   }>;
 };
 
@@ -40,7 +48,7 @@ export default function OrderDetailPage() {
   if (!order) return <div className="text-center py-20 text-gray-500">読み込み中...</div>;
 
   return (
-    <div className="space-y-4 max-w-3xl">
+    <div className="space-y-4 max-w-5xl">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/orders" className="hover:text-blue-600">発注管理</Link>
         <span>›</span>
@@ -72,12 +80,17 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-5">
+      <div className="bg-white rounded-lg shadow p-5 overflow-x-auto">
         <h2 className="font-semibold text-gray-800 mb-3">発注明細</h2>
-        <table className="w-full text-sm">
+        <table className="w-full text-sm whitespace-nowrap">
           <thead className="text-gray-500 text-xs uppercase bg-gray-50">
             <tr>
               <th className="px-3 py-2 text-left">商品名</th>
+              <th className="px-3 py-2 text-left">種別</th>
+              <th className="px-3 py-2 text-left">酒米</th>
+              <th className="px-3 py-2 text-center">精米歩合</th>
+              <th className="px-3 py-2 text-center">アルコール</th>
+              <th className="px-3 py-2 text-center">容量</th>
               <th className="px-3 py-2 text-right">単価</th>
               <th className="px-3 py-2 text-right">ロット</th>
               <th className="px-3 py-2 text-right">ケース数</th>
@@ -85,19 +98,32 @@ export default function OrderDetailPage() {
             </tr>
           </thead>
           <tbody className="divide-y">
-            {order.items.map((item) => (
-              <tr key={item.id}>
-                <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
-                <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
-                <td className="px-3 py-2 text-right">{item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}</td>
-                <td className="px-3 py-2 text-right">{item.quantity}</td>
-                <td className="px-3 py-2 text-right font-medium">¥{(item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice).toLocaleString()}</td>
-              </tr>
-            ))}
+            {order.items.map((item) => {
+              const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
+              const subtotal = item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice;
+              return (
+                <tr key={item.id}>
+                  <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                  <td className="px-3 py-2 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                  <td className="px-3 py-2 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                  <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
+                  <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
+                  <td className="px-3 py-2 text-center">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>
+                      {item.volume ?? "—"}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right">{lot}</td>
+                  <td className="px-3 py-2 text-right">{item.quantity}</td>
+                  <td className="px-3 py-2 text-right font-medium">¥{subtotal.toLocaleString()}</td>
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot className="bg-gray-50">
             <tr>
-              <td colSpan={4} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
+              <td colSpan={9} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
               <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{order.items.reduce((sum, item) => sum + item.quantity * (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1) * item.unitPrice, 0).toLocaleString()}</td>
             </tr>
           </tfoot>
