@@ -53,9 +53,9 @@ export default function Navbar() {
 
   return (
     <nav className="bg-slate-800 text-white overflow-x-auto">
-      <div className="flex items-center h-16 gap-6 px-4 w-max">
+      <div className="flex flex-nowrap items-center h-16 gap-6 px-4 min-w-full">
         <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
-          <div className="flex gap-3">
+          <div className="flex flex-nowrap gap-3">
             {navItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
               return (
@@ -81,6 +81,7 @@ export default function Navbar() {
               );
             })}
           </div>
+          <div className="flex-1" />
           <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</a>
           <button
             onClick={handleLogout}
