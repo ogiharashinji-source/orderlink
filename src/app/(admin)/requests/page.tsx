@@ -148,6 +148,10 @@ export default function RequestsPage() {
                 className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
                 キャンセル
               </button>
+              <button onClick={() => { setModal(null); handleDelete(modal.req.id); }}
+                className="px-5 py-2 rounded-lg text-sm font-medium text-red-500 border border-red-300 hover:bg-red-50">
+                削除
+              </button>
               <button onClick={handleModalOk}
                 className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700">
                 確定する
@@ -266,21 +270,13 @@ export default function RequestsPage() {
                       {idx === 0 && (
                         <>
                           <td className="px-4 py-3 align-middle text-center" rowSpan={req.items.length}>
-                            <div className="flex flex-col items-center gap-1">
-                              <button
-                                onClick={() => handleConfirm(req)}
-                                disabled={confirming === req.id}
-                                className="bg-blue-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
-                              >
-                                {confirming === req.id ? "処理中..." : "確認"}
-                              </button>
-                              <button
-                                onClick={() => handleDelete(req.id)}
-                                className="text-red-500 hover:underline text-xs"
-                              >
-                                削除
-                              </button>
-                            </div>
+                            <button
+                              onClick={() => handleConfirm(req)}
+                              disabled={confirming === req.id}
+                              className="bg-blue-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
+                            >
+                              {confirming === req.id ? "処理中..." : "確認"}
+                            </button>
                           </td>
                         </>
                       )}
