@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Company = {
   id: number;
@@ -42,7 +43,7 @@ export default function SuperAdminCompaniesPage() {
         {loading ? (
           <p className="text-center py-8 text-gray-400">読み込み中...</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
                 <th className="px-4 py-3 text-left">登録日</th>
@@ -74,12 +75,12 @@ export default function SuperAdminCompaniesPage() {
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.orders}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-4">
-                        <a
+                        <Link
                           href={`/superadmin/companies/${c.id}`}
                           className="text-blue-600 hover:underline text-xs"
                         >
                           編集
-                        </a>
+                        </Link>
                         <button
                           onClick={() => handleDelete(c.id, c.setting?.companyName || c.name)}
                           className="text-red-500 hover:underline text-xs"

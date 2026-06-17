@@ -185,7 +185,7 @@ export default function SuperAdminCustomersPage() {
         ) : error ? (
           <p className="text-center py-8 text-red-400">{error}</p>
         ) : (
-          <table className="w-full text-sm">
+          <table className="w-full text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
                 <th className="px-4 py-3 text-left">登録日</th>
