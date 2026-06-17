@@ -23,7 +23,7 @@ export default function Navbar() {
   };
 
   const fetchBadges = useCallback(() => {
-    fetch("/api/requests")
+    fetch("/api/requests?badge=1")
       .then((r) => r.json())
       .then((data: Array<{ status: string }>) => {
         setPendingCount(data.filter((r) => r.status === "PENDING").length);
@@ -47,7 +47,7 @@ export default function Navbar() {
   }, [pathname, fetchBadges]);
 
   useEffect(() => {
-    const id = setInterval(fetchBadges, 15000);
+    const id = setInterval(fetchBadges, 60000);
     return () => clearInterval(id);
   }, [fetchBadges]);
 

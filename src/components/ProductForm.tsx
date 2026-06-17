@@ -56,9 +56,9 @@ export default function ProductForm({ initialData, productId }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: string[] = [];
-    if (form.price1800 && (parseInt(form.stock1800) || 0) === 0) errs.push("1800ml の数量を入力してください");
-    if (form.price720  && (parseInt(form.stock720)  || 0) === 0) errs.push("720ml の数量を入力してください");
     if (!form.price1800 && !form.price720) errs.push("1800ml または 720ml の小売値を入力してください");
+    if (form.price1800 && !form.wholesalePrice1800) errs.push("1800ml の卸売値を入力してください");
+    if (form.price720  && !form.wholesalePrice720)  errs.push("720ml の卸売値を入力してください");
     if (errs.length > 0) { setErrors(errs); return; }
     setErrors([]);
     setSaving(true);
@@ -129,13 +129,13 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="卸売値 (円)">
+          <Field label="卸売値 (円)" required>
             <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
             <input value={form.unit1800} onChange={set("unit1800")} className={inputCls} />
           </Field>
-          <Field label="数量">
+          <Field label="限定">
             <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
           </Field>
         </div>
@@ -148,13 +148,13 @@ export default function ProductForm({ initialData, productId }: Props) {
           <Field label="小売値 (円)" required>
             <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
           </Field>
-          <Field label="卸売値 (円)">
+          <Field label="卸売値 (円)" required>
             <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
           </Field>
           <Field label="単位">
             <input value={form.unit720} onChange={set("unit720")} className={inputCls} />
           </Field>
-          <Field label="数量">
+          <Field label="限定">
             <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
           </Field>
         </div>
