@@ -16,7 +16,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { customerId, title, message, productIds, expiresAt, attachmentPath } = body;
+  const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType } = body;
 
   const token = randomBytes(16).toString("hex");
 
@@ -36,6 +36,9 @@ export async function POST(req: NextRequest) {
   if (link.customer?.email) {
     const origin = req.nextUrl.origin;
     const orderUrl = `${origin}/order/${token}`;
+    const attachment = fileData && fileName
+      ? { filename: fileName, content: Buffer.from(fileData as string, "base64"), contentType: (fileType as string) ?? "application/octet-stream" }
+      : null;
     sendOrderLinkEmail({
       to: link.customer.email,
       customerName: link.customer?.name ?? "",
@@ -43,6 +46,7 @@ export async function POST(req: NextRequest) {
       message: link.message,
       orderUrl,
       expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
+      attachment,
     }).catch((err) => console.error("[sendOrderLinkEmail]", err));
   }
 

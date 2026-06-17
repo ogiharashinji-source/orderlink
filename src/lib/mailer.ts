@@ -38,6 +38,7 @@ export async function sendOrderLinkEmail({
   message,
   orderUrl,
   expiresAt,
+  attachment,
 }: {
   to: string;
   customerName: string;
@@ -45,6 +46,7 @@ export async function sendOrderLinkEmail({
   message: string | null;
   orderUrl: string;
   expiresAt: string | null;
+  attachment?: { filename: string; content: Buffer; contentType: string } | null;
 }) {
   const subject = title ? `【ご注文のご案内】${title}` : "【ご注文のご案内】発注書が届いています";
 
@@ -70,6 +72,7 @@ export async function sendOrderLinkEmail({
     console.log(`宛先: ${to}`);
     console.log(`件名: ${subject}`);
     console.log(body);
+    if (attachment) console.log(`添付: ${attachment.filename}`);
     console.log("====================================");
     return;
   }
@@ -79,5 +82,8 @@ export async function sendOrderLinkEmail({
     to,
     subject,
     text: body,
+    attachments: attachment
+      ? [{ filename: attachment.filename, content: attachment.content, contentType: attachment.contentType }]
+      : [],
   });
 }

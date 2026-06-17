@@ -18,35 +18,30 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
     fetch("/api/customers").then((r) => r.json()).then(setCustomers);
   }, []);
 
-  const uploadFile = async (): Promise<string | null> => {
-    if (!attachmentFile) return null;
-    const fd = new FormData();
-    fd.append("file", attachmentFile);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    if (!res.ok) throw new Error("ファイルアップロード失敗");
-    const data = await res.json();
-    return data.path as string;
+  const readFileAsBase64 = (): Promise<{ fileData: string; fileName: string; fileType: string } | null> => {
+    if (!attachmentFile) return Promise.resolve(null);
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = (reader.result as string).split(",")[1];
+        resolve({ fileData: base64, fileName: attachmentFile.name, fileType: attachmentFile.type });
+      };
+      reader.readAsDataURL(attachmentFile);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
-    let attachmentPath: string | null = null;
-    try {
-      attachmentPath = await uploadFile();
-    } catch {
-      alert("ファイルのアップロードに失敗しました");
-      setSaving(false);
-      return;
-    }
+    const fileAttachment = await readFileAsBase64();
 
     const payload = {
       title: title || null,
       message: message || null,
       productIds: [],
       expiresAt: expiresAt || null,
-      attachmentPath,
+      ...(fileAttachment ?? {}),
     };
 
     if (sendMode === "全体") {
@@ -60,8 +55,8 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
           })
         )
       );
-      if (results.every((r) => r.ok)) onCreated();
-      else { alert("一部の作成に失敗しました"); setSaving(false); }
+      if (results.every((r) => r.ok)) { setSaving(false); onCreated(); }
+      else { alert("一部の送信に失敗しました"); setSaving(false); }
     } else {
       if (!customerId) { alert("顧客を選択してください"); setSaving(false); return; }
       const res = await fetch("/api/order-links", {
@@ -69,8 +64,8 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...payload, customerId }),
       });
-      if (res.ok) onCreated();
-      else { alert("作成に失敗しました"); setSaving(false); }
+      if (res.ok) { setSaving(false); onCreated(); }
+      else { alert("送信に失敗しました"); setSaving(false); }
     }
   };
 
@@ -189,7 +184,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
         disabled={saving}
         className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
       >
-        {saving ? "作成中..." : sendMode === "全体" ? `発注書リンクを一括作成（${customers.length}件）` : "発注書リンクを作成"}
+        {saving ? "送信中..." : sendMode === "全体" ? `送信（${customers.length}件）` : "送信"}
       </button>
     </form>
   );
