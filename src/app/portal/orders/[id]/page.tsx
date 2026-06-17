@@ -152,7 +152,7 @@ export default function PortalOrderDetailPage() {
             </>
           )}
           {order.status === "CONFIRMED" && (
-            <span className="text-xs text-red-600 font-medium">＊発注確定後のキャンセルは、売主様に依頼して削除してください。</span>
+            <span className="text-sm text-red-600 font-medium">＊発注確定後のキャンセルは、売主様に依頼して削除してください。</span>
           )}
           <button onClick={() => router.push("/portal/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
         </div>
