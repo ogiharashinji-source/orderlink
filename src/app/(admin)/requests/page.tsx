@@ -133,7 +133,7 @@ export default function RequestsPage() {
                         onChange={(e) => setModal((m) => m ? { ...m, modalQtys: { ...m.modalQtys, [item.id]: e.target.value } } : m)}
                         className="border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                       >
-                        {Array.from({ length: Math.max(item.requestedQty, 30) + 1 }, (_, i) => (
+                        {Array.from({ length: item.requestedQty + 1 }, (_, i) => (
                           <option key={i} value={i}>{i}</option>
                         ))}
                       </select>
