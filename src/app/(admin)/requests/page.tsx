@@ -99,9 +99,9 @@ export default function RequestsPage() {
       {/* 確認モーダル */}
       {modal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 space-y-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl mx-4 p-6 space-y-4">
             <h2 className="text-base font-bold text-gray-900">以下の内容で受注を確定しますか？</h2>
-            <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full text-sm whitespace-nowrap border border-gray-200 rounded-lg overflow-hidden">
               <thead className="bg-gray-50 text-gray-500 text-xs">
                 <tr>
                   <th className="px-3 py-2 text-left">商品名</th>
