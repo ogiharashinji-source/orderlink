@@ -14,7 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
 };
 
 type OrderRequest = {
@@ -218,8 +218,14 @@ export default function PortalOrderDetailPage() {
                     {editing ? (
                       <input
                         type="number" min="0"
+                        max={(() => { const s = item.volume === "1800ml" ? item.product?.stock1800 : item.product?.stock720; return s != null && s > 0 ? s : undefined; })()}
                         value={editQtys[item.id] ?? item.requestedQty}
-                        onChange={(e) => setEditQtys((p) => ({ ...p, [item.id]: parseInt(e.target.value) || 0 }))}
+                        onChange={(e) => {
+                          const s = item.volume === "1800ml" ? item.product?.stock1800 : item.product?.stock720;
+                          let v = parseInt(e.target.value) || 0;
+                          if (s != null && s > 0) v = Math.min(v, s);
+                          setEditQtys((p) => ({ ...p, [item.id]: v }));
+                        }}
                         className="w-16 text-right border border-blue-300 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
                     ) : (
