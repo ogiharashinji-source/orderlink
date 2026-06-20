@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type OrderItem = {
   id: number;
@@ -71,6 +72,9 @@ export default function OrdersPage() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-gray-900 mr-2">受注管理</h1>
+        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shrink-0">
+          + 新規登録
+        </Link>
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}

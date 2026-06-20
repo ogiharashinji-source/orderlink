@@ -79,13 +79,14 @@ export async function POST(req: NextRequest) {
       deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
       totalAmount,
       items: {
-        create: items.map((item: { productId: number; quantity: number; unitPrice: number }) => ({
+        create: items.map((item: { productId: number; quantity: number; unitPrice: number; volume?: string }) => ({
           product: { connect: { id: Number(item.productId) } },
           productName: productMap[Number(item.productId)]?.name ?? null,
           productCategory: productMap[Number(item.productId)]?.category ?? null,
           productSakaMai: productMap[Number(item.productId)]?.sakaMai ?? null,
           quantity: Number(item.quantity),
           unitPrice: Number(item.unitPrice),
+          volume: item.volume ?? null,
         })),
       },
     },
