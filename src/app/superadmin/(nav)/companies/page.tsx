@@ -38,7 +38,14 @@ export default function SuperAdminCompaniesPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-900">管理者一覧</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">管理者一覧</h1>
+        <Link href="/superadmin/companies/new"
+          className="px-4 py-2 rounded-lg text-sm font-bold text-white"
+          style={{ background: "#1e3a8a" }}>
+          + 新規会員登録
+        </Link>
+      </div>
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         {loading ? (
           <p className="text-center py-8 text-gray-400">読み込み中...</p>
