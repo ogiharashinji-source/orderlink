@@ -72,9 +72,6 @@ export default function OrdersPage() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-gray-900 mr-2">受注管理</h1>
-        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shrink-0">
-          + 新規登録
-        </Link>
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}
@@ -95,6 +92,10 @@ export default function OrdersPage() {
         />
         <button onClick={() => setQuery(search)} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
         {query && <button onClick={() => { setSearch(""); setQuery(""); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
+        <div className="flex-1" />
+        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shrink-0">
+          + 新規登録
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
