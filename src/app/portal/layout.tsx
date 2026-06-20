@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Footer from "@/components/Footer";
 
 const navItems = [
   { href: "/portal/order",  label: "発注依頼" },
@@ -63,6 +64,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         </div>
       </nav>
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
+      <Footer />
     </div>
   );
 }
