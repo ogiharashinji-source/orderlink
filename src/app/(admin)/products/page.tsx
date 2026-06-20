@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { downloadCsv } from "@/lib/csv";
 
 type Product = {
   id: number;
@@ -76,6 +77,17 @@ export default function ProductsPage() {
     load();
   };
 
+  const handleCsvExport = () => {
+    const header = ["商品名", "規格", "価格"];
+    const rows: (string | number | null)[][] = [];
+    products.forEach((p) => {
+      if (p.price1800 != null) rows.push([p.name, "1800ml", p.price1800]);
+      if (p.price720  != null) rows.push([p.name, "720ml",  p.price720]);
+    });
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(`商品一覧_${date}.csv`, [header, ...rows]);
+  };
+
   const handleBulkDelete = async () => {
     if (selected.size === 0) return;
     if (!confirm(`選択した${selected.size}件の商品を削除しますか？`)) return;
@@ -96,6 +108,9 @@ export default function ProductsPage() {
             className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
           >
             {bulkDeleting ? "削除中..." : selected.size > 0 ? `${selected.size}件を削除` : "一斉削除"}
+          </button>
+          <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
+            CSV出力
           </button>
           <Link href="/products/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
             + 新規商品

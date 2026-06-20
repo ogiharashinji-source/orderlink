@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { downloadCsv } from "@/lib/csv";
 
 type OrderItem = {
   id: number;
@@ -68,6 +69,23 @@ export default function OrdersPage() {
     load();
   };
 
+  const handleCsvExport = () => {
+    const header = ["注文日", "販売店名", "商品名", "数量", "金額"];
+    const rows: (string | number | null)[][] = [];
+    orders.forEach((o) => {
+      const date = new Date(o.orderDate).toLocaleDateString("ja-JP");
+      const seller = o.customerName ?? o.customer?.name ?? "";
+      o.items.forEach((item) => {
+        const productName = item.productName ?? item.product?.name ?? "";
+        const lot = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
+        const amount = item.quantity * lot * item.unitPrice;
+        rows.push([date, seller, productName, item.quantity, amount]);
+      });
+    });
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(`注文一覧_${date}.csv`, [header, ...rows]);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
@@ -93,6 +111,9 @@ export default function OrdersPage() {
         <button onClick={() => setQuery(search)} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
         {query && <button onClick={() => { setSearch(""); setQuery(""); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
         <div className="flex-1" />
+        <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 shrink-0">
+          CSV出力
+        </button>
         <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shrink-0">
           + 新規登録
         </Link>

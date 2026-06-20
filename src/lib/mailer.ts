@@ -1,8 +1,9 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM ?? "noreply@orderlink.jp";
 const DEV = !process.env.RESEND_API_KEY;
+
+const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
 export async function sendInviteEmail(to: string, inviteUrl: string) {
   if (DEV) {
@@ -12,7 +13,7 @@ export async function sendInviteEmail(to: string, inviteUrl: string) {
     console.log("==================================");
     return;
   }
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to,
     subject: "ご登録のご案内",
@@ -66,7 +67,7 @@ export async function sendOrderLinkEmail({
     return;
   }
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to,
     subject,
