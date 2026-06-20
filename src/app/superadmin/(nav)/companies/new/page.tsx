@@ -18,6 +18,7 @@ export default function CompanyNewPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.password.length < 6) { setError("パスワードは6文字以上で入力してください"); return; }
     setSaving(true);
     setError("");
     const res = await fetch("/api/superadmin/companies", {
@@ -35,7 +36,7 @@ export default function CompanyNewPage() {
   };
 
   return (
-    <div className="space-y-4 max-w-lg">
+    <div className="space-y-4 max-w-2xl">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/superadmin/companies" className="hover:text-blue-600">管理者一覧</Link>
         <span>›</span>
@@ -45,46 +46,49 @@ export default function CompanyNewPage() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
-          <input value={form.companyName} onChange={set("companyName")} className={inputCls} />
+          <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
+          <input required value={form.companyName} onChange={set("companyName")} className={inputCls} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">住所</label>
-          <input value={form.address} onChange={set("address")} className={inputCls} />
+          <label className="block text-sm font-medium text-gray-700 mb-1">住所 <span className="text-red-500">*</span></label>
+          <input required value={form.address} onChange={set("address")} className={inputCls} />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
+            <input required value={form.phone} onChange={set("phone")} className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
+            <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
+          </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
-          <input value={form.phone} onChange={set("phone")} className={inputCls} />
+          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
+          <input required type="email" value={form.email} onChange={set("email")} className={inputCls} />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-          <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
-          <input type="email" value={form.email} onChange={set("email")} className={inputCls} />
-        </div>
+
         <div className="border-t pt-4 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ログインID <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ID <span className="text-red-500">*</span></label>
             <input required value={form.loginId} onChange={set("loginId")} className={inputCls} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
-            <input required value={form.password} onChange={set("password")} className={inputCls} />
+            <input required type="password" value={form.password} onChange={set("password")} placeholder="6文字以上" className={inputCls} />
           </div>
         </div>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex items-center gap-4 pt-2">
           <button type="submit" disabled={saving}
             className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50"
             style={{ background: "#1e3a8a" }}>
             {saving ? "登録中..." : "登録する"}
           </button>
           <Link href="/superadmin/companies"
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
+            className="text-sm text-gray-500 hover:text-gray-700">
             キャンセル
           </Link>
         </div>
