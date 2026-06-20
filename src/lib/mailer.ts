@@ -1,18 +1,8 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const DEV = !process.env.SMTP_USER || process.env.SMTP_USER === "your-email@gmail.com";
-
-function createTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST ?? "smtp.gmail.com",
-    port: Number(process.env.SMTP_PORT ?? 587),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM = process.env.EMAIL_FROM ?? "noreply@orderlink.jp";
+const DEV = !process.env.RESEND_API_KEY;
 
 export async function sendInviteEmail(to: string, inviteUrl: string) {
   if (DEV) {
@@ -22,9 +12,8 @@ export async function sendInviteEmail(to: string, inviteUrl: string) {
     console.log("==================================");
     return;
   }
-  const transporter = createTransporter();
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
+  await resend.emails.send({
+    from: FROM,
     to,
     subject: "ご登録のご案内",
     text: `以下のURLよりご登録をお願いいたします。\n\n${inviteUrl}`,
@@ -76,14 +65,14 @@ export async function sendOrderLinkEmail({
     console.log("====================================");
     return;
   }
-  const transporter = createTransporter();
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM,
+
+  await resend.emails.send({
+    from: FROM,
     to,
     subject,
     text: body,
     attachments: attachment
-      ? [{ filename: attachment.filename, content: attachment.content, contentType: attachment.contentType }]
+      ? [{ filename: attachment.filename, content: attachment.content }]
       : [],
   });
 }
