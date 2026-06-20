@@ -6,7 +6,12 @@ type Customer = { id: number; name: string; company: string | null; faxNumber: s
 export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [sendMode, setSendMode] = useState<"全体" | "個別">("全体");
-  const [customerId, setCustomerId] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+
+  const toggleCustomer = (id: number) =>
+    setSelectedIds((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+  const toggleAll = () =>
+    setSelectedIds(selectedIds.size === customers.length ? new Set() : new Set(customers.map((c) => c.id)));
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
@@ -58,14 +63,19 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       if (results.every((r) => r.ok)) { setSaving(false); onCreated(); }
       else { alert("一部の送信に失敗しました"); setSaving(false); }
     } else {
-      if (!customerId) { alert("顧客を選択してください"); setSaving(false); return; }
-      const res = await fetch("/api/order-links", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, customerId }),
-      });
-      if (res.ok) { setSaving(false); onCreated(); }
-      else { alert("送信に失敗しました"); setSaving(false); }
+      if (selectedIds.size === 0) { alert("顧客を1件以上選択してください"); setSaving(false); return; }
+      const targets = customers.filter((c) => selectedIds.has(c.id));
+      const results = await Promise.all(
+        targets.map((c) =>
+          fetch("/api/order-links", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, customerId: c.id }),
+          })
+        )
+      );
+      if (results.every((r) => r.ok)) { setSaving(false); onCreated(); }
+      else { alert("一部の送信に失敗しました"); setSaving(false); }
     }
   };
 
@@ -94,18 +104,25 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
             ))}
           </div>
           {sendMode === "個別" ? (
-            <select
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              className={selectCls}
-            >
-              <option value="">顧客を選択...</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}{c.company ? ` (${c.company})` : ""}{c.faxNumber ? ` FAX: ${c.faxNumber}` : ""}
-                </option>
-              ))}
-            </select>
+            <div className="border border-gray-300 rounded-lg overflow-hidden">
+              <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200">
+                <input type="checkbox" id="select-all"
+                  checked={selectedIds.size === customers.length && customers.length > 0}
+                  onChange={toggleAll}
+                  className="rounded" />
+                <label htmlFor="select-all" className="text-xs text-gray-600 cursor-pointer select-none">
+                  全選択（{selectedIds.size}/{customers.length}件選択中）
+                </label>
+              </div>
+              <div className="max-h-48 overflow-y-auto divide-y divide-gray-100">
+                {customers.map((c) => (
+                  <label key={c.id} className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" checked={selectedIds.has(c.id)} onChange={() => toggleCustomer(c.id)} className="rounded" />
+                    <span className="text-sm text-gray-800">{c.name}{c.company ? ` (${c.company})` : ""}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           ) : (
             <p className="text-sm text-gray-500">登録済みの全顧客（{customers.length}件）にメールリンクを作成します</p>
           )}
@@ -184,7 +201,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
         disabled={saving}
         className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
       >
-        {saving ? "送信中..." : sendMode === "全体" ? `送信（${customers.length}件）` : "送信"}
+        {saving ? "送信中..." : sendMode === "全体" ? `送信（${customers.length}件）` : `送信（${selectedIds.size}件）`}
       </button>
     </form>
   );
