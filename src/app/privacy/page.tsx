@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackButton from "@/components/BackButton";
 
 export const metadata = { title: "プライバシーポリシー | OrderLink" };
 
@@ -95,7 +96,7 @@ export default function PrivacyPage() {
 
         <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-blue-600">
           <Link href="/terms" className="hover:underline">利用規約</Link>
-          <Link href="/" className="hover:underline text-gray-500">トップへ戻る</Link>
+          <BackButton />
         </div>
       </div>
     </div>
