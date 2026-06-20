@@ -9,6 +9,13 @@ function generateOrderNumber() {
   return `${prefix}-${suffix}`;
 }
 
+function generateRequestNumber() {
+  const now = new Date();
+  const prefix = `REQ-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
+  const suffix = String(Math.floor(Math.random() * 9000) + 1000);
+  return `${prefix}-${suffix}`;
+}
+
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -67,8 +74,18 @@ export async function POST(req: NextRequest) {
   );
 
   const productIds = items.map((i: { productId: number }) => Number(i.productId));
-  const products = await prisma.product.findMany({ where: { id: { in: productIds } }, select: { id: true, name: true, category: true, sakaMai: true } });
+  const products = await prisma.product.findMany({
+    where: { id: { in: productIds } },
+    select: { id: true, name: true, category: true, sakaMai: true, seimaiWari: true, alcohol: true },
+  });
   const productMap = Object.fromEntries(products.map((p) => [p.id, p]));
+
+  const setting = await prisma.adminSetting.findUnique({
+    where: { companyId },
+    select: { companyName: true, address: true, phone: true, faxNumber: true, email: true },
+  });
+
+  type ItemInput = { productId: number; quantity: number; unitPrice: number; volume?: string };
 
   const order = await prisma.order.create({
     data: {
@@ -79,7 +96,7 @@ export async function POST(req: NextRequest) {
       deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
       totalAmount,
       items: {
-        create: items.map((item: { productId: number; quantity: number; unitPrice: number; volume?: string }) => ({
+        create: items.map((item: ItemInput) => ({
           product: { connect: { id: Number(item.productId) } },
           productName: productMap[Number(item.productId)]?.name ?? null,
           productCategory: productMap[Number(item.productId)]?.category ?? null,
@@ -92,6 +109,40 @@ export async function POST(req: NextRequest) {
     },
     include: { customer: true, items: { include: { product: true } } },
   });
+
+  // ポータル会員向けにCONFIRMED状態のOrderRequestを同時作成
+  if (customerId) {
+    await prisma.orderRequest.create({
+      data: {
+        requestNumber: generateRequestNumber(),
+        companyId,
+        customerId: Number(customerId),
+        status: "CONFIRMED",
+        notes,
+        orderId: order.id,
+        confirmedAt: new Date(),
+        sellerName: setting?.companyName ?? null,
+        sellerAddress: setting?.address ?? null,
+        sellerPhone: setting?.phone ?? null,
+        sellerFax: setting?.faxNumber ?? null,
+        sellerEmail: setting?.email ?? null,
+        items: {
+          create: items.map((item: ItemInput) => ({
+            product: { connect: { id: Number(item.productId) } },
+            productName: productMap[Number(item.productId)]?.name ?? null,
+            productCategory: productMap[Number(item.productId)]?.category ?? null,
+            productSakaMai: productMap[Number(item.productId)]?.sakaMai ?? null,
+            productSeimaiWari: productMap[Number(item.productId)]?.seimaiWari ?? null,
+            productAlcohol: productMap[Number(item.productId)]?.alcohol ?? null,
+            requestedQty: Number(item.quantity),
+            confirmedQty: Number(item.quantity),
+            unitPrice: Number(item.unitPrice),
+            volume: item.volume ?? null,
+          })),
+        },
+      },
+    });
+  }
 
   return NextResponse.json(order, { status: 201 });
 }
