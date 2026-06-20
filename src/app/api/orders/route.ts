@@ -32,7 +32,15 @@ export async function GET(req: NextRequest) {
         { companyId },
         dateFilter,
         status ? { status: status as never } : {},
-        q ? { OR: [{ orderNumber: { contains: q } }, { customer: { name: { contains: q } } }] } : {},
+        q ? {
+          OR: [
+            { orderNumber: { contains: q, mode: "insensitive" } },
+            { customerName: { contains: q, mode: "insensitive" } },
+            { customer: { name: { contains: q, mode: "insensitive" } } },
+            { items: { some: { productName: { contains: q, mode: "insensitive" } } } },
+            { items: { some: { product: { name: { contains: q, mode: "insensitive" } } } } },
+          ],
+        } : {},
       ],
     },
     orderBy: { orderDate: "desc" },
