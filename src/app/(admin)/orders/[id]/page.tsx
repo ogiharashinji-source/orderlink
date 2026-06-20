@@ -61,7 +61,7 @@ export default function OrderDetailPage() {
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
-          <button onClick={() => { if (confirm("削除しますか？")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">削除</button>
+          <button onClick={() => { if (confirm("販売先のデータも削除されます。削除しますか？")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">削除</button>
         </div>
       </div>
 
