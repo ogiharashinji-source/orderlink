@@ -22,6 +22,8 @@ export default function SettingsPage() {
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [changingPw, setChangingPw] = useState(false);
+  const [pwChanged, setPwChanged] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,13 +47,34 @@ export default function SettingsPage() {
   const set = (key: keyof Setting) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const handlePasswordChange = async () => {
+    if (!form.currentPassword) { alert("現在のパスワードを入力してください"); return; }
+    if (form.password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
+    if (form.password !== form.confirmPassword) { alert("新しいパスワードと確認用パスワードが一致しません"); return; }
+    if (!confirm("パスワードを変更しますか？")) return;
+    setChangingPw(true);
+    const res = await fetch("/api/admin/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        companyName: form.companyName,
+        password: form.password,
+        currentPassword: form.currentPassword,
+      }),
+    });
+    setChangingPw(false);
+    if (res.ok) {
+      setPwChanged(true);
+      setForm((f) => ({ ...f, currentPassword: "", password: "", confirmPassword: "" }));
+      setTimeout(() => setPwChanged(false), 3000);
+    } else {
+      const data = await res.json();
+      alert(data.error ?? "変更に失敗しました");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password) {
-      if (!form.currentPassword) { alert("現在のパスワードを入力してください"); return; }
-      if (form.password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
-      if (form.password !== form.confirmPassword) { alert("新しいパスワードと確認用パスワードが一致しません"); return; }
-    }
     if (!confirm("設定を保存しますか？")) return;
     setSaving(true);
     const payload: Record<string, string | null> = {
@@ -62,7 +85,6 @@ export default function SettingsPage() {
       email: form.email || null,
     };
     if (form.loginId) payload.loginId = form.loginId;
-    if (form.password) { payload.password = form.password; payload.currentPassword = form.currentPassword; }
     const res = await fetch("/api/admin/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -123,6 +145,13 @@ export default function SettingsPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード（確認）</label>
             <input type="password" value={form.confirmPassword} onChange={set("confirmPassword")} placeholder="もう一度入力" className={inputCls} />
+          </div>
+          <div className="flex items-center gap-4">
+            <button type="button" onClick={handlePasswordChange} disabled={changingPw || !form.currentPassword || !form.password || !form.confirmPassword}
+              className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40">
+              {changingPw ? "変更中..." : "変更"}
+            </button>
+            {pwChanged && <p className="text-sm text-green-600">パスワードを変更しました</p>}
           </div>
         </div>
 
