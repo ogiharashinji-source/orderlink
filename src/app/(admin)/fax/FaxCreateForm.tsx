@@ -132,13 +132,13 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">発注書タイトル</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder="例: 2026年6月 ご注文書" className={inputCls} />
+              placeholder="" className={inputCls} />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">メッセージ</label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)}
-              rows={8} placeholder="例: いつもお世話になっております。" className={inputCls} />
+              rows={8} placeholder="" className={inputCls} />
           </div>
 
           <div>
