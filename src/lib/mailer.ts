@@ -61,8 +61,7 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fb;border-radius:6px;">
               <tr>
                 <td style="padding:16px 20px;font-size:13px;color:#666666;line-height:1.8;">
-                  なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。<br>
-                  <span style="color:#999999;">（招待URLの有効期限は <b>24時間</b> です）</span>
+                  なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。
                 </td>
               </tr>
             </table>
@@ -92,7 +91,6 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
     inviteUrl,
     "",
     "なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。",
-    "（招待URLの有効期限は24時間です）",
   ].join("\n");
 
   if (DEV) {

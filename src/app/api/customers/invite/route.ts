@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
   const { email } = await req.json();
 
   const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24); // 24時間有効
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7日間有効
   const origin = req.headers.get("origin") ?? "http://localhost:3000";
   const inviteUrl = `${origin}/portal/register?token=${token}`;
 
