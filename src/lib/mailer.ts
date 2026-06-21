@@ -133,7 +133,7 @@ export async function sendOrderLinkEmail({
   attachmentName?: string | null;
 }) {
   const subject = title ? `【ご注文のご案内】${title}` : "【ご注文のご案内】発注書が届いています";
-  const bodyMessage = message ?? "いつもお世話になっております。";
+  const bodyMessage = message ?? "";
 
   const html = `<!DOCTYPE html>
 <html lang="ja">
@@ -154,7 +154,7 @@ export async function sendOrderLinkEmail({
         <tr>
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 6px;font-size:16px;font-weight:bold;color:#222222;">${customerName} 様</p>
-            <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>
+            ${bodyMessage ? `<p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>` : ""}
 
             <!-- ログインボタン -->
             <table width="100%" cellpadding="0" cellspacing="0">
@@ -193,8 +193,7 @@ export async function sendOrderLinkEmail({
 
   const text = [
     `${customerName} 様`,
-    "",
-    bodyMessage,
+    ...(bodyMessage ? ["", bodyMessage] : []),
     "",
     orderUrl,
     ...(attachmentUrl ? ["", `添付資料: ${attachmentUrl}`] : []),
