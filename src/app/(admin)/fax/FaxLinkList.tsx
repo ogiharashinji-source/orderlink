@@ -34,6 +34,7 @@ export default function FaxLinkList() {
             <th className="px-4 py-3">送信日時</th>
             <th className="px-4 py-3">宛先</th>
             <th className="px-4 py-3">タイトル・メッセージ</th>
+            <th className="px-4 py-3">添付ファイル</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
@@ -58,21 +59,21 @@ export default function FaxLinkList() {
                 {link.message && (
                   <div className="text-gray-500 text-xs line-clamp-2">{link.message}</div>
                 )}
-                {link.attachmentPath && (
-                  <div className="mt-1.5">
-                    {link.attachmentPath.startsWith("http") ? (
-                      <a href={link.attachmentPath} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-0.5 rounded hover:bg-blue-100">
-                        📎 {decodeURIComponent(link.attachmentPath.split("/").pop() ?? "添付ファイル")}
-                      </a>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs px-2 py-0.5 rounded">
-                        📎 {link.attachmentPath}
-                      </span>
-                    )}
-                  </div>
+                {!link.title && !link.message && (
+                  <span className="text-gray-300">—</span>
                 )}
-                {!link.title && !link.message && !link.attachmentPath && (
+              </td>
+              <td className="px-4 py-3">
+                {link.attachmentPath ? (
+                  link.attachmentPath.startsWith("http") ? (
+                    <a href={link.attachmentPath} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded hover:bg-blue-100 whitespace-nowrap">
+                      📎 {decodeURIComponent(link.attachmentPath.split("/").pop() ?? "開く")}
+                    </a>
+                  ) : (
+                    <span className="text-xs text-gray-400">📎 {link.attachmentPath}</span>
+                  )
+                ) : (
                   <span className="text-gray-300">—</span>
                 )}
               </td>
