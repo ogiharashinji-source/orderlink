@@ -113,9 +113,10 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
                 </div>
                 <div className="max-h-48 overflow-y-auto divide-y divide-gray-100">
                   {customers.map((c) => (
-                    <label key={c.id} className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 cursor-pointer">
-                      <input type="checkbox" checked={selectedIds.has(c.id)} onChange={() => toggleCustomer(c.id)} className="rounded" />
-                      <span className="text-sm text-gray-800">{c.name}{c.company ? ` (${c.company})` : ""}</span>
+                    <label key={c.id} className={`flex items-center gap-3 px-3 py-2 ${c.email ? "hover:bg-gray-50 cursor-pointer" : "opacity-40 cursor-not-allowed"}`}>
+                      <input type="checkbox" checked={selectedIds.has(c.id)} onChange={() => c.email && toggleCustomer(c.id)} disabled={!c.email} className="rounded" />
+                      <span className="text-sm text-gray-800 flex-1">{c.name}{c.company ? ` (${c.company})` : ""}</span>
+                      {!c.email && <span className="text-xs text-gray-400">メールなし</span>}
                     </label>
                   ))}
                 </div>
