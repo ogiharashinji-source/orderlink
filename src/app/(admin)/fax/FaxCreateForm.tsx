@@ -14,7 +14,6 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
     setSelectedIds(selectedIds.size === customers.length ? new Set() : new Set(customers.map((c) => c.id)));
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [expiresAt, setExpiresAt] = useState("");
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +44,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       title: title || null,
       message: message || null,
       productIds: [],
-      expiresAt: expiresAt || null,
+      expiresAt: null,
       ...(fileAttachment ?? {}),
     };
 
@@ -131,25 +130,14 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">発注書タイトル</label>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="例: 2026年6月 ご注文書"
-              className={inputCls}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">有効期限</label>
-            <input
-              type="date"
-              value={expiresAt}
-              onChange={(e) => setExpiresAt(e.target.value)}
-              className={inputCls}
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">発注書タイトル</label>
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="例: 2026年6月 ご注文書"
+            className={inputCls}
+          />
         </div>
 
         <div>

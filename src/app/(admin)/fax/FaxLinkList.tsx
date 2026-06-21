@@ -7,7 +7,6 @@ type LinkItem = {
   title: string | null;
   message: string | null;
   createdAt: string;
-  expiresAt: string | null;
   attachmentPath: string | null;
   customer: { name: string; company: string | null; email: string | null } | null;
 };
@@ -35,7 +34,6 @@ export default function FaxLinkList() {
             <th className="px-4 py-3">送信日時</th>
             <th className="px-4 py-3">宛先</th>
             <th className="px-4 py-3">タイトル・メッセージ</th>
-            <th className="px-4 py-3">有効期限</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
@@ -68,11 +66,6 @@ export default function FaxLinkList() {
                 {!link.title && !link.message && !link.attachmentPath && (
                   <span className="text-gray-300">—</span>
                 )}
-              </td>
-              <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-                {link.expiresAt
-                  ? new Date(link.expiresAt).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" })
-                  : "—"}
               </td>
             </tr>
           ))}

@@ -137,29 +137,90 @@ export async function sendOrderLinkEmail({
   attachment?: { filename: string; content: Buffer; contentType: string } | null;
 }) {
   const subject = title ? `【ご注文のご案内】${title}` : "【ご注文のご案内】発注書が届いています";
+  const bodyMessage = message ?? "いつもお世話になっております。";
 
-  const expireText = expiresAt
-    ? `\n有効期限: ${new Date(expiresAt).toLocaleDateString("ja-JP")} まで`
-    : "";
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
 
-  const body = [
+        <!-- ヘッダー -->
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+
+        <!-- 本文 -->
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 6px;font-size:16px;font-weight:bold;color:#222222;">${customerName} 様</p>
+            <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>
+
+            <p style="margin:0 0 16px;font-size:14px;color:#555555;">
+              以下のボタンより、スマートフォンでかんたんにご注文いただけます。
+            </p>
+
+            <!-- 注文ボタン -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:8px 0 32px;">
+                  <a href="${orderUrl}"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    ご注文はこちら
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0 0 8px;font-size:13px;color:#666666;">
+              ボタンが機能しない場合は、以下のURLをブラウザに貼り付けてください。
+            </p>
+            <p style="margin:0 0 28px;font-size:12px;color:#888888;word-break:break-all;">
+              <a href="${orderUrl}" style="color:#1e3a5f;">${orderUrl}</a>
+            </p>
+
+            <p style="margin:0;font-size:14px;color:#555555;">
+              ご不明な点がございましたら、お気軽にお問い合わせください。
+            </p>
+          </td>
+        </tr>
+
+        <!-- フッター -->
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999999;">
+              このメールはOrderLinkから自動送信されています。返信はお受けできません。
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
     `${customerName} 様`,
     "",
-    message ?? "いつもお世話になっております。",
+    bodyMessage,
     "",
     "以下のURLより、スマートフォンでかんたんにご注文いただけます。",
     "",
     orderUrl,
-    expireText,
     "",
-    "ご不明な点はお問い合わせください。",
+    "ご不明な点がございましたら、お気軽にお問い合わせください。",
   ].join("\n");
 
   if (DEV) {
     console.log("========== [発注書メール] ==========");
     console.log(`宛先: ${to}`);
     console.log(`件名: ${subject}`);
-    console.log(body);
+    console.log(text);
     if (attachment) console.log(`添付: ${attachment.filename}`);
     console.log("====================================");
     return;
@@ -169,7 +230,8 @@ export async function sendOrderLinkEmail({
     from: FROM,
     to,
     subject,
-    text: body,
+    html,
+    text,
     attachments: attachment
       ? [{ filename: attachment.filename, content: attachment.content }]
       : [],
