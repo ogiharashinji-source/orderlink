@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -37,9 +36,6 @@ export default function ContactPage() {
           <div className="text-center space-y-4">
             <p className="text-green-600 font-medium">送信が完了しました。</p>
             <p className="text-sm text-gray-500">内容を確認の上、ご連絡いたします。</p>
-            <Link href="/" className="inline-block mt-4 text-sm text-blue-600 hover:underline">
-              ← トップに戻る
-            </Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
