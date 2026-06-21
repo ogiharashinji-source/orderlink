@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ContactPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -36,6 +38,10 @@ export default function ContactPage() {
           <div className="text-center space-y-4">
             <p className="text-green-600 font-medium">送信が完了しました。</p>
             <p className="text-sm text-gray-500">内容を確認の上、ご連絡いたします。</p>
+            <button onClick={() => router.back()}
+              className="mt-4 text-sm text-blue-600 hover:underline">
+              ← 前のページに戻る
+            </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
