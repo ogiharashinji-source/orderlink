@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import ManualModal from "@/components/ManualModal";
@@ -11,6 +11,12 @@ function CustomerLoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    fetch("/api/portal/profile").then((r) => {
+      if (r.ok) router.replace("/portal/order");
+    });
+  }, [router]);
   const inviteToken = searchParams.get("token") ?? "";
 
   const handleSubmit = async (e: React.FormEvent) => {
