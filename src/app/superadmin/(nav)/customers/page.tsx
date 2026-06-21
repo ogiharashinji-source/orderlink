@@ -73,23 +73,28 @@ export default function SuperAdminCustomersPage() {
     if (!form.email.trim()) { setFormError("メールアドレスは必須です"); return; }
     setSaving(true);
     setFormError("");
-    const url = editingId ? `/api/superadmin/customers/${editingId}` : "/api/superadmin/customers";
-    const method = editingId ? "PUT" : "POST";
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setShowForm(false);
-      setForm(empty);
-      setEditingId(null);
-      load();
-    } else {
-      setFormError(data.error ?? (editingId ? "更新に失敗しました" : "登録に失敗しました"));
+    try {
+      const url = editingId ? `/api/superadmin/customers/${editingId}` : "/api/superadmin/customers";
+      const method = editingId ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setShowForm(false);
+        setForm(empty);
+        setEditingId(null);
+        load();
+      } else {
+        setFormError(data.error ?? (editingId ? "更新に失敗しました" : "登録に失敗しました"));
+      }
+    } catch {
+      setFormError("通信エラーが発生しました");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   const closeForm = () => {

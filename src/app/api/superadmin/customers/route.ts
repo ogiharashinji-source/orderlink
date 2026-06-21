@@ -19,36 +19,41 @@ export async function POST(req: Request) {
     if (existingEmail) return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
   }
 
-  // 同じメールの既存レコード（管理者登録済み or 削除済み）があれば更新
-  const existingAny = email ? await prisma.customer.findFirst({ where: { email } }) : null;
-  if (existingAny) {
-    const customer = await prisma.customer.update({
-      where: { id: existingAny.id },
+  try {
+    // 同じメールの既存レコード（管理者登録済み or 削除済み）があれば更新
+    const existingAny = email ? await prisma.customer.findFirst({ where: { email } }) : null;
+    if (existingAny) {
+      const customer = await prisma.customer.update({
+        where: { id: existingAny.id },
+        data: {
+          name,
+          phone: phone || existingAny.phone,
+          faxNumber: faxNumber || existingAny.faxNumber,
+          address: address || existingAny.address,
+          loginId: loginId || null,
+          password: password || null,
+          deleted: false,
+        },
+      });
+      return NextResponse.json(customer, { status: 200 });
+    }
+
+    const customer = await prisma.customer.create({
       data: {
         name,
-        phone: phone || existingAny.phone,
-        faxNumber: faxNumber || existingAny.faxNumber,
-        address: address || existingAny.address,
+        email: email || null,
+        phone: phone || null,
+        faxNumber: faxNumber || null,
+        address: address || null,
         loginId: loginId || null,
         password: password || null,
-        deleted: false,
       },
     });
-    return NextResponse.json(customer, { status: 200 });
+    return NextResponse.json(customer, { status: 201 });
+  } catch (e) {
+    console.error("[superadmin/customers POST]", e);
+    return NextResponse.json({ error: "登録に失敗しました" }, { status: 500 });
   }
-
-  const customer = await prisma.customer.create({
-    data: {
-      name,
-      email: email || null,
-      phone: phone || null,
-      faxNumber: faxNumber || null,
-      address: address || null,
-      loginId: loginId || null,
-      password: password || null,
-    },
-  });
-  return NextResponse.json(customer, { status: 201 });
 }
 
 export async function GET() {
