@@ -11,6 +11,7 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
     : "【OrderLink】ポータル登録のご案内";
 
   const company = senderName || "OrderLink";
+  const shortCompany = company.replace(/^株式会社\s*/, "").replace(/\s*株式会社$/, "").replace(/^有限会社\s*/, "").replace(/\s*有限会社$/, "");
 
   const html = `<!DOCTYPE html>
 <html lang="ja">
@@ -34,10 +35,10 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
               ${company}様より OrderLink ポータルへご招待いたしました。
             </p>
             <p style="margin:0 0 8px;font-size:15px;color:#333333;line-height:1.9;">
-              OrderLinkにご登録いただくことで、${company}の商品をオンラインで簡単にご発注いただけるようになります。
+              OrderLinkにご登録いただくことで、${shortCompany}の商品をオンラインで簡単にご発注いただけるようになります。
             </p>
             <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
-              下記のボタンよりアカウントを作成し、ご利用を開始してください。
+              下記のボタンよりアカウントを作成のうえ、ご利用を開始してください。
             </p>
 
             <!-- ボタン -->
@@ -57,10 +58,6 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
             </p>
             <p style="margin:0 0 28px;font-size:12px;color:#888888;word-break:break-all;">
               <a href="${inviteUrl}" style="color:#1e3a5f;">${inviteUrl}</a>
-            </p>
-
-            <p style="margin:0 0 24px;font-size:14px;color:#555555;line-height:1.8;">
-              ご不明な点がございましたら、お気軽にお問い合わせください。
             </p>
 
             <!-- 注意事項 -->
@@ -93,13 +90,11 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
   const text = [
     `${company}様より OrderLink ポータルへご招待いたしました。`,
     "",
-    `OrderLinkにご登録いただくことで、${company}の商品をオンラインで簡単にご発注いただけるようになります。`,
+    `OrderLinkにご登録いただくことで、${shortCompany}の商品をオンラインで簡単にご発注いただけるようになります。`,
     "",
-    "下記のボタンよりアカウントを作成し、ご利用を開始してください。",
+    "下記のボタンよりアカウントを作成のうえ、ご利用を開始してください。",
     "",
     inviteUrl,
-    "",
-    "ご不明な点がございましたら、お気軽にお問い合わせください。",
     "",
     "なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。",
     "（招待URLの有効期限は24時間です）",
