@@ -59,9 +59,11 @@ export default function FaxLinkList() {
                   <div className="text-gray-500 text-xs line-clamp-2">{link.message}</div>
                 )}
                 {link.attachmentPath && (
-                  <span className="inline-flex items-center gap-1 mt-1 text-xs text-gray-500">
-                    📎 {link.attachmentPath}
-                  </span>
+                  <div className="mt-1.5">
+                    <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-0.5 rounded">
+                      📎 {link.attachmentPath}
+                    </span>
+                  </div>
                 )}
                 {!link.title && !link.message && !link.attachmentPath && (
                   <span className="text-gray-300">—</span>
