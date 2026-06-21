@@ -129,8 +129,7 @@ export default function PortalGuidePage() {
         </div>
 
         {/* フッター */}
-        <div className="text-center text-xs text-gray-400 pb-4 flex justify-between">
-          <Link href="/guide/admin" className="text-blue-500 hover:underline">← 管理者向けマニュアル</Link>
+        <div className="text-center text-xs text-gray-400 pb-4">
           <span>© OrderLink</span>
         </div>
       </div>
