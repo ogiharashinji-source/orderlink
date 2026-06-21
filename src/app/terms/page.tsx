@@ -1,4 +1,3 @@
-import Link from "next/link";
 import CloseButton from "@/components/CloseButton";
 
 export const metadata = { title: "利用規約 | OrderLink" };
@@ -73,7 +72,6 @@ export default function TermsPage() {
         </section>
 
         <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-blue-600">
-          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">プライバシーポリシー</a>
           <CloseButton />
         </div>
       </div>
