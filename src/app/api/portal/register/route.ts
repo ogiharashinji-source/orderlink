@@ -7,18 +7,9 @@ export async function POST(req: NextRequest) {
   if (!name || !loginId || !password)
     return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
 
-  const existing = await prisma.customer.findUnique({ where: { loginId } });
-  if (existing)
+  const existingLoginId = await prisma.customer.findUnique({ where: { loginId } });
+  if (existingLoginId)
     return NextResponse.json({ error: "このログインIDはすでに使われています" }, { status: 400 });
-
-  // メールの重複チェック：loginId未設定（管理者登録済み）は上書き対象なので除外
-  if (email) {
-    const existingEmail = await prisma.customer.findFirst({
-      where: { email, NOT: { loginId: null } },
-    });
-    if (existingEmail)
-      return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
-  }
 
   // 招待トークンから会社IDを取得
   let companyId = 1;
@@ -30,29 +21,33 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 管理者が同じメールで顧客登録済みの場合はそのレコードを更新
   let customer;
-  const adminCreated = email
-    ? await prisma.customer.findFirst({ where: { email, loginId: null } })
+  const existingEmail = email
+    ? await prisma.customer.findFirst({ where: { email } })
     : null;
 
-  if (adminCreated) {
+  if (existingEmail) {
+    // 有効なポータル登録済み（削除されていない＋loginIdあり）→重複エラー
+    if (!existingEmail.deleted && existingEmail.loginId) {
+      return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
+    }
+    // 管理者登録済み or 削除済み → 既存レコードを更新して再利用
     customer = await prisma.customer.update({
-      where: { id: adminCreated.id },
+      where: { id: existingEmail.id },
       data: {
         name,
-        address: address || adminCreated.address,
-        phone: phone || adminCreated.phone,
-        faxNumber: faxNumber || adminCreated.faxNumber,
+        address: address || existingEmail.address,
+        phone: phone || existingEmail.phone,
+        faxNumber: faxNumber || existingEmail.faxNumber,
         loginId,
         password,
         approved: false,
+        deleted: false,
       },
     });
-    // CustomerCompanyがなければ追加
     await prisma.customerCompany.upsert({
       where: { customerId_companyId: { customerId: customer.id, companyId } },
-      update: {},
+      update: { approved: false },
       create: { customerId: customer.id, companyId, approved: false },
     });
   } else {
