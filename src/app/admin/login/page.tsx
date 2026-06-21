@@ -75,9 +75,12 @@ export default function LoginPage() {
           >
             {loading ? "ログイン中..." : "ログイン"}
           </button>
-          <div className="text-center">
-            <Link href="/register" className="text-sm text-slate-500 hover:text-slate-700">
+          <div className="text-center space-y-1">
+            <Link href="/register" className="block text-sm text-slate-500 hover:text-slate-700">
               新規アカウント登録はこちら
+            </Link>
+            <Link href="/guide/admin" className="block text-sm text-slate-400 hover:text-slate-600">
+              操作マニュアル
             </Link>
           </div>
         </form>

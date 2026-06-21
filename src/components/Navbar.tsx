@@ -83,6 +83,7 @@ export default function Navbar() {
             })}
           </div>
           <div className="flex-1" />
+          <a href="/guide/admin" target="_blank" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">マニュアル</a>
           <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName || "マイページ"}</a>
           <button
             onClick={handleLogout}

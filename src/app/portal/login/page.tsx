@@ -1,5 +1,6 @@
 "use client";
 import { useState, Suspense } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function CustomerLoginForm() {
@@ -82,6 +83,11 @@ function CustomerLoginForm() {
               {loading ? "ログイン中..." : "ログイン"}
             </button>
           </form>
+          <div className="text-center pt-2">
+            <Link href="/guide/portal" className="text-sm text-slate-400 hover:text-slate-600">
+              操作マニュアル
+            </Link>
+          </div>
         </div>
       </div>
     </div>
