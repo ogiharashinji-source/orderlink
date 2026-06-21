@@ -60,9 +60,16 @@ export default function FaxLinkList() {
                 )}
                 {link.attachmentPath && (
                   <div className="mt-1.5">
-                    <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-0.5 rounded">
-                      📎 {link.attachmentPath}
-                    </span>
+                    {link.attachmentPath.startsWith("http") ? (
+                      <a href={link.attachmentPath} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-0.5 rounded hover:bg-blue-100">
+                        📎 {decodeURIComponent(link.attachmentPath.split("/").pop() ?? "添付ファイル")}
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 bg-gray-50 border border-gray-200 text-gray-500 text-xs px-2 py-0.5 rounded">
+                        📎 {link.attachmentPath}
+                      </span>
+                    )}
                   </div>
                 )}
                 {!link.title && !link.message && !link.attachmentPath && (

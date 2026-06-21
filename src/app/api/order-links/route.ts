@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { sendOrderLinkEmail } from "@/lib/mailer";
 import { getAdminCompanyId } from "@/lib/adminAuth";
+import { put } from "@vercel/blob";
 
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
@@ -28,6 +29,17 @@ export async function POST(req: NextRequest) {
 
   const token = randomBytes(16).toString("hex");
 
+  // ファイルをVercel Blobにアップロード
+  let storedUrl: string | null = null;
+  if (fileData && fileName && process.env.BLOB_READ_WRITE_TOKEN) {
+    const buffer = Buffer.from(fileData as string, "base64");
+    const blob = await put(`attachments/${token}/${fileName}`, buffer, {
+      access: "public",
+      contentType: (fileType as string) ?? "application/octet-stream",
+    });
+    storedUrl = blob.url;
+  }
+
   const link = await prisma.orderLink.create({
     data: {
       token,
@@ -37,7 +49,7 @@ export async function POST(req: NextRequest) {
       message: message || null,
       productIds: JSON.stringify(productIds ?? []),
       expiresAt: expiresAt ? new Date(expiresAt) : null,
-      attachmentPath: fileName || attachmentPath || null,
+      attachmentPath: storedUrl || fileName || attachmentPath || null,
     },
     include: { customer: true },
   });
