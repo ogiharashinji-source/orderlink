@@ -50,8 +50,22 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
     setSaving(true);
     setConfirmTargets(null);
 
-    const fileAttachment = await readFileAsBase64();
     const batchId = crypto.randomUUID();
+
+    // ファイルを1回だけアップロードしてURLを取得
+    let attachmentBlobUrl: string | null = null;
+    let attachmentBlobName: string | null = null;
+    if (attachmentFile) {
+      const form = new FormData();
+      form.append("file", attachmentFile);
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      if (res.ok) {
+        const data = await res.json();
+        attachmentBlobUrl = data.url ?? null;
+        attachmentBlobName = data.name ?? null;
+      }
+    }
+
     const payload = {
       title: title || null,
       message: message || null,
@@ -59,7 +73,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       expiresAt: null,
       batchId,
       sendMode,
-      ...(fileAttachment ?? {}),
+      ...(attachmentBlobUrl ? { attachmentBlobUrl, attachmentBlobName } : {}),
     };
 
     const results = await Promise.allSettled(

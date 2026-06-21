@@ -25,13 +25,15 @@ export async function POST(req: NextRequest) {
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType, batchId, sendMode } = body;
+  const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType, batchId, sendMode, attachmentBlobUrl, attachmentBlobName } = body;
 
   const token = randomBytes(16).toString("hex");
 
-  // ファイルをVercel Blobにアップロード（OIDC接続: BLOB_STORE_ID で認証）
-  let storedUrl: string | null = null;
-  if (fileData && fileName) {
+  // attachmentBlobUrl が渡された場合はアップロード済み → そのまま使用
+  // fileData が渡された場合は個別アップロード（フォールバック）
+  let storedUrl: string | null = attachmentBlobUrl ?? null;
+  const storedName: string | null = attachmentBlobName ?? fileName ?? null;
+  if (!storedUrl && fileData && fileName) {
     try {
       const buffer = Buffer.from(fileData as string, "base64");
       const blob = await put(`attachments/${token}/${fileName}`, buffer, {
@@ -39,7 +41,6 @@ export async function POST(req: NextRequest) {
         contentType: (fileType as string) ?? "application/octet-stream",
       });
       storedUrl = blob.url;
-      console.log("[Blob] アップロード成功:", storedUrl);
     } catch (err) {
       console.error("[Blob] アップロード失敗:", err);
     }
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
       message: message || null,
       productIds: JSON.stringify(productIds ?? []),
       expiresAt: expiresAt ? new Date(expiresAt) : null,
-      attachmentPath: storedUrl || fileName || attachmentPath || null,
+      attachmentPath: storedUrl || storedName || attachmentPath || null,
       batchId: batchId || null,
       sendMode: sendMode || null,
     },
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
       expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
       attachment,
       attachmentUrl: storedUrl,
-      attachmentName: fileName ?? null,
+      attachmentName: storedName,
     }).catch((err) => console.error("[sendOrderLinkEmail]", err));
   }
 
