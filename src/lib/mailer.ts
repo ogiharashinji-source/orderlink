@@ -119,6 +119,8 @@ export async function sendOrderLinkEmail({
   orderUrl,
   expiresAt,
   attachment,
+  attachmentUrl,
+  attachmentName,
 }: {
   to: string;
   customerName: string;
@@ -127,6 +129,8 @@ export async function sendOrderLinkEmail({
   orderUrl: string;
   expiresAt: string | null;
   attachment?: { filename: string; content: Buffer; contentType: string } | null;
+  attachmentUrl?: string | null;
+  attachmentName?: string | null;
 }) {
   const subject = title ? `【ご注文のご案内】${title}` : "【ご注文のご案内】発注書が届いています";
   const bodyMessage = message ?? "いつもお世話になっております。";
@@ -152,32 +156,23 @@ export async function sendOrderLinkEmail({
             <p style="margin:0 0 6px;font-size:16px;font-weight:bold;color:#222222;">${customerName} 様</p>
             <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>
 
-            <p style="margin:0 0 16px;font-size:14px;color:#555555;">
-              以下のボタンより、スマートフォンでかんたんにご注文いただけます。
-            </p>
-
-            <!-- 注文ボタン -->
+            <!-- ログインボタン -->
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
-                <td align="center" style="padding:8px 0 32px;">
+                <td align="center" style="padding:8px 0 16px;">
                   <a href="${orderUrl}"
                      style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
-                    ご注文はこちら
+                    ログインはこちら
                   </a>
                 </td>
               </tr>
             </table>
 
-            <p style="margin:0 0 8px;font-size:13px;color:#666666;">
-              ボタンが機能しない場合は、以下のURLをブラウザに貼り付けてください。
-            </p>
-            <p style="margin:0 0 28px;font-size:12px;color:#888888;word-break:break-all;">
-              <a href="${orderUrl}" style="color:#1e3a5f;">${orderUrl}</a>
-            </p>
-
-            <p style="margin:0;font-size:14px;color:#555555;">
-              ご不明な点がございましたら、お気軽にお問い合わせください。
-            </p>
+            ${attachmentUrl ? `
+            <!-- 添付ファイル -->
+            <p style="margin:16px 0 0;font-size:13px;color:#555555;">
+              📎 添付資料：<a href="${attachmentUrl}" style="color:#1e3a5f;">${attachmentName ?? "ファイルを開く"}</a>
+            </p>` : ""}
           </td>
         </tr>
 
@@ -201,11 +196,8 @@ export async function sendOrderLinkEmail({
     "",
     bodyMessage,
     "",
-    "以下のURLより、スマートフォンでかんたんにご注文いただけます。",
-    "",
     orderUrl,
-    "",
-    "ご不明な点がございましたら、お気軽にお問い合わせください。",
+    ...(attachmentUrl ? ["", `添付資料: ${attachmentUrl}`] : []),
   ].join("\n");
 
   if (DEV) {

@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
   if (link.customer?.email) {
     const origin = req.nextUrl.origin;
-    const orderUrl = `${origin}/order/${token}`;
+    const orderUrl = `${origin}/portal/login`;
     const attachment = fileData && fileName
       ? { filename: fileName, content: Buffer.from(fileData as string, "base64"), contentType: (fileType as string) ?? "application/octet-stream" }
       : null;
@@ -68,6 +68,8 @@ export async function POST(req: NextRequest) {
       orderUrl,
       expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
       attachment,
+      attachmentUrl: storedUrl,
+      attachmentName: fileName ?? null,
     }).catch((err) => console.error("[sendOrderLinkEmail]", err));
   }
 
