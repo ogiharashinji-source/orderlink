@@ -86,3 +86,20 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json(link, { status: 201 });
 }
+
+export async function DELETE(req: NextRequest) {
+  const companyId = await getAdminCompanyId(req);
+  if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { batchId, id } = await req.json();
+
+  if (batchId) {
+    await prisma.orderLink.deleteMany({ where: { companyId, batchId } });
+  } else if (id) {
+    await prisma.orderLink.deleteMany({ where: { companyId, id: Number(id) } });
+  } else {
+    return NextResponse.json({ error: "batchId or id required" }, { status: 400 });
+  }
+
+  return NextResponse.json({ ok: true });
+}

@@ -26,10 +26,27 @@ type Batch = {
 export default function FaxLinkList() {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [openBatch, setOpenBatch] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetch("/api/order-links").then((r) => r.json()).then(setLinks);
-  }, []);
+  const load = () => fetch("/api/order-links").then((r) => r.json()).then(setLinks);
+
+  useEffect(() => { load(); }, []);
+
+  const handleDelete = async (batchId: string) => {
+    if (!confirm("この送信履歴を削除しますか？")) return;
+    setDeleting(batchId);
+    const isSolo = batchId.startsWith("solo-");
+    const body = isSolo
+      ? { id: Number(batchId.replace("solo-", "")) }
+      : { batchId };
+    await fetch("/api/order-links", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    setDeleting(null);
+    load();
+  };
 
   if (links.length === 0) {
     return (
@@ -76,6 +93,7 @@ export default function FaxLinkList() {
               <th className="px-4 py-3">宛先</th>
               <th className="px-4 py-3">タイトル・メッセージ</th>
               <th className="px-4 py-3">添付ファイル</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -122,6 +140,15 @@ export default function FaxLinkList() {
                   ) : (
                     <span className="text-gray-300">—</span>
                   )}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={() => handleDelete(batch.batchId!)}
+                    disabled={deleting === batch.batchId}
+                    className="text-xs text-red-400 hover:text-red-600 disabled:opacity-40"
+                  >
+                    削除
+                  </button>
                 </td>
               </tr>
             ))}
