@@ -1,10 +1,10 @@
 "use client";
 
-export default function BackButton({ label = "トップへ戻る" }: { label?: string }) {
+export default function BackButton({ label = "戻る" }: { label?: string }) {
   return (
     <button
       onClick={() => window.history.back()}
-      className="hover:underline text-gray-500 cursor-pointer text-sm"
+      className="hover:underline text-blue-500 cursor-pointer text-sm"
     >
       {label}
     </button>
