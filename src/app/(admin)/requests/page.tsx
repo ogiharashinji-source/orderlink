@@ -276,7 +276,7 @@ export default function RequestsPage() {
                             <button
                               onClick={() => handleConfirm(req)}
                               disabled={confirming === req.id}
-                              className="bg-blue-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
+                              className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-50 whitespace-nowrap"
                             >
                               {confirming === req.id ? "処理中..." : "確認"}
                             </button>
