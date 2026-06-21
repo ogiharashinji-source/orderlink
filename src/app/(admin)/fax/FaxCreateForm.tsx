@@ -35,11 +35,12 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
     });
   };
 
-  // 送信ボタン → まず確認モーダル表示
+  // 送信ボタン → まず確認モーダル表示（メールアドレスありのみ）
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const targets = sendMode === "全体" ? customers : customers.filter((c) => selectedIds.has(c.id));
-    if (targets.length === 0) { alert("送信先が選択されていません"); return; }
+    const base = sendMode === "全体" ? customers : customers.filter((c) => selectedIds.has(c.id));
+    const targets = base.filter((c) => c.email);
+    if (targets.length === 0) { alert("メールアドレスが登録されている顧客がいません"); return; }
     setConfirmTargets(targets);
   };
 
@@ -181,7 +182,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
                 {confirmTargets.map((c) => (
                   <div key={c.id} className="px-3 py-2.5">
                     <div className="font-medium text-sm text-gray-900">{c.name}</div>
-                    <div className="text-xs text-gray-400">{c.email ?? "メールアドレス未登録"}</div>
+                    <div className="text-xs text-gray-400">{c.email}</div>
                   </div>
                 ))}
               </div>
