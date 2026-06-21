@@ -31,14 +31,11 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
         <!-- 本文 -->
         <tr>
           <td style="padding:40px 40px 32px;">
-            <p style="margin:0 0 8px;font-size:15px;color:#333333;line-height:1.9;">
-              ${company}様より OrderLink ポータルへご招待いたしました。
-            </p>
-            <p style="margin:0 0 8px;font-size:15px;color:#333333;line-height:1.9;">
-              OrderLinkにご登録いただくことで、${shortCompany}の商品をオンラインで簡単にご発注いただけるようになります。
+            <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.9;">
+              ${company}様より OrderLink ポータルへご招待されました。
             </p>
             <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
-              下記のボタンよりアカウントを作成のうえ、ご利用を開始してください。
+              OrderLinkにご登録いただくことで、商品をオンラインで簡単にご発注いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。
             </p>
 
             <!-- ボタン -->
@@ -88,11 +85,9 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
 </html>`;
 
   const text = [
-    `${company}様より OrderLink ポータルへご招待いたしました。`,
+    `${company}様より OrderLink ポータルへご招待されました。`,
     "",
-    `OrderLinkにご登録いただくことで、${shortCompany}の商品をオンラインで簡単にご発注いただけるようになります。`,
-    "",
-    "下記のボタンよりアカウントを作成のうえ、ご利用を開始してください。",
+    "OrderLinkにご登録いただくことで、商品をオンラインで簡単にご発注いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。",
     "",
     inviteUrl,
     "",
