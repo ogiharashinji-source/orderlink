@@ -118,6 +118,14 @@ export default function PortalProfilePage() {
           </div>
         </div>
 
+        <div className="flex items-center gap-4 pt-1">
+          <button type="submit" disabled={saving}
+            className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50" style={{ background: "#1e3a8a" }}>
+            {saving ? "保存中..." : "登録する"}
+          </button>
+          {saved && <p className="text-sm text-green-600">保存しました</p>}
+        </div>
+
         <div className="border-t pt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">ログインID</label>
@@ -138,19 +146,12 @@ export default function PortalProfilePage() {
           <div className="flex items-center gap-4">
             <button type="button" onClick={handlePasswordChange} disabled={changingPw || !currentPassword || !password || !confirmPassword}
               className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40">
-              {changingPw ? "変更中..." : "変更"}
+              {changingPw ? "変更中..." : "変更する"}
             </button>
             {pwChanged && <p className="text-sm text-green-600">パスワードを変更しました</p>}
           </div>
         </div>
 
-        <div className="flex items-center gap-4 pt-2">
-          <button type="submit" disabled={saving}
-            className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50" style={{ background: "#1e3a8a" }}>
-            {saving ? "保存中..." : "保存する"}
-          </button>
-          {saved && <p className="text-sm text-green-600">保存しました</p>}
-        </div>
       </form>
     </div>
   );

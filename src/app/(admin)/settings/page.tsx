@@ -47,6 +47,34 @@ export default function SettingsPage() {
   const set = (key: keyof Setting) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  const handleSaveInfo = async () => {
+    if (!form.companyName) { alert("会社名を入力してください"); return; }
+    if (!confirm("会社情報を登録しますか？")) return;
+    setSaving(true);
+    const payload: Record<string, string | null> = {
+      companyName: form.companyName,
+      address: form.address || null,
+      phone: form.phone || null,
+      faxNumber: form.faxNumber || null,
+      email: form.email || null,
+    };
+    if (form.loginId) payload.loginId = form.loginId;
+    const res = await fetch("/api/admin/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    setSaving(false);
+    if (res.status === 401 || res.redirected) { router.push("/admin/login"); return; }
+    if (res.ok) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      const data = await res.json();
+      alert(data.error ?? "保存に失敗しました");
+    }
+  };
+
   const handlePasswordChange = async () => {
     if (!form.currentPassword) { alert("現在のパスワードを入力してください"); return; }
     if (form.password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
@@ -73,40 +101,11 @@ export default function SettingsPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!confirm("設定を保存しますか？")) return;
-    setSaving(true);
-    const payload: Record<string, string | null> = {
-      companyName: form.companyName,
-      address: form.address || null,
-      phone: form.phone || null,
-      faxNumber: form.faxNumber || null,
-      email: form.email || null,
-    };
-    if (form.loginId) payload.loginId = form.loginId;
-    const res = await fetch("/api/admin/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setSaving(false);
-    if (res.status === 401 || res.redirected) { router.push("/admin/login"); return; }
-    if (res.ok) {
-      setSaved(true);
-      setForm((f) => ({ ...f, currentPassword: "", password: "", confirmPassword: "" }));
-      setTimeout(() => setSaved(false), 3000);
-    } else {
-      const data = await res.json();
-      alert(data.error ?? "保存に失敗しました");
-    }
-  };
-
   return (
     <div className="space-y-6 max-w-2xl">
       <h1 className="text-2xl font-bold text-gray-900">マイページ</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-4">
+      <div className="bg-white rounded-xl shadow p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
           <input required value={form.companyName} onChange={set("companyName")} className={inputCls} />
@@ -129,6 +128,14 @@ export default function SettingsPage() {
           <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
           <input required type="email" value={form.email ?? ""} onChange={set("email")} className={inputCls} />
         </div>
+        <div className="flex items-center gap-4 pt-1">
+          <button type="button" onClick={handleSaveInfo} disabled={saving}
+            className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50" style={{ background: "#1e3a8a" }}>
+            {saving ? "保存中..." : "登録する"}
+          </button>
+          {saved && <p className="text-sm text-green-600">保存しました</p>}
+        </div>
+
         <div className="border-t pt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
@@ -149,20 +156,12 @@ export default function SettingsPage() {
           <div className="flex items-center gap-4">
             <button type="button" onClick={handlePasswordChange} disabled={changingPw || !form.currentPassword || !form.password || !form.confirmPassword}
               className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40">
-              {changingPw ? "変更中..." : "変更"}
+              {changingPw ? "変更中..." : "変更する"}
             </button>
             {pwChanged && <p className="text-sm text-green-600">パスワードを変更しました</p>}
           </div>
         </div>
-
-        <div className="flex items-center gap-4 pt-2">
-          <button type="submit" disabled={saving}
-            className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50" style={{ background: "#1e3a8a" }}>
-            {saving ? "保存中..." : "保存する"}
-          </button>
-          {saved && <p className="text-sm text-green-600">保存しました</p>}
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
