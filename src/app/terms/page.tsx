@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BackButton from "@/components/BackButton";
+import CloseButton from "@/components/CloseButton";
 
 export const metadata = { title: "利用規約 | OrderLink" };
 
@@ -74,7 +74,7 @@ export default function TermsPage() {
 
         <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-blue-600">
           <Link href="/privacy" className="hover:underline">プライバシーポリシー</Link>
-          <BackButton />
+          <CloseButton />
         </div>
       </div>
     </div>
