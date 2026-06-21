@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
 export async function GET() {
   const customers = await prisma.customer.findMany({
-    where: { deleted: false },
+    where: { deleted: false, approved: true },
     orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, address: true, phone: true, email: true,
