@@ -24,24 +24,35 @@ export async function PUT(req: NextRequest) {
   const customer = await getCustomerSession();
   if (!customer) return NextResponse.json({ error: "未ログイン" }, { status: 401 });
 
-  const { name, company, phone, faxNumber, email, address, password, currentPassword } = await req.json();
+  const { name, company, phone, faxNumber, email, address, currentLoginId, currentPassword, newLoginId, newPassword, newPasswordConfirm } = await req.json();
 
-  if (password) {
-    const record = await prisma.customer.findUnique({ where: { id: customer.id }, select: { password: true } });
-    if (!record?.password || record.password !== currentPassword) {
-      return NextResponse.json({ error: "現在のパスワードが正しくありません" }, { status: 400 });
-    }
+  // 会員情報の保存
+  if (name !== undefined) {
+    const data: Record<string, unknown> = {
+      name: name || customer.name,
+      company: company || null,
+      phone: phone || null,
+      faxNumber: faxNumber || null,
+      email: email || null,
+      address: address || null,
+    };
+    await prisma.customer.update({ where: { id: customer.id }, data });
   }
 
-  const data: Record<string, unknown> = {
-    name: name || customer.name,
-    company: company || null,
-    phone: phone || null,
-    faxNumber: faxNumber || null,
-    email: email || null,
-    address: address || null,
-  };
-  if (password) data.password = password;
-  const updated = await prisma.customer.update({ where: { id: customer.id }, data });
-  return NextResponse.json(updated);
+  // ID・パスワード変更
+  if (currentLoginId && currentPassword && newLoginId && newPassword) {
+    if (newPassword !== newPasswordConfirm) {
+      return NextResponse.json({ error: "新しいパスワードが一致しません" }, { status: 400 });
+    }
+    const record = await prisma.customer.findUnique({ where: { id: customer.id }, select: { loginId: true, password: true } });
+    if (record?.loginId !== currentLoginId) {
+      return NextResponse.json({ error: "現在のIDが正しくありません" }, { status: 400 });
+    }
+    if (record?.password !== currentPassword) {
+      return NextResponse.json({ error: "現在のパスワードが正しくありません" }, { status: 400 });
+    }
+    await prisma.customer.update({ where: { id: customer.id }, data: { loginId: newLoginId, password: newPassword } });
+  }
+
+  return NextResponse.json({ ok: true });
 }

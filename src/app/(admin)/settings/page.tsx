@@ -2,28 +2,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-type Setting = {
-  companyName: string;
-  address: string | null;
-  phone: string | null;
-  faxNumber: string | null;
-  email: string | null;
-  loginId: string;
-  currentPassword: string;
-  password: string;
-  confirmPassword: string;
-};
-
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function SettingsPage() {
-  const [form, setForm] = useState<Setting>({
-    companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", currentPassword: "", password: "", confirmPassword: "",
-  });
+  const [form, setForm] = useState({ companyName: "", address: "", phone: "", faxNumber: "", email: "" });
+  const [creds, setCreds] = useState({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "", newPasswordConfirm: "" });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [changingPw, setChangingPw] = useState(false);
-  const [pwChanged, setPwChanged] = useState(false);
+  const [changingCreds, setChangingCreds] = useState(false);
+  const [credsChanged, setCredsChanged] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,74 +19,72 @@ export default function SettingsPage() {
       return r.json();
     }).then((d) => {
       if (!d) return;
-      setForm((f) => ({
-        ...f,
+      setForm({
         companyName: d.companyName ?? "",
         address: d.address ?? "",
         phone: d.phone ?? "",
         faxNumber: d.faxNumber ?? "",
         email: d.email ?? "",
-        loginId: d.loginId ?? "",
-      }));
+      });
     });
-  }, []);
+  }, [router]);
 
-  const set = (key: keyof Setting) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const setF = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const setC = (key: keyof typeof creds) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setCreds((c) => ({ ...c, [key]: e.target.value }));
 
   const handleSaveInfo = async () => {
     if (!form.companyName) { alert("会社名を入力してください"); return; }
     if (!confirm("会社情報を登録しますか？")) return;
     setSaving(true);
-    const payload: Record<string, string | null> = {
-      companyName: form.companyName,
-      address: form.address || null,
-      phone: form.phone || null,
-      faxNumber: form.faxNumber || null,
-      email: form.email || null,
-    };
-    if (form.loginId) payload.loginId = form.loginId;
-    const res = await fetch("/api/admin/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    setSaving(false);
-    if (res.status === 401 || res.redirected) { router.push("/admin/login"); return; }
-    if (res.ok) {
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } else {
-      const data = await res.json();
-      alert(data.error ?? "保存に失敗しました");
-    }
-  };
-
-  const handlePasswordChange = async () => {
-    if (!form.currentPassword) { alert("現在のパスワードを入力してください"); return; }
-    if (form.password.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
-    if (form.password !== form.confirmPassword) { alert("新しいパスワードと確認用パスワードが一致しません"); return; }
-    if (!confirm("パスワードを変更しますか？")) return;
-    setChangingPw(true);
     const res = await fetch("/api/admin/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         companyName: form.companyName,
-        password: form.password,
-        currentPassword: form.currentPassword,
+        address: form.address || null,
+        phone: form.phone || null,
+        faxNumber: form.faxNumber || null,
+        email: form.email || null,
       }),
     });
-    setChangingPw(false);
+    setSaving(false);
+    if (res.status === 401) { router.push("/admin/login"); return; }
+    if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000); }
+    else { const d = await res.json(); alert(d.error ?? "保存に失敗しました"); }
+  };
+
+  const handleChangeCreds = async () => {
+    if (creds.newPassword.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
+    if (creds.newPassword !== creds.newPasswordConfirm) { alert("新しいパスワードが一致しません"); return; }
+    if (!confirm("ID・パスワードを変更しますか？")) return;
+    setChangingCreds(true);
+    const res = await fetch("/api/admin/settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        companyName: form.companyName,
+        currentLoginId: creds.currentLoginId,
+        currentPassword: creds.currentPassword,
+        newLoginId: creds.newLoginId,
+        newPassword: creds.newPassword,
+        newPasswordConfirm: creds.newPasswordConfirm,
+      }),
+    });
+    setChangingCreds(false);
     if (res.ok) {
-      setPwChanged(true);
-      setForm((f) => ({ ...f, currentPassword: "", password: "", confirmPassword: "" }));
-      setTimeout(() => setPwChanged(false), 3000);
+      setCredsChanged(true);
+      setCreds({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "", newPasswordConfirm: "" });
+      setTimeout(() => setCredsChanged(false), 3000);
     } else {
-      const data = await res.json();
-      alert(data.error ?? "変更に失敗しました");
+      const d = await res.json();
+      alert(d.error ?? "変更に失敗しました");
     }
   };
+
+  const credsReady = creds.currentLoginId && creds.currentPassword && creds.newLoginId && creds.newPassword && creds.newPasswordConfirm;
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -108,25 +93,25 @@ export default function SettingsPage() {
       <div className="bg-white rounded-xl shadow p-6 space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
-          <input required value={form.companyName} onChange={set("companyName")} className={inputCls} />
+          <input value={form.companyName} onChange={setF("companyName")} className={inputCls} />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">住所 <span className="text-red-500">*</span></label>
-          <input required value={form.address ?? ""} onChange={set("address")} className={inputCls} />
+          <label className="block text-sm font-medium text-gray-700 mb-1">住所</label>
+          <input value={form.address} onChange={setF("address")} className={inputCls} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
-            <input required value={form.phone ?? ""} onChange={set("phone")} className={inputCls} />
+            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
+            <input value={form.phone} onChange={setF("phone")} className={inputCls} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-            <input value={form.faxNumber ?? ""} onChange={set("faxNumber")} className={inputCls} />
+            <input value={form.faxNumber} onChange={setF("faxNumber")} className={inputCls} />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
-          <input required type="email" value={form.email ?? ""} onChange={set("email")} className={inputCls} />
+          <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+          <input type="email" value={form.email} onChange={setF("email")} className={inputCls} />
         </div>
         <div className="flex items-center gap-4 pt-1">
           <button type="button" onClick={handleSaveInfo} disabled={saving}
@@ -137,28 +122,35 @@ export default function SettingsPage() {
         </div>
 
         <div className="border-t pt-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
-            <input value={form.loginId} onChange={set("loginId")} className={inputCls} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">現在のパスワード</label>
-            <input type="password" value={form.currentPassword} onChange={set("currentPassword")} placeholder="パスワードを変更する場合のみ入力" className={inputCls} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード <span className="text-xs text-gray-400">（6文字以上）</span></label>
-            <input type="password" value={form.password} onChange={set("password")} placeholder="8文字以上" className={inputCls} />
+          <p className="text-sm font-medium text-gray-700">ID・パスワードの変更</p>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">現在のID</label>
+              <input value={creds.currentLoginId} onChange={setC("currentLoginId")} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">現在のパスワード</label>
+              <input type="password" value={creds.currentPassword} onChange={setC("currentPassword")} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">新しいID</label>
+              <input value={creds.newLoginId} onChange={setC("newLoginId")} className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード <span className="text-xs text-gray-400">（6文字以上）</span></label>
+              <input type="password" value={creds.newPassword} onChange={setC("newPassword")} className={inputCls} />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード（確認）</label>
-            <input type="password" value={form.confirmPassword} onChange={set("confirmPassword")} placeholder="もう一度入力" className={inputCls} />
+            <input type="password" value={creds.newPasswordConfirm} onChange={setC("newPasswordConfirm")} className={inputCls} />
           </div>
           <div className="flex items-center gap-4">
-            <button type="button" onClick={handlePasswordChange} disabled={changingPw || !form.currentPassword || !form.password || !form.confirmPassword}
+            <button type="button" onClick={handleChangeCreds} disabled={changingCreds || !credsReady}
               className="px-5 py-2 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-40">
-              {changingPw ? "変更中..." : "変更する"}
+              {changingCreds ? "変更中..." : "変更する"}
             </button>
-            {pwChanged && <p className="text-sm text-green-600">パスワードを変更しました</p>}
+            {credsChanged && <p className="text-sm text-green-600">ID・パスワードを変更しました</p>}
           </div>
         </div>
       </div>
