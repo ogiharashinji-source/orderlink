@@ -64,12 +64,15 @@ export async function POST(req: NextRequest) {
   if (link.customer?.email) {
     const origin = req.nextUrl.origin;
     const orderUrl = `${origin}/portal/login`;
+    const setting = await prisma.adminSetting.findUnique({ where: { companyId } });
+    const senderName = setting?.companyName ?? "";
     const attachment = fileData && fileName
       ? { filename: fileName, content: Buffer.from(fileData as string, "base64"), contentType: (fileType as string) ?? "application/octet-stream" }
       : null;
     sendOrderLinkEmail({
       to: link.customer.email,
       customerName: link.customer?.name ?? "",
+      senderName,
       title: link.title,
       message: link.message,
       orderUrl,
