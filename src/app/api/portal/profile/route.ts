@@ -26,8 +26,8 @@ export async function PUT(req: NextRequest) {
 
   const { name, company, phone, faxNumber, email, address, currentLoginId, currentPassword, newLoginId, newPassword } = await req.json();
 
-  // 会員情報の保存
-  if (name !== undefined) {
+  // 会員情報の保存（name と address が両方ある時のみ）
+  if (name !== undefined && address !== undefined) {
     const data: Record<string, unknown> = {
       name: name || customer.name,
       company: company || null,

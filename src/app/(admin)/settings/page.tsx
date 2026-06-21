@@ -64,7 +64,6 @@ export default function SettingsPage() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        companyName: form.companyName,
         currentLoginId: creds.currentLoginId,
         currentPassword: creds.currentPassword,
         newLoginId: creds.newLoginId,

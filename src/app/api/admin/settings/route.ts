@@ -25,8 +25,8 @@ export async function PUT(req: NextRequest) {
   const { companyName, address, phone, faxNumber, email, currentLoginId, currentPassword, newLoginId, newPassword } = await req.json();
   const setting = await getOrCreateSetting(companyId);
 
-  // 会社情報の保存
-  if (companyName !== undefined) {
+  // 会社情報の保存（明示的に送られたフィールドのみ更新）
+  if (companyName !== undefined && address !== undefined) {
     await prisma.adminSetting.update({
       where: { id: setting.id },
       data: {
