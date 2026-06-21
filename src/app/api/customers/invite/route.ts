@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
   });
 
   if (email) {
-    await sendInviteEmail(email, inviteUrl);
+    const setting = await prisma.adminSetting.findUnique({ where: { companyId } });
+    await sendInviteEmail(email, inviteUrl, setting?.companyName ?? "");
   }
 
   return NextResponse.json({ ok: true, inviteUrl });

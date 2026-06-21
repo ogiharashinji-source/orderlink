@@ -5,19 +5,113 @@ const DEV = !process.env.RESEND_API_KEY;
 
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
-export async function sendInviteEmail(to: string, inviteUrl: string) {
+export async function sendInviteEmail(to: string, inviteUrl: string, senderName = "") {
+  const subject = senderName
+    ? `【OrderLink】${senderName}よりポータル登録のご案内`
+    : "【OrderLink】ポータル登録のご案内";
+
+  const senderLine = senderName ? `<b>${senderName}</b>より` : "";
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+        <!-- ヘッダー -->
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+
+        <!-- 本文 -->
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.8;">
+              この度は${senderLine}OrderLinkポータルへご招待いたします。<br>
+              以下のボタンよりアカウントを作成してください。
+            </p>
+
+            <!-- ボタン -->
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:8px 0 32px;">
+                  <a href="${inviteUrl}"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    アカウントを登録する
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0 0 8px;font-size:13px;color:#666666;line-height:1.7;">
+              ボタンが機能しない場合は、以下のURLをブラウザに貼り付けてください。
+            </p>
+            <p style="margin:0 0 32px;font-size:12px;color:#888888;word-break:break-all;">
+              <a href="${inviteUrl}" style="color:#1e3a5f;">${inviteUrl}</a>
+            </p>
+
+            <!-- 注意事項 -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fb;border-radius:6px;">
+              <tr>
+                <td style="padding:16px 20px;">
+                  <p style="margin:0 0 6px;font-size:13px;font-weight:bold;color:#444444;">ご注意事項</p>
+                  <ul style="margin:0;padding-left:18px;font-size:13px;color:#666666;line-height:1.8;">
+                    <li>このURLの有効期限は <b>24時間</b> です。</li>
+                    <li>このメールに心当たりのない場合は、破棄してください。</li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- フッター -->
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999999;">
+              このメールはOrderLinkから自動送信されています。<br>
+              返信はお受けできません。
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
+    subject,
+    "",
+    senderName ? `${senderName}よりOrderLinkポータルへご招待いたします。` : "OrderLinkポータルへご招待いたします。",
+    "以下のURLよりアカウントを作成してください。",
+    "",
+    inviteUrl,
+    "",
+    "※ このURLの有効期限は24時間です。",
+    "※ このメールに心当たりのない場合は、破棄してください。",
+  ].join("\n");
+
   if (DEV) {
     console.log("========== [招待メール] ==========");
     console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
     console.log(`招待URL: ${inviteUrl}`);
     console.log("==================================");
     return;
   }
+
   await getResend().emails.send({
     from: FROM,
     to,
-    subject: "ご登録のご案内",
-    text: `以下のURLよりご登録をお願いいたします。\n\n${inviteUrl}`,
+    subject,
+    html,
+    text,
   });
 }
 
