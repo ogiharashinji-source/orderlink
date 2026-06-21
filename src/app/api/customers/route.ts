@@ -9,11 +9,14 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q") ?? "";
   const unapproved = searchParams.get("unapproved") === "1";
+  const approvedOnly = searchParams.get("approved") === "1";
 
   // プライマリ会員
   const primaryCustomers = await prisma.customer.findMany({
     where: unapproved
       ? { companyId, deleted: false, approved: false }
+      : approvedOnly
+      ? { companyId, deleted: false, approved: true, ...(q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] } : {}) }
       : q
       ? { companyId, deleted: false, OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] }
       : { companyId, deleted: false },

@@ -20,7 +20,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch("/api/customers").then((r) => r.json()).then(setCustomers);
+    fetch("/api/customers?approved=1").then((r) => r.json()).then(setCustomers);
   }, []);
 
   const readFileAsBase64 = (): Promise<{ fileData: string; fileName: string; fileType: string } | null> => {
