@@ -134,8 +134,7 @@ export async function sendOrderLinkEmail({
   attachmentUrl?: string | null;
   attachmentName?: string | null;
 }) {
-  const base = senderName ? `${senderName}様からお連絡が届いています` : "お連絡が届いています";
-  const subject = title ? `${base}【${title}】` : base;
+  const subject = senderName ? `${senderName}様からお連絡が届いています` : "お連絡が届いています";
   const bodyMessage = message ?? "";
 
   const html = `<!DOCTYPE html>
