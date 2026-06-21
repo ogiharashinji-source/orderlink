@@ -84,9 +84,9 @@ function CustomerLoginForm() {
             </button>
           </form>
           <div className="text-center pt-2">
-            <Link href="/guide/portal" className="text-sm text-slate-400 hover:text-slate-600">
+            <button type="button" onClick={() => window.open("/guide/portal", "manual", "width=860,height=700,scrollbars=yes")} className="text-sm text-slate-400 hover:text-slate-600">
               操作マニュアル
-            </Link>
+            </button>
           </div>
         </div>
       </div>
