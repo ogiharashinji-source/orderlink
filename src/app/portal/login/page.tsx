@@ -2,6 +2,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import ManualModal from "@/components/ManualModal";
 
 function CustomerLoginForm() {
   const [loginId, setLoginId] = useState("");
@@ -84,9 +85,7 @@ function CustomerLoginForm() {
             </button>
           </form>
           <div className="text-center pt-2">
-            <button type="button" onClick={() => window.open("/guide/portal", "manual", "width=860,height=700,scrollbars=yes")} className="text-sm text-slate-400 hover:text-slate-600">
-              操作マニュアル
-            </button>
+            <ManualModal type="portal" />
           </div>
         </div>
       </div>

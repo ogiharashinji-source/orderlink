@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ManualModal from "@/components/ManualModal";
 
 export default function LoginPage() {
   const [id, setId] = useState("");
@@ -79,9 +80,7 @@ export default function LoginPage() {
             <Link href="/register" className="block text-sm text-slate-500 hover:text-slate-700">
               新規アカウント登録はこちら
             </Link>
-            <button type="button" onClick={() => window.open("/guide/admin", "manual", "width=860,height=700,scrollbars=yes")} className="block w-full text-sm text-slate-400 hover:text-slate-600">
-              操作マニュアル
-            </button>
+            <ManualModal type="admin" />
           </div>
         </form>
       </div>
