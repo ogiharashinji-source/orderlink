@@ -32,7 +32,10 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-lg bg-white rounded-xl shadow p-8">
-        <h1 className="text-xl font-bold text-gray-900 mb-6">お問い合わせ</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-bold text-gray-900">お問い合わせ</h1>
+          <button onClick={() => router.back()} className="text-sm text-gray-400 hover:text-gray-600">戻る →</button>
+        </div>
 
         {done ? (
           <div className="text-center space-y-4">
