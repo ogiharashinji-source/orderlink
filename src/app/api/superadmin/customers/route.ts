@@ -38,8 +38,13 @@ export async function POST(req: Request) {
       return NextResponse.json(customer, { status: 200 });
     }
 
+    // companyId=1が存在しない環境に対応：既存の最初の会社IDを使用
+    const firstCompany = await prisma.company.findFirst({ orderBy: { id: "asc" } });
+    const defaultCompanyId = firstCompany?.id ?? 1;
+
     const customer = await prisma.customer.create({
       data: {
+        companyId: defaultCompanyId,
         name,
         email: email || null,
         phone: phone || null,
