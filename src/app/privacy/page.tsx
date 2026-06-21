@@ -95,7 +95,7 @@ export default function PrivacyPage() {
         </section>
 
         <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-blue-600">
-          <Link href="/terms" className="hover:underline">利用規約</Link>
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="hover:underline">利用規約</a>
           <CloseButton />
         </div>
       </div>

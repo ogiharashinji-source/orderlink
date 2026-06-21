@@ -73,7 +73,7 @@ export default function TermsPage() {
         </section>
 
         <div className="pt-4 border-t border-gray-100 flex gap-4 text-sm text-blue-600">
-          <Link href="/privacy" className="hover:underline">プライバシーポリシー</Link>
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:underline">プライバシーポリシー</a>
           <CloseButton />
         </div>
       </div>
