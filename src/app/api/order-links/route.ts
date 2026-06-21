@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       message: message || null,
       productIds: JSON.stringify(productIds ?? []),
       expiresAt: expiresAt ? new Date(expiresAt) : null,
-      attachmentPath: attachmentPath || null,
+      attachmentPath: fileName || attachmentPath || null,
     },
     include: { customer: true },
   });

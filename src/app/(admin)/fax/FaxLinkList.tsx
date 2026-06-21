@@ -8,6 +8,7 @@ type LinkItem = {
   message: string | null;
   createdAt: string;
   expiresAt: string | null;
+  attachmentPath: string | null;
   customer: { name: string; company: string | null; email: string | null } | null;
 };
 
@@ -59,7 +60,12 @@ export default function FaxLinkList() {
                 {link.message && (
                   <div className="text-gray-500 text-xs line-clamp-2">{link.message}</div>
                 )}
-                {!link.title && !link.message && (
+                {link.attachmentPath && (
+                  <span className="inline-flex items-center gap-1 mt-1 text-xs text-gray-500">
+                    📎 {link.attachmentPath}
+                  </span>
+                )}
+                {!link.title && !link.message && !link.attachmentPath && (
                   <span className="text-gray-300">—</span>
                 )}
               </td>
