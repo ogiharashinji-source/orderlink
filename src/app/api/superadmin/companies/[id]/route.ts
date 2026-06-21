@@ -21,6 +21,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const companyId = parseInt(id);
   const { companyName, address, phone, faxNumber, email, loginId, password } = await req.json();
 
+  if (email) {
+    const existingEmail = await prisma.adminSetting.findFirst({
+      where: { email, NOT: { companyId } },
+    });
+    if (existingEmail) {
+      return NextResponse.json({ error: "このメールアドレスは既に使用されています" }, { status: 409 });
+    }
+  }
+
   await prisma.adminSetting.updateMany({
     where: { companyId },
     data: {

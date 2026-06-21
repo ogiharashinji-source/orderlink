@@ -26,6 +26,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "このログインIDは既に使用されています" }, { status: 409 });
   }
 
+  if (email) {
+    const existingEmail = await prisma.adminSetting.findFirst({ where: { email } });
+    if (existingEmail) {
+      return NextResponse.json({ error: "このメールアドレスは既に使用されています" }, { status: 409 });
+    }
+  }
+
   const company = await prisma.company.create({
     data: {
       name: companyName || loginId,
