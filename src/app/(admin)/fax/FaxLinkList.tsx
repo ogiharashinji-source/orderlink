@@ -282,9 +282,6 @@ export default function FaxLinkList() {
                   {batch.recipients.map((r, i) => (
                     <div key={i} className="px-5 py-2.5">
                       <div className="text-sm font-medium text-gray-900">{r.name}</div>
-                      {r.email && (
-                        <div className="text-xs text-gray-400">{r.email}</div>
-                      )}
                     </div>
                   ))}
                 </div>
