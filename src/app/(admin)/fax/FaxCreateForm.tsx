@@ -49,33 +49,36 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       ...(fileAttachment ?? {}),
     };
 
+    const sendToCustomers = async (targets: Customer[]) => {
+      const results = await Promise.allSettled(
+        targets.map(async (c) => {
+          const res = await fetch("/api/order-links", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...payload, customerId: c.id }),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(`${c.name}: ${data.error ?? res.status}`);
+          }
+        })
+      );
+      const failures = results.filter((r) => r.status === "rejected") as PromiseRejectedResult[];
+      if (failures.length > 0) {
+        alert("送信に失敗しました:\n" + failures.map((f) => f.reason?.message ?? "不明なエラー").join("\n"));
+        setSaving(false);
+      } else {
+        setSaving(false);
+        onCreated();
+      }
+    };
+
     if (sendMode === "全体") {
       if (customers.length === 0) { alert("顧客が登録されていません"); setSaving(false); return; }
-      const results = await Promise.all(
-        customers.map((c) =>
-          fetch("/api/order-links", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...payload, customerId: c.id }),
-          })
-        )
-      );
-      if (results.every((r) => r.ok)) { setSaving(false); onCreated(); }
-      else { alert("一部の送信に失敗しました"); setSaving(false); }
+      await sendToCustomers(customers);
     } else {
       if (selectedIds.size === 0) { alert("顧客を1件以上選択してください"); setSaving(false); return; }
-      const targets = customers.filter((c) => selectedIds.has(c.id));
-      const results = await Promise.all(
-        targets.map((c) =>
-          fetch("/api/order-links", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...payload, customerId: c.id }),
-          })
-        )
-      );
-      if (results.every((r) => r.ok)) { setSaving(false); onCreated(); }
-      else { alert("一部の送信に失敗しました"); setSaving(false); }
+      await sendToCustomers(customers.filter((c) => selectedIds.has(c.id)));
     }
   };
 

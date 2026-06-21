@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { randomBytes } from "crypto";
 import { sendOrderLinkEmail } from "@/lib/mailer";
+import { getAdminCompanyId } from "@/lib/adminAuth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const companyId = await getAdminCompanyId(req);
+  if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const links = await prisma.orderLink.findMany({
+    where: { companyId },
     orderBy: { createdAt: "desc" },
     include: {
       customer: true,
@@ -15,6 +20,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const companyId = await getAdminCompanyId(req);
+  if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const body = await req.json();
   const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType } = body;
 
@@ -23,6 +31,7 @@ export async function POST(req: NextRequest) {
   const link = await prisma.orderLink.create({
     data: {
       token,
+      companyId,
       customerId: Number(customerId),
       title: title || null,
       message: message || null,
