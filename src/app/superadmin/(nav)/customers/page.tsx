@@ -108,7 +108,7 @@ export default function SuperAdminCustomersPage() {
 
   if (showForm) {
     return (
-      <div className="space-y-4 max-w-lg">
+      <div className="space-y-4 max-w-lg mx-auto">
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <button onClick={closeForm} className="hover:text-blue-600">ポータル会員一覧</button>
           <span>›</span>

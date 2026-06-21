@@ -36,7 +36,7 @@ export default function CompanyNewPage() {
   };
 
   return (
-    <div className="space-y-4 max-w-2xl">
+    <div className="space-y-4 max-w-2xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/superadmin/companies" className="hover:text-blue-600">管理者一覧</Link>
         <span>›</span>
