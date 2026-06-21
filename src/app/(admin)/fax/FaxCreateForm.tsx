@@ -51,11 +51,14 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
     setConfirmTargets(null);
 
     const fileAttachment = await readFileAsBase64();
+    const batchId = crypto.randomUUID();
     const payload = {
       title: title || null,
       message: message || null,
       productIds: [],
       expiresAt: null,
+      batchId,
+      sendMode,
       ...(fileAttachment ?? {}),
     };
 

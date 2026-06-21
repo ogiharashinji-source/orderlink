@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType } = body;
+  const { customerId, title, message, productIds, expiresAt, attachmentPath, fileData, fileName, fileType, batchId, sendMode } = body;
 
   const token = randomBytes(16).toString("hex");
 
@@ -55,6 +55,8 @@ export async function POST(req: NextRequest) {
       productIds: JSON.stringify(productIds ?? []),
       expiresAt: expiresAt ? new Date(expiresAt) : null,
       attachmentPath: storedUrl || fileName || attachmentPath || null,
+      batchId: batchId || null,
+      sendMode: sendMode || null,
     },
     include: { customer: true },
   });
