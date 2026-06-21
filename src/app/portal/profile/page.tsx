@@ -15,7 +15,7 @@ const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm foc
 
 export default function PortalProfilePage() {
   const [form, setForm] = useState<Profile>({ name: "", company: null, phone: null, faxNumber: null, email: null, address: null });
-  const [creds, setCreds] = useState({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "", newPasswordConfirm: "" });
+  const [creds, setCreds] = useState({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "" });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [changingCreds, setChangingCreds] = useState(false);
@@ -58,7 +58,6 @@ export default function PortalProfilePage() {
 
   const handleChangeCreds = async () => {
     if (creds.newPassword.length < 6) { alert("新しいパスワードは6文字以上で入力してください"); return; }
-    if (creds.newPassword !== creds.newPasswordConfirm) { alert("新しいパスワードが一致しません"); return; }
     if (!confirm("ID・パスワードを変更しますか？")) return;
     setChangingCreds(true);
     const res = await fetch("/api/portal/profile", {
@@ -69,12 +68,11 @@ export default function PortalProfilePage() {
         currentPassword: creds.currentPassword,
         newLoginId: creds.newLoginId,
         newPassword: creds.newPassword,
-        newPasswordConfirm: creds.newPasswordConfirm,
       }),
     });
     if (res.ok) {
       setCredsChanged(true);
-      setCreds({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "", newPasswordConfirm: "" });
+      setCreds({ currentLoginId: "", currentPassword: "", newLoginId: "", newPassword: "" });
       setTimeout(() => setCredsChanged(false), 3000);
     } else {
       const d = await res.json();
@@ -83,7 +81,7 @@ export default function PortalProfilePage() {
     setChangingCreds(false);
   };
 
-  const credsReady = creds.currentLoginId && creds.currentPassword && creds.newLoginId && creds.newPassword && creds.newPasswordConfirm;
+  const credsReady = creds.currentLoginId && creds.currentPassword && creds.newLoginId && creds.newPassword;
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -139,10 +137,6 @@ export default function PortalProfilePage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード <span className="text-xs text-gray-400">（6文字以上）</span></label>
               <input type="password" value={creds.newPassword} onChange={setC("newPassword")} className={inputCls} />
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">新しいパスワード（確認）</label>
-            <input type="password" value={creds.newPasswordConfirm} onChange={setC("newPasswordConfirm")} className={inputCls} />
           </div>
           <div className="flex items-center gap-4">
             <button type="button" onClick={handleChangeCreds} disabled={changingCreds || !credsReady}

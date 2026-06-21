@@ -22,7 +22,7 @@ export async function PUT(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { companyName, address, phone, faxNumber, email, currentLoginId, currentPassword, newLoginId, newPassword, newPasswordConfirm } = await req.json();
+  const { companyName, address, phone, faxNumber, email, currentLoginId, currentPassword, newLoginId, newPassword } = await req.json();
   const setting = await getOrCreateSetting(companyId);
 
   // 会社情報の保存
@@ -41,9 +41,6 @@ export async function PUT(req: NextRequest) {
 
   // ID・パスワード変更
   if (currentLoginId && currentPassword && newLoginId && newPassword) {
-    if (newPassword !== newPasswordConfirm) {
-      return NextResponse.json({ error: "新しいパスワードが一致しません" }, { status: 400 });
-    }
     const token = req.cookies.get("auth_token")?.value ?? "";
     const adminId = verifyAdminToken(token);
     if (!adminId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

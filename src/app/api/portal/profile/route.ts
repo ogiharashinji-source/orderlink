@@ -24,7 +24,7 @@ export async function PUT(req: NextRequest) {
   const customer = await getCustomerSession();
   if (!customer) return NextResponse.json({ error: "未ログイン" }, { status: 401 });
 
-  const { name, company, phone, faxNumber, email, address, currentLoginId, currentPassword, newLoginId, newPassword, newPasswordConfirm } = await req.json();
+  const { name, company, phone, faxNumber, email, address, currentLoginId, currentPassword, newLoginId, newPassword } = await req.json();
 
   // 会員情報の保存
   if (name !== undefined) {
@@ -41,9 +41,6 @@ export async function PUT(req: NextRequest) {
 
   // ID・パスワード変更
   if (currentLoginId && currentPassword && newLoginId && newPassword) {
-    if (newPassword !== newPasswordConfirm) {
-      return NextResponse.json({ error: "新しいパスワードが一致しません" }, { status: 400 });
-    }
     const record = await prisma.customer.findUnique({ where: { id: customer.id }, select: { loginId: true, password: true } });
     if (record?.loginId !== currentLoginId) {
       return NextResponse.json({ error: "現在のIDが正しくありません" }, { status: 400 });
