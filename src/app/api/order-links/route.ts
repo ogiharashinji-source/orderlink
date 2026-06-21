@@ -29,23 +29,19 @@ export async function POST(req: NextRequest) {
 
   const token = randomBytes(16).toString("hex");
 
-  // ファイルをVercel Blobにアップロード
+  // ファイルをVercel Blobにアップロード（OIDC接続: BLOB_STORE_ID で認証）
   let storedUrl: string | null = null;
   if (fileData && fileName) {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      console.warn("[Blob] BLOB_READ_WRITE_TOKEN が未設定です");
-    } else {
-      try {
-        const buffer = Buffer.from(fileData as string, "base64");
-        const blob = await put(`attachments/${token}/${fileName}`, buffer, {
-          access: "public",
-          contentType: (fileType as string) ?? "application/octet-stream",
-        });
-        storedUrl = blob.url;
-        console.log("[Blob] アップロード成功:", storedUrl);
-      } catch (err) {
-        console.error("[Blob] アップロード失敗:", err);
-      }
+    try {
+      const buffer = Buffer.from(fileData as string, "base64");
+      const blob = await put(`attachments/${token}/${fileName}`, buffer, {
+        access: "public",
+        contentType: (fileType as string) ?? "application/octet-stream",
+      });
+      storedUrl = blob.url;
+      console.log("[Blob] アップロード成功:", storedUrl);
+    } catch (err) {
+      console.error("[Blob] アップロード失敗:", err);
     }
   }
 
