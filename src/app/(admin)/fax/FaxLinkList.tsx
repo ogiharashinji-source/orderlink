@@ -1,17 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import Link from "next/link";
 
 type LinkItem = {
   id: number;
   token: string;
   title: string | null;
+  message: string | null;
   createdAt: string;
   expiresAt: string | null;
-  submittedAt: string | null;
-  attachmentPath: string | null;
-  customer: { name: string; company: string | null };
-  request: { id: number; requestNumber: string; status: string } | null;
+  customer: { name: string; company: string | null; email: string | null } | null;
 };
 
 export default function FaxLinkList() {
@@ -21,65 +18,60 @@ export default function FaxLinkList() {
     fetch("/api/order-links").then((r) => r.json()).then(setLinks);
   }, []);
 
-  const getStatus = (link: LinkItem) => {
-    if (link.request?.status === "CONFIRMED") return { label: "受注確定済", color: "bg-green-100 text-green-800" };
-    if (link.submittedAt) return { label: "リクエスト受信済", color: "bg-blue-100 text-blue-800" };
-    if (link.expiresAt && new Date(link.expiresAt) < new Date()) return { label: "期限切れ", color: "bg-gray-100 text-gray-500" };
-    return { label: "注文待ち", color: "bg-yellow-100 text-yellow-800" };
-  };
+  if (links.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow p-8 text-center text-gray-400">
+        送信済みのメールはありません
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-3">
-      {links.length === 0 ? (
-        <div className="bg-white rounded-xl shadow p-8 text-center text-gray-400">
-          送信済みのメールはありません
-        </div>
-      ) : (
-        links.map((link) => {
-          const status = getStatus(link);
-          return (
-            <div key={link.id} className="bg-white rounded-xl shadow p-4 flex items-center gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-gray-900">{link.customer.name}</span>
-                  {link.customer.company && <span className="text-sm text-gray-400">({link.customer.company})</span>}
-                </div>
-                {link.title && <p className="text-sm text-gray-600 mb-1">{link.title}</p>}
-                <div className="flex items-center gap-3 text-xs text-gray-400">
-                  <span>作成: {new Date(link.createdAt).toLocaleDateString("ja-JP")}</span>
-                  {link.expiresAt && <span>期限: {new Date(link.expiresAt).toLocaleDateString("ja-JP")}</span>}
-                  {link.submittedAt && <span>受信: {new Date(link.submittedAt).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>}
-                  {link.attachmentPath && (
-                    <a href={link.attachmentPath} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                      📎 添付あり
-                    </a>
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                {link.request && (
-                  <Link
-                    href={`/requests/${link.request.id}`}
-                    className="text-sm text-blue-600 hover:underline font-medium"
-                  >
-                    リクエストを確認
-                  </Link>
+    <div className="bg-white rounded-xl shadow overflow-hidden">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-gray-50 border-b border-gray-200 text-left text-xs text-gray-500 font-medium">
+            <th className="px-4 py-3">送信日時</th>
+            <th className="px-4 py-3">宛先</th>
+            <th className="px-4 py-3">タイトル・メッセージ</th>
+            <th className="px-4 py-3">有効期限</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {links.map((link) => (
+            <tr key={link.id} className="hover:bg-gray-50">
+              <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                {new Date(link.createdAt).toLocaleString("ja-JP", {
+                  month: "numeric", day: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              </td>
+              <td className="px-4 py-3">
+                <div className="font-medium text-gray-900">{link.customer?.name ?? "—"}</div>
+                {link.customer?.email && (
+                  <div className="text-xs text-gray-400">{link.customer.email}</div>
                 )}
-                <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${status.color}`}>
-                  {status.label}
-                </span>
-                <Link
-                  href={`/fax/${link.token}`}
-                  target="_blank"
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium"
-                >
-                  印刷プレビュー
-                </Link>
-              </div>
-            </div>
-          );
-        })
-      )}
+              </td>
+              <td className="px-4 py-3 max-w-xs">
+                {link.title && (
+                  <div className="font-medium text-gray-800 mb-0.5">{link.title}</div>
+                )}
+                {link.message && (
+                  <div className="text-gray-500 text-xs line-clamp-2">{link.message}</div>
+                )}
+                {!link.title && !link.message && (
+                  <span className="text-gray-300">—</span>
+                )}
+              </td>
+              <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                {link.expiresAt
+                  ? new Date(link.expiresAt).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" })
+                  : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
