@@ -51,8 +51,9 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(customer, { status: 201 });
   } catch (e) {
-    console.error("[superadmin/customers POST]", e);
-    return NextResponse.json({ error: "登録に失敗しました" }, { status: 500 });
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[superadmin/customers POST]", msg);
+    return NextResponse.json({ error: `登録に失敗しました: ${msg}` }, { status: 500 });
   }
 }
 
