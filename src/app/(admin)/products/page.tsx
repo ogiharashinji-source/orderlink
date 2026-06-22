@@ -159,7 +159,7 @@ export default function ProductsPage() {
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
                       </td>
                       <td className="px-4 py-3 font-medium text-gray-900">
-                        <Link href={`/products/${p.id}/edit`} className="hover:text-blue-600">{p.name}</Link>
+                        {p.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
@@ -194,7 +194,7 @@ export default function ProductsPage() {
                         )}
                         {idx === 0 && (
                           <td className="px-4 py-3 font-medium text-gray-900 align-top" rowSpan={variants.length}>
-                            <Link href={`/products/${p.id}/edit`} className="hover:text-blue-600">{p.name}</Link>
+                            {p.name}
                           </td>
                         )}
                         {idx === 0 && (
