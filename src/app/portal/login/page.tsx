@@ -1,7 +1,6 @@
 "use client";
 import { useState, Suspense, useEffect } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import ManualModal from "@/components/ManualModal";
 
 function CustomerLoginForm() {
@@ -9,14 +8,13 @@ function CustomerLoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     fetch("/api/portal/profile").then((r) => {
-      if (r.ok) router.replace("/portal/order");
+      if (r.ok) window.location.href = "/portal/order";
     });
-  }, [router]);
+  }, []);
   const inviteToken = searchParams.get("token") ?? "";
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,12 +41,12 @@ function CustomerLoginForm() {
           if (assocRes.ok) {
             const assocData = await assocRes.json();
             if (assocData.companyId) {
-              router.push(`/portal/order?companyId=${assocData.companyId}`);
+              window.location.href = `/portal/order?companyId=${assocData.companyId}`;
               return;
             }
           }
         }
-        router.push("/portal/order");
+        window.location.href = "/portal/order";
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? "ログインに失敗しました");
