@@ -23,30 +23,39 @@ function CustomerLoginForm() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await fetch("/api/customer/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ loginId, password }),
-    });
-    if (res.ok) {
-      if (inviteToken) {
-        const assocRes = await fetch("/api/portal/associate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ inviteToken }),
-        });
-        if (assocRes.ok) {
-          const assocData = await assocRes.json();
-          if (assocData.companyId) {
-            router.push(`/portal/order?companyId=${assocData.companyId}`);
-            return;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const res = await fetch("/api/customer/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ loginId, password }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        if (inviteToken) {
+          const assocRes = await fetch("/api/portal/associate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ inviteToken }),
+          });
+          if (assocRes.ok) {
+            const assocData = await assocRes.json();
+            if (assocData.companyId) {
+              router.push(`/portal/order?companyId=${assocData.companyId}`);
+              return;
+            }
           }
         }
+        router.push("/portal/order");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? "ログインに失敗しました");
+        setLoading(false);
       }
-      router.push("/portal/order");
-    } else {
-      const data = await res.json();
-      setError(data.error ?? "ログインに失敗しました");
+    } catch {
+      setError("接続エラーが発生しました。しばらく経ってから再試行してください。");
       setLoading(false);
     }
   };
