@@ -15,10 +15,10 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) return;
     fetch("/api/customer/me").then((r) => {
-      if (!r.ok) { window.location.href = "/portal/login"; return null; }
-      return r.json();
-    }).then((d) => {
-      if (d) setCustomerName(d.name);
+      if (!r.ok) { window.location.href = "/portal/login"; return; }
+      fetch("/api/portal/profile").then((r2) => r2.ok ? r2.json() : null).then((d) => {
+        if (d?.name) setCustomerName(d.name);
+      });
     });
   }, [pathname]);
 
