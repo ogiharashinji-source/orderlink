@@ -13,7 +13,7 @@ export function generateToken(): string {
   return crypto.randomBytes(32).toString("hex");
 }
 
-export async function getCustomerSession() {
+export async function verifyCustomerToken(): Promise<number | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE)?.value;
   if (!token) return null;
@@ -25,6 +25,12 @@ export async function getCustomerSession() {
   const expected = crypto.createHmac("sha256", SECRET).update(String(customerId)).digest("hex");
   if (expected !== hmac) return null;
 
+  return customerId;
+}
+
+export async function getCustomerSession() {
+  const customerId = await verifyCustomerToken();
+  if (!customerId) return null;
   return await prisma.customer.findUnique({ where: { id: customerId } });
 }
 

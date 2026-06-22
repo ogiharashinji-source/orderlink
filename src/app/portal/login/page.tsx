@@ -11,7 +11,7 @@ function CustomerLoginForm() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    fetch("/api/portal/profile").then((r) => {
+    fetch("/api/customer/me").then((r) => {
       if (r.ok) window.location.href = "/portal/order";
     });
   }, []);
