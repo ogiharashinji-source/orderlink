@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 
 const navItems = [
   { href: "/requests", label: "リクエスト", badge: true },
-  { href: "/orders", label: "受注管理" },
-  { href: "/products", label: "商品管理" },
-  { href: "/customers", label: "顧客管理", customerBadge: true },
+  { href: "/orders", label: "受注" },
+  { href: "/products", label: "商品" },
+  { href: "/customers", label: "顧客", customerBadge: true },
   { href: "/fax", label: "メール送信" },
 ];
 
