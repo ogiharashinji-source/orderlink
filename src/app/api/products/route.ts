@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     where: q
       ? { companyId, deleted: false, OR: [{ name: { contains: q } }, { description: { contains: q } }] }
       : { companyId, deleted: false },
-    orderBy: { updatedAt: "desc" },
+    orderBy: { createdAt: "asc" },
   });
 
   return NextResponse.json(products);
