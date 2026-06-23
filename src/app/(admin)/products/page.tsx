@@ -33,7 +33,10 @@ function getVariants(p: Product): Variant[] {
   const list: Variant[] = [];
   if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, unit: p.unit1800 ?? "本", stock: p.stock1800 });
   if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  unit: p.unit720  ?? "本", stock: p.stock720  });
-  if (p.priceOther != null && p.volumeOther) list.push({ volume: p.volumeOther, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, unit: p.unitOther ?? "本", stock: p.stockOther });
+  if (p.priceOther != null && p.volumeOther) {
+    const vol = p.volumeOther.endsWith("ml") ? p.volumeOther : `${p.volumeOther}ml`;
+    list.push({ volume: vol, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, unit: p.unitOther ?? "本", stock: p.stockOther });
+  }
   return list;
 }
 

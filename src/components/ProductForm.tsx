@@ -112,7 +112,7 @@ export default function ProductForm({ initialData, productId }: Props) {
       wholesalePrice720: has720 && form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
       unit720: has720 ? (form.unit720 || "本") : null,
       stock720: has720 ? (parseInt(form.stock720) || 0) : 0,
-      volumeOther: hasOther ? (form.volumeOther || null) : null,
+      volumeOther: hasOther && form.volumeOther ? (form.volumeOther.endsWith("ml") ? form.volumeOther : `${form.volumeOther}ml`) : null,
       priceOther: hasOther && form.priceOther ? parseFloat(form.priceOther) : null,
       wholesalePriceOther: hasOther && form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
       unitOther: hasOther ? (form.unitOther || null) : null,

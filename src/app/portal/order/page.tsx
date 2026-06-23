@@ -99,7 +99,10 @@ function PortalOrderContent() {
     const list: Variant[] = [];
     if (p.price1800 != null) list.push({ key: `${p.id}_1800`, product: p, volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, lot: parseInt(p.unit1800 ?? "1") || 1, stock: p.stock1800 });
     if (p.price720  != null) list.push({ key: `${p.id}_720`,  product: p, volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  lot: parseInt(p.unit720  ?? "1") || 1, stock: p.stock720  });
-    if (p.priceOther != null && p.volumeOther) list.push({ key: `${p.id}_other`, product: p, volume: p.volumeOther, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, lot: parseInt(p.unitOther ?? "1") || 1, stock: p.stockOther });
+    if (p.priceOther != null && p.volumeOther) {
+      const vol = p.volumeOther.endsWith("ml") ? p.volumeOther : `${p.volumeOther}ml`;
+      list.push({ key: `${p.id}_other`, product: p, volume: vol, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, lot: parseInt(p.unitOther ?? "1") || 1, stock: p.stockOther });
+    }
     return list;
   });
 
