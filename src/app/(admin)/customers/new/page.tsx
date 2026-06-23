@@ -173,8 +173,8 @@ export default function InviteCustomerPage() {
                 <div className="p-6 space-y-4 text-gray-700 bg-white text-sm leading-relaxed">
                   <p><strong>{companyName}</strong>様より OrderLink ポータルへご招待されました。</p>
                   <p>OrderLinkにご登録いただくことで、商品をオンラインで簡単にご注文いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。</p>
-                  <div className="text-center py-3">
-                    <span className="inline-block bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-bold text-base">アカウントを登録する</span>
+                  <div className="text-center py-1">
+                    <span className="text-[#1e3a8a] underline text-sm">アカウントを登録する</span>
                   </div>
                   <p className="text-xs text-gray-400 border-t pt-3">なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。</p>
                 </div>
