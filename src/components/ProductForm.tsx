@@ -168,10 +168,10 @@ export default function ProductForm({ initialData, productId }: Props) {
           <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} className={noSpinCls} />
             </Field>
             <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} className={noSpinCls} />
             </Field>
             <Field label="単位（ロット）" required>
               <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={inputCls} />
@@ -189,10 +189,10 @@ export default function ProductForm({ initialData, productId }: Props) {
           <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} className={noSpinCls} />
             </Field>
             <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} className={noSpinCls} />
             </Field>
             <Field label="単位（ロット）" required>
               <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={inputCls} />
@@ -210,16 +210,16 @@ export default function ProductForm({ initialData, productId }: Props) {
           <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="容量" required>
-              <input value={form.volumeOther} onChange={set("volumeOther")} placeholder="例: 300ml, 500ml" className={inputCls} />
+              <input value={form.volumeOther} onChange={set("volumeOther")} className={inputCls} />
             </Field>
             <Field label="限定">
               <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
             </Field>
             <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} className={noSpinCls} />
             </Field>
             <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} placeholder="0" className={noSpinCls} />
+              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} className={noSpinCls} />
             </Field>
             <Field label="単位（ロット）" required>
               <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={inputCls} />
