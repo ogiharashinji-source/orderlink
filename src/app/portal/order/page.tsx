@@ -284,10 +284,9 @@ function PortalOrderContent() {
             {selectedCompanyId && productsLoaded && variants.length === 0 && (
               <tr><td colSpan={12} className="px-4 py-8 text-center text-red-500 font-medium">商品が登録されていません</td></tr>
             )}
-            {variants.map((v) => {
+            {variants.map((v, rowIdx) => {
               const qty = quantities[v.key] ?? 0;
-              const productIdx = products.findIndex((p) => p.id === v.product.id);
-              const rowBg = qty > 0 ? "bg-blue-50" : productIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
+              const rowBg = qty > 0 ? "bg-blue-50" : rowIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 font-medium text-gray-900" title={v.product.name}>
