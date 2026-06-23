@@ -58,6 +58,9 @@ function RegisterForm() {
         <div className="text-center mb-1">
           <h1 className="text-xl font-bold text-gray-900">OrderLink</h1>
           <p className="text-gray-500 text-sm">販売店アカウント登録</p>
+          <p className="text-sm mt-1">
+            すでにアカウントをお持ちの方は<Link href={loginHref} className="text-blue-600 hover:underline">こちら</Link>
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-5 space-y-3">
@@ -106,10 +109,6 @@ function RegisterForm() {
             {saving ? "登録中..." : "登録する"}
           </button>
 
-          <Link href={loginHref}
-            className="block w-full py-3 text-center rounded-xl text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
-            すでにアカウントをお持ちの方はこちら
-          </Link>
         </form>
       </div>
     </div>
