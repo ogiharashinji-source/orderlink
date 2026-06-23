@@ -40,6 +40,7 @@ export default function EditCustomerPage() {
       <CustomerForm
         customerId={Number(id)}
         initialData={{
+          memberNumber: String(customer.memberNumber ?? ""),
           name: String(customer.name ?? ""),
           email: String(customer.email ?? ""),
           phone: String(customer.phone ?? ""),

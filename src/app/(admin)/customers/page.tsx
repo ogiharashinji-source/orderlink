@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Customer = {
   id: number;
@@ -25,6 +26,7 @@ export default function CustomersPage() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const allCheckRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   const load = useCallback(() => {
     fetch(`/api/customers${query ? `?q=${encodeURIComponent(query)}` : ""}`)
@@ -144,14 +146,13 @@ export default function CustomersPage() {
               <th className="px-4 py-3 text-left">住所</th>
               <th className="px-4 py-3 text-left">電話番号</th>
               <th className="px-4 py-3 text-left">FAX番号</th>
-              <th className="px-4 py-3 text-left">メール</th>
               <th className="px-4 py-3 text-center">ステータス</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {customers.length === 0 ? (
-              <tr><td colSpan={9} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
+              <tr><td colSpan={8} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
               customers.map((c) => {
                 const isChecked = selected.has(c.id);
@@ -170,13 +171,13 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">{c.email ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
                       {c.approved
                         ? <span className="text-xs text-gray-400">登録済</span>
                         : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700">承認</button>}
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right space-x-3">
+                      <button onClick={() => router.push(`/customers/${c.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
                       <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
                     </td>
                   </tr>
