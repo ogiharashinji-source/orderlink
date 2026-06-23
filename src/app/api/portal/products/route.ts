@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   }
 
   const products = await prisma.product.findMany({
-    where: { companyId, deleted: false },
+    where: { companyId, deleted: false, published: true },
     orderBy: { name: "asc" },
   });
   return NextResponse.json(products);

@@ -12,6 +12,7 @@ type Product = {
   sakaMai: string | null;
   seimaiWari: string | null;
   alcohol: string | null;
+  published: boolean;
   price1800: number | null;
   wholesalePrice1800: number | null;
   unit1800: string | null;
@@ -80,6 +81,15 @@ export default function ProductsPage() {
     });
   };
 
+  const handleTogglePublished = async (id: number, current: boolean) => {
+    await fetch(`/api/products/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ published: !current }),
+    });
+    load();
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm("この商品を削除しますか？")) return;
     await fetch(`/api/products/${id}`, { method: "DELETE" });
@@ -138,12 +148,13 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-right">限定</th>
+              <th className="px-4 py-3 text-center">公開</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
           <tbody>
             {products.length === 0 ? (
-              <tr><td colSpan={12} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
+              <tr><td colSpan={13} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
               products.map((p) => {
                 const variants = getVariants(p);
@@ -167,6 +178,12 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-right text-gray-400">—</td>
+                      <td className="px-4 py-3 text-center">
+                        <button onClick={() => handleTogglePublished(p.id, p.published)}
+                          className={`text-xs font-medium px-2 py-0.5 rounded-full ${p.published ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+                          {p.published ? "公開中" : "非公開"}
+                        </button>
+                      </td>
                       <td className="px-4 py-3 text-right space-x-2">
                         <button onClick={() => router.push(`/products/${p.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
                         <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:underline text-xs">削除</button>
@@ -215,6 +232,14 @@ export default function ProductsPage() {
                         <td className="px-4 py-3 text-right">
                           <span className="font-semibold text-gray-700">{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>
                         </td>
+                        {idx === 0 && (
+                          <td className="px-4 py-3 text-center align-top" rowSpan={variants.length}>
+                            <button onClick={() => handleTogglePublished(p.id, p.published)}
+                              className={`text-xs font-medium px-2 py-0.5 rounded-full ${p.published ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+                              {p.published ? "公開中" : "非公開"}
+                            </button>
+                          </td>
+                        )}
                         {idx === 0 && (
                           <td className="px-4 py-3 text-right space-x-2 align-top" rowSpan={variants.length}>
                             <button onClick={() => router.push(`/products/${p.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
