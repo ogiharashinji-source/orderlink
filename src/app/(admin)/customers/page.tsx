@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type Customer = {
   id: number;
@@ -26,7 +25,6 @@ export default function CustomersPage() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const allCheckRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const load = useCallback(() => {
     fetch(`/api/customers${query ? `?q=${encodeURIComponent(query)}` : ""}`)
@@ -176,8 +174,7 @@ export default function CustomersPage() {
                         ? <span className="text-xs text-gray-400">登録済</span>
                         : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700">承認</button>}
                     </td>
-                    <td className="px-4 py-3 text-right space-x-3">
-                      <button onClick={() => router.push(`/customers/${c.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
+                    <td className="px-4 py-3 text-right">
                       <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
                     </td>
                   </tr>
