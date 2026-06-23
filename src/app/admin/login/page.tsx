@@ -61,7 +61,7 @@ export default function LoginPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">パスワード</label>
             <input
-              type="password"
+              type="text"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

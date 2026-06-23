@@ -16,7 +16,6 @@ function RegisterForm() {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -89,7 +88,7 @@ function RegisterForm() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
-              <input required type="password" value={form.password} onChange={set("password")} placeholder="6文字以上" className={inputCls} />
+              <input required type="text" value={form.password} onChange={set("password")} placeholder="6文字以上" className={inputCls} />
             </div>
           </div>
 
