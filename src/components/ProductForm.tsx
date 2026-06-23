@@ -45,8 +45,9 @@ const empty: ProductData = {
 export default function ProductForm({ initialData, productId }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
-  const [has1800, setHas1800] = useState(productId ? !!(initialData?.price1800) : true);
-  const [has720, setHas720] = useState(productId ? !!(initialData?.price720) : true);
+  const noPriceData = !initialData?.price1800 && !initialData?.price720 && !initialData?.priceOther;
+  const [has1800, setHas1800] = useState(productId ? (!noPriceData ? !!(initialData?.price1800) : true) : true);
+  const [has720, setHas720] = useState(productId ? (!noPriceData ? !!(initialData?.price720) : true) : true);
   const [hasOther, setHasOther] = useState(!!(initialData?.priceOther));
   const router = useRouter();
 
