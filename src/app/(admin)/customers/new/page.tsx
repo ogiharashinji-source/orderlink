@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import * as XLSX from "xlsx";
 
@@ -17,6 +17,14 @@ type ImportRow = {
 
 export default function InviteCustomerPage() {
   const [mode, setMode] = useState<"single" | "bulk">("single");
+
+  const [companyName, setCompanyName] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/nav").then((r) => r.ok ? r.json() : null).then((d) => {
+      if (d?.companyName) setCompanyName(d.companyName);
+    });
+  }, []);
 
   // single
   const [email, setEmail] = useState("");
@@ -163,7 +171,7 @@ export default function InviteCustomerPage() {
               <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-[#1e3a8a] text-white text-center py-4 font-bold text-xl tracking-widest">OrderLink</div>
                 <div className="p-6 space-y-4 text-gray-700 bg-white text-sm leading-relaxed">
-                  <p>様より OrderLink ポータルへご招待されました。</p>
+                  <p><strong>{companyName}</strong>様より OrderLink ポータルへご招待されました。</p>
                   <p>OrderLinkにご登録いただくことで、商品をオンラインで簡単にご注文いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。</p>
                   <div className="text-center py-3">
                     <span className="inline-block bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-bold text-base">アカウントを登録する</span>
