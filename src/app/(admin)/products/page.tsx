@@ -82,6 +82,8 @@ export default function ProductsPage() {
   };
 
   const handleTogglePublished = async (id: number, current: boolean) => {
+    const msg = current ? "この商品を非公開にしますか？\n発注ポータルに表示されなくなります。" : "この商品を公開しますか？\n発注ポータルに表示されます。";
+    if (!confirm(msg)) return;
     await fetch(`/api/products/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
