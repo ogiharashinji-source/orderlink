@@ -20,6 +20,7 @@ export default function InviteCustomerPage() {
 
   // single
   const [email, setEmail] = useState("");
+  const [confirming, setConfirming] = useState(false);
   const [sending, setSending] = useState(false);
   const [sentEmail, setSentEmail] = useState("");
   const [singleError, setSingleError] = useState("");
@@ -31,11 +32,15 @@ export default function InviteCustomerPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- single ---
-  const handleSingleSubmit = async (e: React.FormEvent) => {
+  const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) { setSingleError("メールアドレスを入力してください"); return; }
-    setSending(true);
     setSingleError("");
+    setConfirming(true);
+  };
+
+  const handleSingleSubmit = async () => {
+    setSending(true);
     const res = await fetch("/api/customers/invite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,9 +48,11 @@ export default function InviteCustomerPage() {
     });
     setSending(false);
     if (res.ok) {
+      setConfirming(false);
       setSentEmail(email);
     } else {
       const data = await res.json();
+      setConfirming(false);
       setSingleError(data.error ?? "送信に失敗しました");
     }
   };
@@ -169,7 +176,7 @@ export default function InviteCustomerPage() {
               <p className="text-sm text-gray-600"><span className="font-medium">{sentEmail}</span> に登録用URLを送信しました。</p>
               <p className="text-xs text-gray-400">有効期限：24時間</p>
               <div className="flex gap-3 pt-2">
-                <button onClick={() => { setSentEmail(""); setEmail(""); }}
+                <button onClick={() => { setSentEmail(""); setEmail(""); setConfirming(false); }}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
                   続けて招待する
                 </button>
@@ -179,8 +186,33 @@ export default function InviteCustomerPage() {
                 </Link>
               </div>
             </div>
+          ) : confirming ? (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">以下の内容で招待メールを送信します。</p>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+                <div className="flex gap-2">
+                  <span className="text-gray-500 w-32 shrink-0">送信先</span>
+                  <span className="font-medium text-gray-900">{email}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-gray-500 w-32 shrink-0">内容</span>
+                  <span className="text-gray-700">ポータルへの登録招待リンク（有効期限24時間）</span>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button onClick={handleSingleSubmit} disabled={sending}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
+                  style={{ background: "#1e3a8a" }}>
+                  {sending ? "送信中..." : "送信する"}
+                </button>
+                <button onClick={() => setConfirming(false)} disabled={sending}
+                  className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                  戻る
+                </button>
+              </div>
+            </div>
           ) : (
-            <form onSubmit={handleSingleSubmit} className="space-y-4">
+            <form onSubmit={handleConfirm} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   メールアドレス <span className="text-red-500">*</span>
@@ -190,10 +222,10 @@ export default function InviteCustomerPage() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
               {singleError && <p className="text-sm text-red-500">{singleError}</p>}
-              <button type="submit" disabled={sending}
-                className="w-full py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
+              <button type="submit"
+                className="w-full py-2.5 rounded-lg text-sm font-bold text-white"
                 style={{ background: "#1e3a8a" }}>
-                {sending ? "送信中..." : "招待メールを送信する"}
+                確認する
               </button>
             </form>
           )}
