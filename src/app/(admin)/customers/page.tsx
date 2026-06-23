@@ -292,10 +292,11 @@ export default function CustomersPage() {
             {customers.length === 0 ? (
               <tr><td colSpan={8} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
-              customers.map((c) => {
+              customers.map((c, idx) => {
                 const isChecked = selected.has(c.id);
+                const rowBg = isChecked ? "bg-blue-50" : idx % 2 === 1 ? "bg-gray-50" : "bg-white";
                 return (
-                  <tr key={c.id} className={`hover:bg-gray-50 ${isChecked ? "bg-blue-50" : ""}`}>
+                  <tr key={c.id} className={`${rowBg}`}>
                     <td className="px-3 py-3 text-center">
                       <input
                         type="checkbox"
