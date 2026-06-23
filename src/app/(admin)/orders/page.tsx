@@ -170,7 +170,7 @@ export default function OrdersPage() {
                       {/* 会社名 */}
                       {idx === 0 && (
                         <td className="px-4 py-3 text-left align-middle" rowSpan={o.items.length}>
-                          <div className="font-medium text-gray-900">{o.customerName ?? o.customer?.name ?? "—"}</div>
+                          {(() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="font-medium text-gray-900" title={n}>{n.length > 15 ? n.slice(0, 15) + "…" : n}</div>; })()}
                         </td>
                       )}
 
