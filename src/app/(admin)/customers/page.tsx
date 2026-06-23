@@ -33,11 +33,17 @@ function MemberNumberCell({ customer, onSaved }: { customer: Customer; onSaved: 
     setEditing(false);
     const trimmed = value.trim();
     if (trimmed === (customer.memberNumber ?? "")) return;
-    await fetch(`/api/customers/${customer.id}`, {
+    const res = await fetch(`/api/customers/${customer.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ memberNumber: trimmed || null }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error ?? "保存に失敗しました");
+      setValue(customer.memberNumber ?? "");
+      return;
+    }
     onSaved(customer.id, trimmed || "");
   };
 

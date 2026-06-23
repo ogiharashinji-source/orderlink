@@ -26,6 +26,25 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const customerId = Number(id);
 
+  // 会員コード重複チェック
+  if (body.memberNumber && adminCompanyId) {
+    const duplicate = await prisma.customer.findFirst({
+      where: {
+        companyId: adminCompanyId,
+        memberNumber: body.memberNumber,
+        id: { not: customerId },
+        deleted: false,
+      },
+      select: { id: true, name: true },
+    });
+    if (duplicate) {
+      return NextResponse.json(
+        { error: `この会員コードはすでに「${duplicate.name}」で使用されています` },
+        { status: 409 }
+      );
+    }
+  }
+
   if (body.approved === false) {
     const pendingRequests = await prisma.orderRequest.findMany({
       where: { customerId, status: "PENDING" },
