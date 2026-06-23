@@ -29,6 +29,8 @@ type ProductData = {
   stockOther: string;
 };
 
+type Errors = Partial<Record<keyof ProductData | "size", string>>;
+
 type Props = {
   initialData?: Partial<ProductData>;
   productId?: number;
@@ -45,6 +47,7 @@ const empty: ProductData = {
 export default function ProductForm({ initialData, productId }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
   const noPriceData = !initialData?.price1800 && !initialData?.price720 && !initialData?.priceOther;
   const [has1800, setHas1800] = useState(productId ? (!noPriceData ? !!(initialData?.price1800) : true) : true);
   const [has720, setHas720] = useState(productId ? (!noPriceData ? !!(initialData?.price720) : true) : true);
@@ -55,8 +58,10 @@ export default function ProductForm({ initialData, productId }: Props) {
     str.replace(/[！-～]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/　/g, " ");
 
   const set = (key: keyof ProductData) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setForm((f) => ({ ...f, [key]: e.target.value }));
+      setErrors((err) => ({ ...err, [key]: undefined }));
+    };
 
   const blur = (key: keyof ProductData) =>
     (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -64,22 +69,33 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: Errors = {};
+
     if (!has1800 && !has720 && !hasOther) {
-      alert("サイズを1つ以上選択してください");
+      newErrors.size = "サイズを1つ以上選択してください";
+    }
+    if (has1800) {
+      if (!form.price1800) newErrors.price1800 = "必須項目です";
+      if (!form.wholesalePrice1800) newErrors.wholesalePrice1800 = "必須項目です";
+      if (!form.unit1800) newErrors.unit1800 = "必須項目です";
+    }
+    if (has720) {
+      if (!form.price720) newErrors.price720 = "必須項目です";
+      if (!form.wholesalePrice720) newErrors.wholesalePrice720 = "必須項目です";
+      if (!form.unit720) newErrors.unit720 = "必須項目です";
+    }
+    if (hasOther) {
+      if (!form.volumeOther) newErrors.volumeOther = "必須項目です";
+      if (!form.priceOther) newErrors.priceOther = "必須項目です";
+      if (!form.wholesalePriceOther) newErrors.wholesalePriceOther = "必須項目です";
+      if (!form.unitOther) newErrors.unitOther = "必須項目です";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
-    if (has1800 && (!form.price1800 || !form.wholesalePrice1800 || !form.unit1800)) {
-      alert("1800mlの小売値・卸売値・単位（ロット）を入力してください");
-      return;
-    }
-    if (has720 && (!form.price720 || !form.wholesalePrice720 || !form.unit720)) {
-      alert("720mlの小売値・卸売値・単位（ロット）を入力してください");
-      return;
-    }
-    if (hasOther && (!form.volumeOther || !form.priceOther || !form.wholesalePriceOther || !form.unitOther)) {
-      alert("その他サイズの容量・小売値・卸売値・単位（ロット）を入力してください");
-      return;
-    }
+
     setSaving(true);
     const payload = {
       name: form.name,
@@ -111,6 +127,9 @@ export default function ProductForm({ initialData, productId }: Props) {
     router.push("/products");
   };
 
+  const ic = (err?: string) => err ? inputErrCls : inputCls;
+  const nc = (err?: string) => err ? noSpinErrCls : noSpinCls;
+
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-5 max-w-2xl">
       <Field label="商品名" required>
@@ -139,28 +158,34 @@ export default function ProductForm({ initialData, productId }: Props) {
         <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={6} className={inputCls} />
       </Field>
 
-      <div className="flex gap-6">
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={has1800} onChange={(e) => {
-            setHas1800(e.target.checked);
-            if (!e.target.checked) setForm((f) => ({ ...f, price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "" }));
-          }} className="w-4 h-4 accent-blue-600" />
-          <span className="text-sm font-medium text-gray-700">1800ml</span>
-        </label>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={has720} onChange={(e) => {
-            setHas720(e.target.checked);
-            if (!e.target.checked) setForm((f) => ({ ...f, price720: "", wholesalePrice720: "", unit720: "12", stock720: "" }));
-          }} className="w-4 h-4 accent-blue-600" />
-          <span className="text-sm font-medium text-gray-700">720ml</span>
-        </label>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={hasOther} onChange={(e) => {
-            setHasOther(e.target.checked);
-            if (!e.target.checked) setForm((f) => ({ ...f, volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "" }));
-          }} className="w-4 h-4 accent-blue-600" />
-          <span className="text-sm font-medium text-gray-700">その他</span>
-        </label>
+      <div>
+        <div className="flex gap-6">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={has1800} onChange={(e) => {
+              setHas1800(e.target.checked);
+              setErrors((err) => ({ ...err, size: undefined, price1800: undefined, wholesalePrice1800: undefined, unit1800: undefined }));
+              if (!e.target.checked) setForm((f) => ({ ...f, price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "" }));
+            }} className="w-4 h-4 accent-blue-600" />
+            <span className="text-sm font-medium text-gray-700">1800ml</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={has720} onChange={(e) => {
+              setHas720(e.target.checked);
+              setErrors((err) => ({ ...err, size: undefined, price720: undefined, wholesalePrice720: undefined, unit720: undefined }));
+              if (!e.target.checked) setForm((f) => ({ ...f, price720: "", wholesalePrice720: "", unit720: "12", stock720: "" }));
+            }} className="w-4 h-4 accent-blue-600" />
+            <span className="text-sm font-medium text-gray-700">720ml</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={hasOther} onChange={(e) => {
+              setHasOther(e.target.checked);
+              setErrors((err) => ({ ...err, size: undefined, volumeOther: undefined, priceOther: undefined, wholesalePriceOther: undefined, unitOther: undefined }));
+              if (!e.target.checked) setForm((f) => ({ ...f, volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "" }));
+            }} className="w-4 h-4 accent-blue-600" />
+            <span className="text-sm font-medium text-gray-700">その他</span>
+          </label>
+        </div>
+        {errors.size && <p className="text-xs text-red-500 mt-1">{errors.size}</p>}
       </div>
 
       {/* 1800ml */}
@@ -168,14 +193,14 @@ export default function ProductForm({ initialData, productId }: Props) {
         <div className="border border-gray-100 rounded-lg p-4">
           <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} className={noSpinCls} />
+            <Field label="小売値 (円)" required error={errors.price1800}>
+              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} className={nc(errors.price1800)} />
             </Field>
-            <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} className={noSpinCls} />
+            <Field label="卸売値 (円)" required error={errors.wholesalePrice1800}>
+              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} className={nc(errors.wholesalePrice1800)} />
             </Field>
-            <Field label="単位（ロット）" required>
-              <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={inputCls} />
+            <Field label="単位（ロット）" required error={errors.unit1800}>
+              <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={ic(errors.unit1800)} />
             </Field>
             <Field label="限定">
               <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
@@ -189,14 +214,14 @@ export default function ProductForm({ initialData, productId }: Props) {
         <div className="border border-gray-100 rounded-lg p-4">
           <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} className={noSpinCls} />
+            <Field label="小売値 (円)" required error={errors.price720}>
+              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} className={nc(errors.price720)} />
             </Field>
-            <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} className={noSpinCls} />
+            <Field label="卸売値 (円)" required error={errors.wholesalePrice720}>
+              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} className={nc(errors.wholesalePrice720)} />
             </Field>
-            <Field label="単位（ロット）" required>
-              <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={inputCls} />
+            <Field label="単位（ロット）" required error={errors.unit720}>
+              <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={ic(errors.unit720)} />
             </Field>
             <Field label="限定">
               <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
@@ -210,20 +235,20 @@ export default function ProductForm({ initialData, productId }: Props) {
         <div className="border border-gray-100 rounded-lg p-4">
           <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="容量" required>
-              <input value={form.volumeOther} onChange={set("volumeOther")} className={inputCls} />
+            <Field label="容量" required error={errors.volumeOther}>
+              <input value={form.volumeOther} onChange={set("volumeOther")} className={ic(errors.volumeOther)} />
             </Field>
             <Field label="限定">
               <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
             </Field>
-            <Field label="小売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} className={noSpinCls} />
+            <Field label="小売値 (円)" required error={errors.priceOther}>
+              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} className={nc(errors.priceOther)} />
             </Field>
-            <Field label="卸売値 (円)" required>
-              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} className={noSpinCls} />
+            <Field label="卸売値 (円)" required error={errors.wholesalePriceOther}>
+              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} className={nc(errors.wholesalePriceOther)} />
             </Field>
-            <Field label="単位（ロット）" required>
-              <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={inputCls} />
+            <Field label="単位（ロット）" required error={errors.unitOther}>
+              <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={ic(errors.unitOther)} />
             </Field>
           </div>
         </div>
@@ -242,9 +267,11 @@ export default function ProductForm({ initialData, productId }: Props) {
 }
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputErrCls = "w-full border border-red-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500";
 const noSpinCls = `${inputCls} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
+const noSpinErrCls = `${inputErrCls} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none`;
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -252,6 +279,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       {children}
+      {error && <p className="text-xs text-red-500 mt-0.5">{error}</p>}
     </div>
   );
 }
