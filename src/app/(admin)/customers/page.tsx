@@ -18,6 +18,64 @@ type Customer = {
   _count: { orders: number };
 };
 
+function MemberNumberCell({ customer, onSaved }: { customer: Customer; onSaved: (id: number, value: string) => void }) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(customer.memberNumber ?? "");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const startEdit = () => {
+    setValue(customer.memberNumber ?? "");
+    setEditing(true);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const save = async () => {
+    setEditing(false);
+    const trimmed = value.trim();
+    if (trimmed === (customer.memberNumber ?? "")) return;
+    await fetch(`/api/customers/${customer.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memberNumber: trimmed || null }),
+    });
+    onSaved(customer.id, trimmed || "");
+  };
+
+  const cancel = () => {
+    setEditing(false);
+    setValue(customer.memberNumber ?? "");
+  };
+
+  if (editing) {
+    return (
+      <td className="px-2 py-2 text-center">
+        <input
+          ref={inputRef}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={save}
+          onKeyDown={(e) => { if (e.key === "Enter") save(); if (e.key === "Escape") cancel(); }}
+          className="w-20 text-center text-xs border border-blue-400 rounded px-1 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400 font-mono"
+          placeholder="例: 0001"
+        />
+      </td>
+    );
+  }
+
+  return (
+    <td
+      className="px-4 py-3 text-center text-xs font-mono cursor-pointer group"
+      onClick={startEdit}
+      title="クリックして編集"
+    >
+      {customer.memberNumber
+        ? <span className="text-gray-700">{customer.memberNumber}</span>
+        : <span className="text-gray-300 group-hover:text-blue-400">—</span>
+      }
+    </td>
+  );
+}
+
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -41,6 +99,10 @@ export default function CustomersPage() {
     if (!allCheckRef.current) return;
     allCheckRef.current.indeterminate = selected.size > 0 && selected.size < customers.length;
   }, [selected, customers]);
+
+  const handleMemberNumberSaved = (id: number, value: string) => {
+    setCustomers((prev) => prev.map((c) => c.id === id ? { ...c, memberNumber: value || null } : c));
+  };
 
   const toggleAll = () => {
     if (selected.size === customers.length) {
@@ -164,7 +226,7 @@ export default function CustomersPage() {
                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
                     </td>
-                    <td className="px-4 py-3 text-center text-gray-500 text-xs font-mono">{c.memberNumber ?? "—"}</td>
+                    <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
                     <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
