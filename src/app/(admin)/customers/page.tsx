@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-
 
 type Customer = {
   id: number;
@@ -20,15 +19,43 @@ type Customer = {
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const allCheckRef = useRef<HTMLInputElement>(null);
+
   const load = useCallback(() => {
     fetch(`/api/customers${query ? `?q=${encodeURIComponent(query)}` : ""}`)
       .then((r) => r.json())
-      .then(setCustomers);
+      .then((data) => {
+        setCustomers(data);
+        setSelected(new Set());
+      });
   }, [query]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (!allCheckRef.current) return;
+    allCheckRef.current.indeterminate = selected.size > 0 && selected.size < customers.length;
+  }, [selected, customers]);
+
+  const toggleAll = () => {
+    if (selected.size === customers.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(customers.map((c) => c.id)));
+    }
+  };
+
+  const toggleOne = (id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   const handleApprove = async (id: number) => {
     if (!confirm("承認しますか？")) return;
@@ -46,6 +73,14 @@ export default function CustomersPage() {
     load();
   };
 
+  const handleBulkDelete = async () => {
+    if (selected.size === 0) return;
+    if (!confirm(`選択した${selected.size}件の顧客を削除しますか？`)) return;
+    setBulkDeleting(true);
+    await Promise.all([...selected].map((id) => fetch(`/api/customers/${id}`, { method: "DELETE" })));
+    setBulkDeleting(false);
+    load();
+  };
 
   return (
     <div className="space-y-4">
@@ -77,7 +112,13 @@ export default function CustomersPage() {
           )}
         </div>
         <div className="flex items-center gap-2 shrink-0">
-
+          <button
+            onClick={handleBulkDelete}
+            disabled={selected.size === 0 || bulkDeleting}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-500 hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          >
+            {bulkDeleting ? "削除中..." : selected.size > 0 ? `${selected.size}件を削除` : "一斉削除"}
+          </button>
           <Link href="/customers/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
             + 新規顧客
           </Link>
@@ -88,6 +129,15 @@ export default function CustomersPage() {
         <table className="w-full text-sm whitespace-nowrap">
           <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
+              <th className="px-3 py-3 text-center w-10">
+                <input
+                  ref={allCheckRef}
+                  type="checkbox"
+                  checked={customers.length > 0 && selected.size === customers.length}
+                  onChange={toggleAll}
+                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                />
+              </th>
               <th className="px-4 py-3 text-left">会社名</th>
               <th className="px-4 py-3 text-left">住所</th>
               <th className="px-4 py-3 text-left">電話番号</th>
@@ -99,28 +149,36 @@ export default function CustomersPage() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {customers.length === 0 ? (
-              <tr><td colSpan={7} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
+              <tr><td colSpan={8} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
-              customers.map((c) => (
-                <tr key={c.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
-                  <td className="px-4 py-3 text-gray-600">{c.email ?? "—"}</td>
-                  <td className="px-4 py-3 text-center">
-                    {c.approved
-                      ? <span className="text-xs text-gray-400">登録済</span>
-                      : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700">承認</button>}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => handleDelete(c.id)}
-                      className="text-red-500 hover:underline text-xs"
-                    >削除</button>
-                  </td>
-                </tr>
-              ))
+              customers.map((c) => {
+                const isChecked = selected.has(c.id);
+                return (
+                  <tr key={c.id} className={`hover:bg-gray-50 ${isChecked ? "bg-blue-50" : ""}`}>
+                    <td className="px-3 py-3 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleOne(c.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      />
+                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-600">{c.email ?? "—"}</td>
+                    <td className="px-4 py-3 text-center">
+                      {c.approved
+                        ? <span className="text-xs text-gray-400">登録済</span>
+                        : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700">承認</button>}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
