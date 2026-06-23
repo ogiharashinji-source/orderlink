@@ -22,34 +22,32 @@ export default function Navbar() {
     window.location.href = "/login";
   };
 
-  const fetchBadges = useCallback(() => {
-    fetch("/api/requests?badge=1")
-      .then((r) => r.json())
-      .then((data: Array<{ status: string }>) => {
-        setPendingCount(data.filter((r) => r.status === "PENDING").length);
+  const fetchNav = useCallback((redirectOnUnauth = false) => {
+    fetch("/api/admin/nav")
+      .then((r) => {
+        if (!r.ok) {
+          if (redirectOnUnauth) window.location.href = "/admin/login";
+          return null;
+        }
+        return r.json();
       })
-      .catch(() => {});
-    fetch("/api/customers?unapproved=1")
-      .then((r) => r.ok ? r.json() : [])
-      .then((data: Array<unknown>) => { setApprovalCount(data.length); })
-      .catch(() => {});
+      .then((d) => {
+        if (!d) return;
+        if (d.companyName) setCompanyName(d.companyName);
+        setPendingCount(d.pendingCount ?? 0);
+        setApprovalCount(d.approvalCount ?? 0);
+      })
+      .catch(() => { if (redirectOnUnauth) window.location.href = "/admin/login"; });
   }, []);
 
   useEffect(() => {
-    fetch("/api/admin/settings")
-      .then((r) => {
-        if (!r.ok || r.redirected) { window.location.href = "/admin/login"; return null; }
-        return r.json();
-      })
-      .then((d) => { if (d?.companyName) setCompanyName(d.companyName); })
-      .catch(() => { window.location.href = "/admin/login"; });
-    fetchBadges();
-  }, [pathname, fetchBadges]);
+    fetchNav(true);
+  }, [pathname, fetchNav]);
 
   useEffect(() => {
-    const id = setInterval(fetchBadges, 60000);
+    const id = setInterval(() => fetchNav(false), 60000);
     return () => clearInterval(id);
-  }, [fetchBadges]);
+  }, [fetchNav]);
 
   return (
     <nav className="bg-slate-800 text-white overflow-x-auto">
