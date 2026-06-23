@@ -20,6 +20,11 @@ type Product = {
   wholesalePrice720: number | null;
   unit720: string | null;
   stock720: number | null;
+  volumeOther: string | null;
+  priceOther: number | null;
+  wholesalePriceOther: number | null;
+  unitOther: string | null;
+  stockOther: number | null;
 };
 
 type Variant = { volume: string; price: number; wholesalePrice: number | null; unit: string; stock: number | null };
@@ -28,6 +33,7 @@ function getVariants(p: Product): Variant[] {
   const list: Variant[] = [];
   if (p.price1800 != null) list.push({ volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, unit: p.unit1800 ?? "本", stock: p.stock1800 });
   if (p.price720  != null) list.push({ volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  unit: p.unit720  ?? "本", stock: p.stock720  });
+  if (p.priceOther != null && p.volumeOther) list.push({ volume: p.volumeOther, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, unit: p.unitOther ?? "本", stock: p.stockOther });
   return list;
 }
 
