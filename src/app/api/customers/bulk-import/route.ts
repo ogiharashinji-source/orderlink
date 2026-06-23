@@ -3,10 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
 
 type ImportCustomer = {
+  memberNumber?: string | null;
   name: string;
-  address?: string;
   phone?: string;
-  email?: string;
+  faxNumber?: string | null;
+  email?: string | null;
 };
 
 export async function POST(req: NextRequest) {
@@ -39,8 +40,21 @@ export async function POST(req: NextRequest) {
 
     try {
       if (!c.name || !loginId) {
-        results.push({ ...c, status: "error", errorMsg: "会社名または電話番号が不足" });
+        results.push({ ...c, loginId, password, status: "error", errorMsg: "会社名または電話番号が不足" });
         continue;
+      }
+
+      // 会員コード重複チェック
+      if (c.memberNumber) {
+        const dupMember = await prisma.customer.findFirst({
+          where: { companyId, memberNumber: c.memberNumber, deleted: false },
+          select: { id: true },
+        });
+        if (dupMember) {
+          results.push({ ...c, loginId, password, status: "error", errorMsg: "この会員コードはすでに使用されています" });
+          seq--;
+          continue;
+        }
       }
 
       const existingLogin = await prisma.customer.findUnique({ where: { loginId } });
@@ -62,9 +76,10 @@ export async function POST(req: NextRequest) {
       const customer = await prisma.customer.create({
         data: {
           companyId,
+          memberNumber: c.memberNumber || null,
           name: c.name,
-          address: c.address || null,
           phone: c.phone || null,
+          faxNumber: c.faxNumber || null,
           email: c.email || null,
           loginId,
           password,

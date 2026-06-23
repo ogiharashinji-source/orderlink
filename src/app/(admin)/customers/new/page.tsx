@@ -4,9 +4,10 @@ import Link from "next/link";
 import * as XLSX from "xlsx";
 
 type ImportRow = {
+  memberNumber: string;
   name: string;
-  address: string;
   phone: string;
+  faxNumber: string;
   email: string;
   loginId: string;
   password: string;
@@ -65,9 +66,10 @@ export default function InviteCustomerPage() {
       const findCol = (...keywords: string[]) =>
         header.findIndex((h) => keywords.some((k) => h.includes(k)));
 
+      const memberNumberCol = findCol("会員コード", "会員no", "コード", "member");
       const nameCol = findCol("会社名", "name", "名前");
-      const addrCol = findCol("住所", "address");
       const phoneCol = findCol("電話", "phone", "tel");
+      const faxCol = findCol("fax", "ファックス", "ＦＡＸ");
       const emailCol = findCol("メール", "email", "mail");
 
       const parsed: ImportRow[] = json
@@ -77,9 +79,10 @@ export default function InviteCustomerPage() {
           const phone = get(phoneCol);
           const loginId = phone.replace(/\D/g, "");
           return {
-            name: get(nameCol >= 0 ? nameCol : 0),
-            address: get(addrCol),
+            memberNumber: get(memberNumberCol),
+            name: get(nameCol >= 0 ? nameCol : 1),
             phone,
+            faxNumber: get(faxCol),
             email: get(emailCol),
             loginId,
             password: "",
@@ -101,7 +104,13 @@ export default function InviteCustomerPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        customers: rows.map((r) => ({ name: r.name, address: r.address, phone: r.phone, email: r.email })),
+        customers: rows.map((r) => ({
+          memberNumber: r.memberNumber || null,
+          name: r.name,
+          phone: r.phone,
+          faxNumber: r.faxNumber || null,
+          email: r.email || null,
+        })),
       }),
     });
     setImporting(false);
@@ -120,9 +129,9 @@ export default function InviteCustomerPage() {
   const handleCopyAll = () => {
     const lines = rows
       .filter((r) => r.status === "done")
-      .map((r) => `${r.name}\t${r.loginId}\t${r.password}`)
+      .map((r) => `${r.memberNumber || "—"}\t${r.name}\t${r.loginId}\t${r.password}`)
       .join("\n");
-    navigator.clipboard.writeText("会社名\tログインID\tパスワード\n" + lines);
+    navigator.clipboard.writeText("会員コード\t会社名\tログインID\tパスワード\n" + lines);
     alert("コピーしました");
   };
 
@@ -196,7 +205,7 @@ export default function InviteCustomerPage() {
         <div className="bg-white rounded-lg shadow p-6 space-y-4">
           <div className="text-sm text-gray-600 bg-gray-50 rounded-lg p-3 space-y-1">
             <p className="font-medium">Excelの列（1行目はヘッダー）</p>
-            <p>A列: <strong>会社名</strong>　B列: <strong>住所</strong>　C列: <strong>電話番号</strong>　D列: <strong>メールアドレス</strong>（任意）</p>
+            <p>A列: <strong>会員コード</strong>　B列: <strong>会社名</strong>　C列: <strong>電話番号</strong>　D列: <strong>FAX番号</strong>　E列: <strong>メールアドレス</strong>（任意）</p>
             <p className="text-gray-400">ログインID = 電話番号の数字のみ　／　パスワード = 000001 から連番</p>
           </div>
 
@@ -226,7 +235,7 @@ export default function InviteCustomerPage() {
                 {imported && (
                   <button onClick={handleCopyAll}
                     className="text-sm text-blue-600 border border-blue-600 px-3 py-1 rounded-lg hover:bg-blue-50">
-                    全件コピー（会社名・ID・パスワード）
+                    全件コピー（会員コード・会社名・ID・パスワード）
                   </button>
                 )}
               </div>
@@ -235,8 +244,10 @@ export default function InviteCustomerPage() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 text-gray-600">
                     <tr>
+                      <th className="px-3 py-2 text-left font-medium">会員コード</th>
                       <th className="px-3 py-2 text-left font-medium">会社名</th>
                       <th className="px-3 py-2 text-left font-medium">電話番号</th>
+                      <th className="px-3 py-2 text-left font-medium">FAX番号</th>
                       <th className="px-3 py-2 text-left font-medium">ログインID</th>
                       {imported && <th className="px-3 py-2 text-left font-medium">パスワード</th>}
                       <th className="px-3 py-2 text-left font-medium">状態</th>
@@ -245,8 +256,10 @@ export default function InviteCustomerPage() {
                   <tbody className="divide-y divide-gray-100">
                     {rows.map((row, i) => (
                       <tr key={i}>
+                        <td className="px-3 py-2 text-gray-700 font-mono">{row.memberNumber || "—"}</td>
                         <td className="px-3 py-2 text-gray-700">{row.name}</td>
                         <td className="px-3 py-2 text-gray-500">{row.phone || "—"}</td>
+                        <td className="px-3 py-2 text-gray-500">{row.faxNumber || "—"}</td>
                         <td className="px-3 py-2 text-gray-700 font-mono">{row.loginId || "—"}</td>
                         {imported && (
                           <td className="px-3 py-2 text-gray-700 font-mono">{row.password || "—"}</td>
