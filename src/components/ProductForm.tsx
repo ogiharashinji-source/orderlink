@@ -45,6 +45,9 @@ const empty: ProductData = {
 export default function ProductForm({ initialData, productId }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
+  const [has1800, setHas1800] = useState(!!(initialData?.price1800));
+  const [has720, setHas720] = useState(!!(initialData?.price720));
+  const [hasOther, setHasOther] = useState(!!(initialData?.priceOther));
   const router = useRouter();
 
   const toHalf = (str: string) =>
@@ -60,11 +63,23 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.price1800 && !form.price720 && !form.priceOther) {
-      alert("いずれかのサイズの小売値を入力してください");
+    if (!has1800 && !has720 && !hasOther) {
+      alert("サイズを1つ以上選択してください");
       return;
     }
-    if (form.priceOther && !form.volumeOther) {
+    if (has1800 && !form.price1800) {
+      alert("1800mlの小売値を入力してください");
+      return;
+    }
+    if (has720 && !form.price720) {
+      alert("720mlの小売値を入力してください");
+      return;
+    }
+    if (hasOther && !form.priceOther) {
+      alert("その他サイズの小売値を入力してください");
+      return;
+    }
+    if (hasOther && !form.volumeOther) {
       alert("その他の容量を入力してください（例: 300ml）");
       return;
     }
@@ -76,22 +91,22 @@ export default function ProductForm({ initialData, productId }: Props) {
       seimaiWari: form.seimaiWari || null,
       alcohol: form.alcohol || null,
       description: form.description || null,
-      price1800: form.price1800 ? parseFloat(form.price1800) : null,
-      wholesalePrice1800: form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
-      unit1800: form.unit1800 || "本",
-      stock1800: parseInt(form.stock1800) || 0,
-      price720: form.price720 ? parseFloat(form.price720) : null,
-      wholesalePrice720: form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
-      unit720: form.unit720 || "本",
-      stock720: parseInt(form.stock720) || 0,
-      volumeOther: form.volumeOther || null,
-      priceOther: form.priceOther ? parseFloat(form.priceOther) : null,
-      wholesalePriceOther: form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
-      unitOther: form.unitOther || null,
-      stockOther: parseInt(form.stockOther) || 0,
-      price: parseFloat(form.price1800 || form.price720 || form.priceOther || "0") || 0,
-      unit: form.unit1800 || "本",
-      stock: (parseInt(form.stock1800) || 0) + (parseInt(form.stock720) || 0),
+      price1800: has1800 && form.price1800 ? parseFloat(form.price1800) : null,
+      wholesalePrice1800: has1800 && form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
+      unit1800: has1800 ? (form.unit1800 || "本") : null,
+      stock1800: has1800 ? (parseInt(form.stock1800) || 0) : 0,
+      price720: has720 && form.price720 ? parseFloat(form.price720) : null,
+      wholesalePrice720: has720 && form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
+      unit720: has720 ? (form.unit720 || "本") : null,
+      stock720: has720 ? (parseInt(form.stock720) || 0) : 0,
+      volumeOther: hasOther ? (form.volumeOther || null) : null,
+      priceOther: hasOther && form.priceOther ? parseFloat(form.priceOther) : null,
+      wholesalePriceOther: hasOther && form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
+      unitOther: hasOther ? (form.unitOther || null) : null,
+      stockOther: hasOther ? (parseInt(form.stockOther) || 0) : 0,
+      price: parseFloat((has1800 ? form.price1800 : "") || (has720 ? form.price720 : "") || (hasOther ? form.priceOther : "") || "0") || 0,
+      unit: (has1800 ? form.unit1800 : "") || "本",
+      stock: (has1800 ? parseInt(form.stock1800) || 0 : 0) + (has720 ? parseInt(form.stock720) || 0 : 0),
     };
     const url = productId ? `/api/products/${productId}` : "/api/products";
     const method = productId ? "PUT" : "POST";
@@ -127,67 +142,95 @@ export default function ProductForm({ initialData, productId }: Props) {
         <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={6} className={inputCls} />
       </Field>
 
-      <p className="text-xs text-gray-400">※ 該当するサイズのみ入力してください</p>
+      <div className="flex gap-6">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={has1800} onChange={(e) => {
+            setHas1800(e.target.checked);
+            if (!e.target.checked) setForm((f) => ({ ...f, price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "" }));
+          }} className="w-4 h-4 accent-blue-600" />
+          <span className="text-sm font-medium text-gray-700">1800ml</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={has720} onChange={(e) => {
+            setHas720(e.target.checked);
+            if (!e.target.checked) setForm((f) => ({ ...f, price720: "", wholesalePrice720: "", unit720: "12", stock720: "" }));
+          }} className="w-4 h-4 accent-blue-600" />
+          <span className="text-sm font-medium text-gray-700">720ml</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" checked={hasOther} onChange={(e) => {
+            setHasOther(e.target.checked);
+            if (!e.target.checked) setForm((f) => ({ ...f, volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "" }));
+          }} className="w-4 h-4 accent-blue-600" />
+          <span className="text-sm font-medium text-gray-700">その他</span>
+        </label>
+      </div>
 
       {/* 1800ml */}
-      <div className="border border-gray-100 rounded-lg p-4">
-        <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="小売値 (円)">
-            <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="卸売値 (円)">
-            <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="単位（ロット）">
-            <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={inputCls} />
-          </Field>
-          <Field label="限定">
-            <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
-          </Field>
+      {has1800 && (
+        <div className="border border-gray-100 rounded-lg p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="小売値 (円)">
+              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="卸売値 (円)">
+              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="単位（ロット）">
+              <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={inputCls} />
+            </Field>
+            <Field label="限定">
+              <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
+            </Field>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 720ml */}
-      <div className="border border-gray-100 rounded-lg p-4">
-        <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="小売値 (円)">
-            <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="卸売値 (円)">
-            <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="単位（ロット）">
-            <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={inputCls} />
-          </Field>
-          <Field label="限定">
-            <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
-          </Field>
+      {has720 && (
+        <div className="border border-gray-100 rounded-lg p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="小売値 (円)">
+              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="卸売値 (円)">
+              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="単位（ロット）">
+              <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={inputCls} />
+            </Field>
+            <Field label="限定">
+              <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
+            </Field>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* その他 */}
-      <div className="border border-gray-100 rounded-lg p-4">
-        <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="容量">
-            <input value={form.volumeOther} onChange={set("volumeOther")} placeholder="例: 300ml, 500ml" className={inputCls} />
-          </Field>
-          <Field label="限定">
-            <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
-          </Field>
-          <Field label="小売値 (円)">
-            <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="卸売値 (円)">
-            <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} placeholder="0" className={noSpinCls} />
-          </Field>
-          <Field label="単位（ロット）">
-            <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={inputCls} />
-          </Field>
+      {hasOther && (
+        <div className="border border-gray-100 rounded-lg p-4">
+          <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="容量">
+              <input value={form.volumeOther} onChange={set("volumeOther")} placeholder="例: 300ml, 500ml" className={inputCls} />
+            </Field>
+            <Field label="限定">
+              <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
+            </Field>
+            <Field label="小売値 (円)">
+              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="卸売値 (円)">
+              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} placeholder="0" className={noSpinCls} />
+            </Field>
+            <Field label="単位（ロット）">
+              <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={inputCls} />
+            </Field>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
