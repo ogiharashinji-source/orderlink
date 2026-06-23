@@ -22,6 +22,11 @@ type ProductData = {
   wholesalePrice720: string;
   unit720: string;
   stock720: string;
+  volumeOther: string;
+  priceOther: string;
+  wholesalePriceOther: string;
+  unitOther: string;
+  stockOther: string;
 };
 
 type Props = {
@@ -34,6 +39,7 @@ const empty: ProductData = {
   description: "",
   price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "",
   price720: "",  wholesalePrice720: "", unit720: "12", stock720: "",
+  volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "",
 };
 
 export default function ProductForm({ initialData, productId }: Props) {
@@ -54,8 +60,12 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.price1800 && !form.price720) {
-      alert("1800ml または 720ml の小売値を入力してください");
+    if (!form.price1800 && !form.price720 && !form.priceOther) {
+      alert("いずれかのサイズの小売値を入力してください");
+      return;
+    }
+    if (form.priceOther && !form.volumeOther) {
+      alert("その他の容量を入力してください（例: 300ml）");
       return;
     }
     setSaving(true);
@@ -74,7 +84,12 @@ export default function ProductForm({ initialData, productId }: Props) {
       wholesalePrice720: form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
       unit720: form.unit720 || "本",
       stock720: parseInt(form.stock720) || 0,
-      price: parseFloat(form.price1800 || form.price720 || "0") || 0,
+      volumeOther: form.volumeOther || null,
+      priceOther: form.priceOther ? parseFloat(form.priceOther) : null,
+      wholesalePriceOther: form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
+      unitOther: form.unitOther || null,
+      stockOther: parseInt(form.stockOther) || 0,
+      price: parseFloat(form.price1800 || form.price720 || form.priceOther || "0") || 0,
       unit: form.unit1800 || "本",
       stock: (parseInt(form.stock1800) || 0) + (parseInt(form.stock720) || 0),
     };
@@ -148,6 +163,28 @@ export default function ProductForm({ initialData, productId }: Props) {
           </Field>
           <Field label="限定">
             <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
+          </Field>
+        </div>
+      </div>
+
+      {/* その他 */}
+      <div className="border border-gray-100 rounded-lg p-4">
+        <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="容量">
+            <input value={form.volumeOther} onChange={set("volumeOther")} placeholder="例: 300ml, 500ml" className={inputCls} />
+          </Field>
+          <Field label="限定">
+            <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
+          </Field>
+          <Field label="小売値 (円)">
+            <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} placeholder="0" className={noSpinCls} />
+          </Field>
+          <Field label="卸売値 (円)">
+            <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} placeholder="0" className={noSpinCls} />
+          </Field>
+          <Field label="単位（ロット）">
+            <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={inputCls} />
           </Field>
         </div>
       </div>

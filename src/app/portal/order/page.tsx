@@ -18,6 +18,11 @@ type Product = {
   wholesalePrice720: number | null;
   unit720: string | null;
   stock720: number | null;
+  volumeOther: string | null;
+  priceOther: number | null;
+  wholesalePriceOther: number | null;
+  unitOther: string | null;
+  stockOther: number | null;
 };
 
 type VariantKey = string;
@@ -94,6 +99,7 @@ function PortalOrderContent() {
     const list: Variant[] = [];
     if (p.price1800 != null) list.push({ key: `${p.id}_1800`, product: p, volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, lot: parseInt(p.unit1800 ?? "1") || 1, stock: p.stock1800 });
     if (p.price720  != null) list.push({ key: `${p.id}_720`,  product: p, volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  lot: parseInt(p.unit720  ?? "1") || 1, stock: p.stock720  });
+    if (p.priceOther != null && p.volumeOther) list.push({ key: `${p.id}_other`, product: p, volume: p.volumeOther, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, lot: parseInt(p.unitOther ?? "1") || 1, stock: p.stockOther });
     return list;
   });
 
@@ -287,7 +293,7 @@ function PortalOrderContent() {
                   <td className="px-4 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
                   <td className="px-4 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                   </td>
                   <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>

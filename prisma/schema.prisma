@@ -183,6 +183,11 @@ model Product {
   wholesalePrice720  Float?
   unit720           String?       @default("本")
   stock720          Int?          @default(0)
+  volumeOther       String?
+  priceOther        Float?
+  wholesalePriceOther Float?
+  unitOther         String?
+  stockOther        Int?          @default(0)
   price        Float         @default(0)
   unit         String        @default("本")
   stock        Int           @default(0)
