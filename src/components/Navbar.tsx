@@ -25,10 +25,11 @@ export default function Navbar() {
   const fetchNav = useCallback((redirectOnUnauth = false) => {
     fetch("/api/admin/nav")
       .then((r) => {
-        if (!r.ok) {
-          if (redirectOnUnauth) window.location.href = "/admin/login";
+        if (r.status === 401 && redirectOnUnauth) {
+          window.location.href = "/admin/login";
           return null;
         }
+        if (!r.ok) return null;
         return r.json();
       })
       .then((d) => {
@@ -37,7 +38,7 @@ export default function Navbar() {
         setPendingCount(d.pendingCount ?? 0);
         setApprovalCount(d.approvalCount ?? 0);
       })
-      .catch(() => { if (redirectOnUnauth) window.location.href = "/admin/login"; });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
