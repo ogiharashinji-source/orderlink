@@ -59,7 +59,8 @@ export default function OrdersPage() {
     const rows: (string | number | null)[][] = [];
     orders.forEach((o) => {
       const date = new Date(o.orderDate).toLocaleDateString("ja-JP");
-      const memberCode = o.customer?.memberNumber ?? "";
+      const memberCodeRaw = o.customer?.memberNumber ?? "";
+      const memberCode = memberCodeRaw ? `="${memberCodeRaw}"` : "";
       const seller = o.customerName ?? o.customer?.name ?? "";
       o.items.forEach((item) => {
         const productName = item.productName ?? item.product?.name ?? "";
