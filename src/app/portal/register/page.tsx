@@ -3,7 +3,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputCls = "w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 function RegisterForm() {
   const router = useRouter();
@@ -50,43 +50,44 @@ function RegisterForm() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-2xl space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">招待　登録ページ</h1>
+  const loginHref = `/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`;
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-4">
-          <div className="flex items-end justify-between gap-6">
-            <div className="flex-1 max-w-sm">
-              <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
-              <input required value={form.name} onChange={set("name")} className={inputCls} />
-            </div>
-            <Link href={`/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`} className="px-4 py-2 rounded-lg text-sm font-medium border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
-              すでに登録されている方はこちら
-            </Link>
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-start justify-center p-4 pt-8">
+      <div className="w-full max-w-lg space-y-4">
+        <div className="text-center mb-2">
+          <h1 className="text-2xl font-bold text-gray-900">OrderLink</h1>
+          <p className="text-gray-500 text-sm mt-1">販売店アカウント登録</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
+            <input required value={form.name} onChange={set("name")} className={inputCls} placeholder="例: 山田酒店" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">住所 <span className="text-red-500">*</span></label>
-            <input required value={form.address} onChange={set("address")} className={inputCls} />
+            <input required value={form.address} onChange={set("address")} className={inputCls} placeholder="例: 東京都渋谷区..." />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
-              <input required value={form.phone} onChange={set("phone")} className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-              <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
-              <input type="email" value={form.email} onChange={set("email")} className={inputCls} />
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
+            <input required type="tel" value={form.phone} onChange={set("phone")} className={inputCls} placeholder="例: 03-1234-5678" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
+            <input type="tel" value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} placeholder="例: 03-1234-5679" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+            <input type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="例: info@yamada.co.jp" />
           </div>
 
           <div className="border-t pt-4 space-y-4">
+            <p className="text-xs text-gray-500">ログインに使うIDとパスワードを設定してください</p>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">ログインID <span className="text-red-500">*</span></label>
               <input required value={form.loginId} onChange={set("loginId")} placeholder="例: yamada2025" className={inputCls} />
@@ -99,13 +100,16 @@ function RegisterForm() {
 
           {error && <p className="text-sm text-red-500">{error}</p>}
 
-          <div className="flex items-center gap-4 pt-2">
-            <button type="submit" disabled={saving}
-              className="px-6 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-50"
-              style={{ background: "#1e3a8a" }}>
-              {saving ? "登録中..." : "登録する"}
-            </button>
-          </div>
+          <button type="submit" disabled={saving}
+            className="w-full py-3 rounded-xl text-base font-bold text-white disabled:opacity-50 mt-2"
+            style={{ background: "#1e3a8a" }}>
+            {saving ? "登録中..." : "登録する"}
+          </button>
+
+          <p className="text-center text-sm text-gray-500">
+            すでにアカウントをお持ちの方は{" "}
+            <Link href={loginHref} className="text-blue-600 hover:underline">こちら</Link>
+          </p>
         </form>
       </div>
     </div>
