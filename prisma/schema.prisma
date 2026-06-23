@@ -90,6 +90,7 @@ model Customer {
   referralCode         String?        @unique
   inviteToken          String?        @unique
   inviteEmail          String?
+  memberNumber         String?
   approved             Boolean        @default(false)
   deleted              Boolean        @default(false)
   passwordResetToken   String?        @unique
