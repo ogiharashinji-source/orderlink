@@ -17,6 +17,7 @@ function RegisterForm() {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -36,8 +37,7 @@ function RegisterForm() {
         }),
       });
       if (res.ok) {
-        alert("登録されました。招待者より承認されるまでしばらくお待ちください。");
-        router.push("/portal/order");
+        setDone(true);
       } else {
         let msg = "登録に失敗しました";
         try { const data = await res.json(); msg = data.error ?? msg; } catch { /* ignore */ }
@@ -51,6 +51,28 @@ function RegisterForm() {
   };
 
   const loginHref = `/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`;
+
+  if (done) return (
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
+      <div className="w-full max-w-lg mx-auto">
+        <div className="bg-white rounded-2xl shadow p-8 text-center space-y-5">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900">登録が完了しました</h2>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            承認後、パソコンから以下のURLでご利用いただけます。
+          </p>
+          <div className="bg-gray-50 rounded-xl px-4 py-3">
+            <p className="text-sm font-medium text-blue-700 break-all">https://www.orderlink.jp/portal/login</p>
+          </div>
+          <p className="text-xs text-gray-400">承認完了後にご案内が届く場合があります。しばらくお待ちください。</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
