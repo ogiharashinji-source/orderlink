@@ -63,7 +63,7 @@ export default function CustomerForm({ initialData, customerId, onSuccess }: Pro
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-4 max-w-2xl">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field label="会員NO"><input value={form.memberNumber} onChange={set("memberNumber")} placeholder="例: 0001" className={inputCls} /></Field>
+        <Field label="会員コード"><input value={form.memberNumber} onChange={set("memberNumber")} placeholder="例: 0001" className={inputCls} /></Field>
         <Field label="会社名 *" required><input required value={form.name} onChange={set("name")} className={inputCls} /></Field>
         <div className="sm:col-span-2">
           <Field label="住所 *" required><input required value={form.address} onChange={set("address")} className={inputCls} /></Field>

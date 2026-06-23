@@ -201,7 +201,7 @@ export default function CustomersPage() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </th>
-              <th className="px-4 py-3 text-center">会員NO</th>
+              <th className="px-4 py-3 text-center">会員コード</th>
               <th className="px-4 py-3 text-left">会社名</th>
               <th className="px-4 py-3 text-left">住所</th>
               <th className="px-4 py-3 text-left">電話番号</th>
