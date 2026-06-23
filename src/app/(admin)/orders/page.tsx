@@ -30,36 +30,21 @@ type Order = {
   items: OrderItem[];
 };
 
-const currentMonth = () => {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-};
-
-const monthOptions = () => {
-  const options = [{ value: "", label: "全期間" }];
-  const now = new Date();
-  for (let i = 0; i < 24; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const label = `${d.getFullYear()}年${d.getMonth() + 1}月`;
-    options.push({ value, label });
-  }
-  return options;
-};
-
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [month, setMonth] = useState(currentMonth());
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const router = useRouter();
 
   const load = useCallback(() => {
     const params = new URLSearchParams();
-    if (month) params.set("month", month);
+    if (dateFrom) params.set("from", dateFrom);
+    if (dateTo) params.set("to", dateTo);
     if (query) params.set("q", query);
     fetch(`/api/orders?${params}`).then((r) => r.json()).then(setOrders);
-  }, [month, query]);
+  }, [dateFrom, dateTo, query]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -96,15 +81,19 @@ export default function OrdersPage() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <h1 className="text-2xl font-bold text-gray-900 mr-2">受注管理</h1>
-        <select
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => setDateFrom(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {monthOptions().map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        />
+        <span className="text-gray-500 text-sm">〜</span>
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => setDateTo(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <input
           type="text"
           value={search}

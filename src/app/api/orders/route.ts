@@ -23,14 +23,19 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q") ?? "";
   const status = searchParams.get("status") ?? "";
-  const month = searchParams.get("month") ?? "";
+  const from = searchParams.get("from") ?? "";
+  const to = searchParams.get("to") ?? "";
 
   let dateFilter = {};
-  if (month) {
-    const [year, mon] = month.split("-").map(Number);
-    const start = new Date(year, mon - 1, 1);
-    const end = new Date(year, mon, 1);
-    dateFilter = { orderDate: { gte: start, lt: end } };
+  if (from || to) {
+    const range: { gte?: Date; lt?: Date } = {};
+    if (from) range.gte = new Date(from);
+    if (to) {
+      const t = new Date(to);
+      t.setDate(t.getDate() + 1);
+      range.lt = t;
+    }
+    dateFilter = { orderDate: range };
   }
 
   const orders = await prisma.order.findMany({

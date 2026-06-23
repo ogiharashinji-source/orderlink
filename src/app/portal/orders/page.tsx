@@ -43,26 +43,10 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   REJECTED:  { label: "在庫なし", cls: "bg-red-100 text-red-600" },
 };
 
-const monthOptions = () => {
-  const options = [{ value: "", label: "全期間" }];
-  const now = new Date();
-  for (let i = 0; i < 24; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const label = `${d.getFullYear()}年${d.getMonth() + 1}月`;
-    options.push({ value, label });
-  }
-  return options;
-};
-
-const currentMonth = () => {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-};
-
 export default function PortalOrdersPage() {
   const [orders, setOrders] = useState<OrderRequest[]>([]);
-  const [month, setMonth] = useState(currentMonth());
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -84,7 +68,12 @@ export default function PortalOrdersPage() {
   }, [router]);
 
   const filtered = orders
-    .filter((o) => !month || o.requestedAt.startsWith(month))
+    .filter((o) => {
+      const d = o.requestedAt.slice(0, 10);
+      if (dateFrom && d < dateFrom) return false;
+      if (dateTo && d > dateTo) return false;
+      return true;
+    })
     .filter((o) => !query ||
       o.requestNumber.includes(query) ||
       o.items.some((i) =>
@@ -98,15 +87,19 @@ export default function PortalOrdersPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <h1 className="text-2xl font-bold text-gray-900">発注管理</h1>
-        <select
-          value={month}
-          onChange={(e) => setMonth(e.target.value)}
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => setDateFrom(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {monthOptions().map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        />
+        <span className="text-gray-500 text-sm">〜</span>
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => setDateTo(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <input
           type="text"
           value={search}
