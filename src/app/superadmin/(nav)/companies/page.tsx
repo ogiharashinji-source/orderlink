@@ -67,8 +67,8 @@ export default function SuperAdminCompaniesPage() {
               {companies.length === 0 ? (
                 <tr><td colSpan={8} className="text-center py-8 text-gray-400">データがありません</td></tr>
               ) : (
-                companies.map((c) => (
-                  <tr key={c.id} className="border-t border-gray-100 hover:bg-gray-50">
+                companies.map((c, idx) => (
+                  <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("ja-JP")}
                     </td>
