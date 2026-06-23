@@ -111,6 +111,67 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
   });
 }
 
+export async function sendBreweryNotificationEmail(to: string, customerName: string, breweryName: string) {
+  const subject = `【OrderLink】${customerName}様が登録しました`;
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.9;">
+              <strong>${customerName}</strong>様がOrderLinkへ登録しました。
+            </p>
+            <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
+              管理画面から承認してください。
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:8px 0 32px;">
+                  <a href="https://www.orderlink.jp/customers"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    管理画面で確認する
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999999;">
+              このメールはOrderLinkから自動送信されています。返信はお受けできません。
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `${customerName}様がOrderLinkへ登録しました。管理画面から承認してください。\nhttps://www.orderlink.jp/customers`;
+
+  if (DEV) {
+    console.log("========== [登録通知メール] ==========");
+    console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
+    console.log(text);
+    console.log("=====================================");
+    return;
+  }
+
+  await getResend().emails.send({ from: FROM, to, subject, html, text });
+}
+
 export async function sendOrderLinkEmail({
   to,
   customerName,

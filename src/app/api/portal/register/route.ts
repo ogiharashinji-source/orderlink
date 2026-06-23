@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { makeSessionToken, CUSTOMER_COOKIE } from "@/lib/customerAuth";
+import { sendBreweryNotificationEmail } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   try {
-  const { name, address, phone, faxNumber, email, loginId, password, inviteToken } = await req.json();
+  const { name, address, phone, faxNumber, email, loginId, password, inviteToken, breweryInviteToken } = await req.json();
   if (!name || !loginId || !password)
     return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
 
@@ -14,11 +15,21 @@ export async function POST(req: NextRequest) {
 
   // 招待トークンから会社IDを取得
   let companyId = 1;
+  let notifyEmail: string | null = null;
+  let notifyCompanyName: string | null = null;
+
   if (inviteToken) {
     const invite = await prisma.companyInvite.findUnique({ where: { token: inviteToken } });
     if (invite && (!invite.expiresAt || invite.expiresAt > new Date())) {
       companyId = invite.companyId;
       await prisma.companyInvite.delete({ where: { id: invite.id } });
+    }
+  } else if (breweryInviteToken) {
+    const setting = await prisma.adminSetting.findUnique({ where: { inviteToken: breweryInviteToken } });
+    if (setting) {
+      companyId = setting.companyId;
+      notifyEmail = setting.email;
+      notifyCompanyName = setting.companyName;
     }
   }
 
@@ -66,6 +77,11 @@ export async function POST(req: NextRequest) {
       },
     });
     await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: false } });
+  }
+
+  // QRコード経由登録時は酒蔵管理者へ通知
+  if (breweryInviteToken && notifyEmail && notifyCompanyName) {
+    sendBreweryNotificationEmail(notifyEmail, name, notifyCompanyName).catch(() => {});
   }
 
   const sessionToken = makeSessionToken(customer.id);

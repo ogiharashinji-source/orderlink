@@ -29,6 +29,7 @@ model AdminSetting {
   phone       String?
   faxNumber   String?
   email       String?
+  inviteToken String? @unique
 }
 
 // 会社モデル（マルチテナント）

@@ -9,6 +9,7 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("token") ?? "";
+  const breweryInviteToken = searchParams.get("invite") ?? "";
 
   const [form, setForm] = useState({
     name: "", address: "", phone: "", faxNumber: "", email: "",
@@ -28,7 +29,11 @@ function RegisterForm() {
       const res = await fetch("/api/portal/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, inviteToken: inviteToken || undefined }),
+        body: JSON.stringify({
+          ...form,
+          inviteToken: inviteToken || undefined,
+          breweryInviteToken: breweryInviteToken || undefined,
+        }),
       });
       if (res.ok) {
         alert("登録されました。招待者より承認されるまでしばらくお待ちください。");
@@ -56,7 +61,7 @@ function RegisterForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
               <input required value={form.name} onChange={set("name")} className={inputCls} />
             </div>
-            <Link href={`/portal/login${inviteToken ? `?token=${inviteToken}` : ""}`} className="px-4 py-2 rounded-lg text-sm font-medium border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
+            <Link href={`/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`} className="px-4 py-2 rounded-lg text-sm font-medium border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
               すでに登録されている方はこちら
             </Link>
           </div>
