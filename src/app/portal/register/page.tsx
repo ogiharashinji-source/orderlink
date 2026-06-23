@@ -25,18 +25,24 @@ function RegisterForm() {
     if (form.password.length < 6) { setError("パスワードは6文字以上で入力してください"); return; }
     setSaving(true);
     setError("");
-    const res = await fetch("/api/portal/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, inviteToken: inviteToken || undefined }),
-    });
-    setSaving(false);
-    if (res.ok) {
-      alert("登録されました。招待者より承認されるまでしばらくお待ちください。");
-      router.push("/portal/order");
-    } else {
-      const data = await res.json();
-      setError(data.error ?? "登録に失敗しました");
+    try {
+      const res = await fetch("/api/portal/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, inviteToken: inviteToken || undefined }),
+      });
+      if (res.ok) {
+        alert("登録されました。招待者より承認されるまでしばらくお待ちください。");
+        router.push("/portal/order");
+      } else {
+        let msg = "登録に失敗しました";
+        try { const data = await res.json(); msg = data.error ?? msg; } catch { /* ignore */ }
+        setError(msg);
+      }
+    } catch {
+      setError("通信エラーが発生しました。再度お試しください。");
+    } finally {
+      setSaving(false);
     }
   };
 

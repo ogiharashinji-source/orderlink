@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { makeSessionToken, CUSTOMER_COOKIE } from "@/lib/customerAuth";
 
 export async function POST(req: NextRequest) {
+  try {
   const { name, address, phone, faxNumber, email, loginId, password, inviteToken } = await req.json();
   if (!name || !loginId || !password)
     return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
@@ -71,4 +72,8 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.json({ ok: true });
   res.cookies.set(CUSTOMER_COOKIE, sessionToken, { httpOnly: true, path: "/", maxAge: 60 * 60 * 24 * 30 });
   return res;
+  } catch (e) {
+    console.error("register error:", e);
+    return NextResponse.json({ error: "登録処理中にエラーが発生しました: " + String(e) }, { status: 500 });
+  }
 }
