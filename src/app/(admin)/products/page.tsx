@@ -158,12 +158,13 @@ export default function ProductsPage() {
             {products.length === 0 ? (
               <tr><td colSpan={13} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
-              products.map((p) => {
+              products.map((p, productIdx) => {
                 const variants = getVariants(p);
                 const isChecked = selected.has(p.id);
+                const rowBg = isChecked ? "bg-blue-50" : productIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
                 if (variants.length === 0) {
                   return (
-                    <tr key={p.id} className={`border-t border-gray-100 hover:bg-gray-50 ${isChecked ? "bg-blue-50" : ""}`}>
+                    <tr key={p.id} className={`border-t border-gray-100 ${rowBg}`}>
                       <td className="px-3 py-3 text-center">
                         <input type="checkbox" checked={isChecked} onChange={() => toggleOne(p.id)}
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
@@ -198,7 +199,7 @@ export default function ProductsPage() {
                     {variants.map((v, idx) => (
                       <tr
                         key={v.volume}
-                        className={`border-t border-gray-100 hover:bg-gray-50 ${isChecked ? "bg-blue-50" : ""} ${
+                        className={`border-t border-gray-100 ${rowBg} ${
                           idx === variants.length - 1 ? "border-b-2 border-b-gray-200" : ""
                         }`}
                       >
