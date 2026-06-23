@@ -3,7 +3,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const inputCls = "w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 function RegisterForm() {
   const router = useRouter();
@@ -53,14 +53,14 @@ function RegisterForm() {
   const loginHref = `/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`;
 
   return (
-    <div className="bg-gray-50 flex items-start justify-center p-4 pt-8">
-      <div className="w-full max-w-lg space-y-4">
-        <div className="text-center mb-2">
-          <h1 className="text-2xl font-bold text-gray-900">OrderLink</h1>
-          <p className="text-gray-500 text-sm mt-1">販売店アカウント登録</p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg space-y-3">
+        <div className="text-center mb-1">
+          <h1 className="text-xl font-bold text-gray-900">OrderLink</h1>
+          <p className="text-gray-500 text-sm">販売店アカウント登録</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-5 space-y-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
             <input required value={form.name} onChange={set("name")} className={inputCls} placeholder="例: 山田酒店" />
@@ -86,7 +86,7 @@ function RegisterForm() {
             <input type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="例: info@yamada.co.jp" />
           </div>
 
-          <div className="border-t pt-4 space-y-4">
+          <div className="border-t pt-3 space-y-3">
             <p className="text-xs text-gray-500">ログインに使うIDとパスワードを設定してください</p>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">ログインID <span className="text-red-500">*</span></label>
