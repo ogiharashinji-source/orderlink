@@ -8,6 +8,7 @@ function CustomerLoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("token") ?? "";
   const breweryInviteToken = searchParams.get("invite") ?? "";
@@ -34,11 +35,8 @@ function CustomerLoginForm() {
             body: JSON.stringify({ inviteToken: inviteToken || undefined, breweryInviteToken: breweryInviteToken || undefined }),
           });
           if (assocRes.ok) {
-            const assocData = await assocRes.json();
-            if (assocData.companyId) {
-              window.location.href = `/portal/order?companyId=${assocData.companyId}`;
-              return;
-            }
+            setDone(true);
+            return;
           }
         }
         window.location.href = "/portal/order";
@@ -52,6 +50,28 @@ function CustomerLoginForm() {
       setLoading(false);
     }
   };
+
+  if (done) return (
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
+      <div className="w-full max-w-lg mx-auto">
+        <div className="bg-white rounded-2xl shadow p-8 text-center space-y-5">
+          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-900">登録が完了しました</h2>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            承認後、パソコンから以下のURLでご利用いただけます。
+          </p>
+          <div className="bg-gray-50 rounded-xl px-4 py-3">
+            <p className="text-sm font-medium text-blue-700 break-all">https://www.orderlink.jp/portal/login</p>
+          </div>
+          <p className="text-xs text-gray-400">承認完了後にご案内が届く場合があります。しばらくお待ちください。</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-800 flex items-center justify-center p-6">
