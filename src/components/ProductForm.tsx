@@ -45,8 +45,8 @@ const empty: ProductData = {
 export default function ProductForm({ initialData, productId }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
-  const [has1800, setHas1800] = useState(!!(initialData?.price1800));
-  const [has720, setHas720] = useState(!!(initialData?.price720));
+  const [has1800, setHas1800] = useState(productId ? !!(initialData?.price1800) : true);
+  const [has720, setHas720] = useState(productId ? !!(initialData?.price720) : true);
   const [hasOther, setHasOther] = useState(!!(initialData?.priceOther));
   const router = useRouter();
 
@@ -234,7 +234,7 @@ export default function ProductForm({ initialData, productId }: Props) {
 
       <div className="flex gap-3 pt-2">
         <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-          {saving ? "保存中..." : "保存"}
+          {saving ? "登録中..." : "登録"}
         </button>
         <button type="button" onClick={() => router.push("/products")} className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
           キャンセル
