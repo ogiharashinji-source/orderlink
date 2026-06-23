@@ -70,16 +70,22 @@ export default function OrdersPage() {
   };
 
   const handleCsvExport = () => {
-    const header = ["注文日", "販売店名", "商品名", "数量", "金額"];
+    const header = ["受注日時", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "販売数", "備考"];
     const rows: (string | number | null)[][] = [];
     orders.forEach((o) => {
-      const date = new Date(o.orderDate).toLocaleDateString("ja-JP");
+      const datetime = new Date(o.orderDate).toLocaleString("ja-JP");
       const seller = o.customerName ?? o.customer?.name ?? "";
       o.items.forEach((item) => {
         const productName = item.productName ?? item.product?.name ?? "";
+        const category = item.productCategory ?? item.product?.category ?? "";
+        const sakaMai = item.productSakaMai ?? item.product?.sakaMai ?? "";
+        const volume = item.volume ?? "";
+        const retailPrice = item.unitPrice;
+        const wholesalePrice = item.volume === "1800ml"
+          ? (item.product?.wholesalePrice1800 ?? "")
+          : (item.product?.wholesalePrice720 ?? "");
         const lot = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
-        const amount = item.quantity * lot * item.unitPrice;
-        rows.push([date, seller, productName, item.quantity, amount]);
+        rows.push([datetime, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, item.quantity, o.notes ?? ""]);
       });
     });
     const date = new Date().toISOString().slice(0, 10);
