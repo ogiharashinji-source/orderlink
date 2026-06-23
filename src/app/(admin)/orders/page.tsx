@@ -30,9 +30,15 @@ type Order = {
   items: OrderItem[];
 };
 
+const oneMonthAgo = () => {
+  const d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  return d.toISOString().slice(0, 10);
+};
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [dateFrom, setDateFrom] = useState("");
+  const [dateFrom, setDateFrom] = useState(oneMonthAgo());
   const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");

@@ -43,9 +43,15 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   REJECTED:  { label: "在庫なし", cls: "bg-red-100 text-red-600" },
 };
 
+const oneMonthAgo = () => {
+  const d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  return d.toISOString().slice(0, 10);
+};
+
 export default function PortalOrdersPage() {
   const [orders, setOrders] = useState<OrderRequest[]>([]);
-  const [dateFrom, setDateFrom] = useState("");
+  const [dateFrom, setDateFrom] = useState(oneMonthAgo());
   const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
