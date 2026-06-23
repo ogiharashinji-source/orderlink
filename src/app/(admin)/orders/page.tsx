@@ -148,12 +148,14 @@ export default function OrdersPage() {
                 <td colSpan={12} className="text-center py-12 text-gray-400">受注データがありません</td>
               </tr>
             ) : (
-              orders.map((o) => (
+              orders.map((o, orderIdx) => (
                 <React.Fragment key={o.id}>
-                  {o.items.map((item, idx) => (
+                  {o.items.map((item, idx) => {
+                    const rowBg = orderIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
+                    return (
                     <tr
                       key={item.id}
-                      className={`border-t border-gray-100 hover:bg-gray-50 ${
+                      className={`border-t border-gray-100 ${rowBg} ${
                         idx === o.items.length - 1 ? "border-b-2 border-b-gray-200" : ""
                       }`}
                     >
@@ -229,7 +231,7 @@ export default function OrdersPage() {
                         </>
                       )}
                     </tr>
-                  ))}
+                  );})}
                 </React.Fragment>
               ))
             )}
