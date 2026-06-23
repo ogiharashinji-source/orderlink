@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { downloadCsv } from "@/lib/csv";
+
 
 type Customer = {
   id: number;
@@ -46,12 +46,6 @@ export default function CustomersPage() {
     load();
   };
 
-  const handleCsvExport = () => {
-    const header = ["販売店名", "担当者", "メールアドレス", "電話番号"];
-    const rows = customers.map((c) => [c.name, c.company, c.email, c.phone]);
-    const date = new Date().toISOString().slice(0, 10);
-    downloadCsv(`顧客一覧_${date}.csv`, [header, ...rows]);
-  };
 
   return (
     <div className="space-y-4">
@@ -83,9 +77,7 @@ export default function CustomersPage() {
           )}
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
-            CSV出力
-          </button>
+
           <Link href="/customers/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
             + 新規顧客
           </Link>
