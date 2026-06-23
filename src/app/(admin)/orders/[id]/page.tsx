@@ -130,15 +130,30 @@ export default function OrderDetailPage() {
             })}
           </tbody>
           <tfoot className="bg-gray-50">
-            <tr>
-              <td colSpan={10} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
-              <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{order.items.reduce((sum, item) => {
+            {(() => {
+              const total = order.items.reduce((sum, item) => {
                 const lotNum = (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1);
                 const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
                 if (wp == null) return sum;
                 return sum + item.quantity * lotNum * wp;
-              }, 0).toLocaleString()}</td>
-            </tr>
+              }, 0);
+              return (
+                <>
+                  <tr>
+                    <td colSpan={10} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
+                    <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{total.toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td colSpan={10} className="px-3 py-2 text-right text-gray-600 text-sm">消費税（10%）</td>
+                    <td className="px-3 py-2 text-right text-gray-800 text-sm">¥{Math.floor(total * 0.1).toLocaleString()}</td>
+                  </tr>
+                  <tr className="border-t border-gray-200">
+                    <td colSpan={10} className="px-3 py-2 text-right font-bold text-gray-800">税込合計</td>
+                    <td className="px-3 py-2 text-right font-bold text-gray-900 text-base">¥{Math.floor(total * 1.1).toLocaleString()}</td>
+                  </tr>
+                </>
+              );
+            })()}
           </tfoot>
         </table>
       </div>
