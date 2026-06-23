@@ -144,6 +144,49 @@ export default function InviteCustomerPage() {
 
   return (
     <div className="space-y-4">
+      {/* 確認モーダル */}
+      {confirming && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+            <div className="p-6 space-y-5">
+              <h2 className="text-lg font-bold text-gray-900">送信内容の確認</h2>
+              <div className="text-sm space-y-2 bg-gray-50 rounded-lg p-4">
+                <div className="flex gap-3">
+                  <span className="text-gray-500 w-16 shrink-0">送信先</span>
+                  <span className="font-medium text-gray-900">{email}</span>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-gray-500 w-16 shrink-0">件名</span>
+                  <span className="text-gray-700">【OrderLink】ポータル登録のご案内</span>
+                </div>
+              </div>
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="bg-[#1e3a8a] text-white text-center py-4 font-bold text-xl tracking-widest">OrderLink</div>
+                <div className="p-6 space-y-4 text-gray-700 bg-white text-sm leading-relaxed">
+                  <p>様より OrderLink ポータルへご招待されました。</p>
+                  <p>OrderLinkにご登録いただくことで、商品をオンラインで簡単にご注文いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。</p>
+                  <div className="text-center py-3">
+                    <span className="inline-block bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-bold text-base">アカウントを登録する</span>
+                  </div>
+                  <p className="text-xs text-gray-400 border-t pt-3">なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。</p>
+                </div>
+              </div>
+              <div className="flex gap-3 pt-1">
+                <button onClick={handleSingleSubmit} disabled={sending}
+                  className="flex-1 py-3 rounded-lg text-sm font-bold text-white disabled:opacity-50"
+                  style={{ background: "#1e3a8a" }}>
+                  {sending ? "送信中..." : "送信する"}
+                </button>
+                <button onClick={() => setConfirming(false)} disabled={sending}
+                  className="flex-1 py-3 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+                  戻る
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/customers" className="hover:text-blue-600">顧客管理</Link>
         <span>›</span>
@@ -184,41 +227,6 @@ export default function InviteCustomerPage() {
                   className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
                   顧客管理に戻る
                 </Link>
-              </div>
-            </div>
-          ) : confirming ? (
-            <div className="space-y-4">
-              <div className="text-sm space-y-1">
-                <div className="flex gap-2">
-                  <span className="text-gray-500 w-20 shrink-0">送信先</span>
-                  <span className="font-medium text-gray-900">{email}</span>
-                </div>
-                <div className="flex gap-2">
-                  <span className="text-gray-500 w-20 shrink-0">件名</span>
-                  <span className="text-gray-700">【OrderLink】ポータル登録のご案内</span>
-                </div>
-              </div>
-              <div className="border border-gray-200 rounded-lg overflow-hidden text-sm">
-                <div className="bg-[#1e3a8a] text-white text-center py-3 font-bold text-base tracking-wide">OrderLink</div>
-                <div className="p-4 space-y-3 text-gray-700 bg-white">
-                  <p>様より OrderLink ポータルへご招待されました。</p>
-                  <p>OrderLinkにご登録いただくことで、商品をオンラインで簡単にご注文いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。</p>
-                  <div className="text-center py-2">
-                    <span className="inline-block bg-[#1e3a8a] text-white px-6 py-2 rounded-lg text-sm font-bold">アカウントを登録する</span>
-                  </div>
-                  <p className="text-xs text-gray-400">なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。</p>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button onClick={handleSingleSubmit} disabled={sending}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
-                  style={{ background: "#1e3a8a" }}>
-                  {sending ? "送信中..." : "送信する"}
-                </button>
-                <button onClick={() => setConfirming(false)} disabled={sending}
-                  className="flex-1 py-2.5 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50">
-                  戻る
-                </button>
               </div>
             </div>
           ) : (
