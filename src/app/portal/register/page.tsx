@@ -106,10 +106,10 @@ function RegisterForm() {
             {saving ? "登録中..." : "登録する"}
           </button>
 
-          <p className="text-center text-sm text-gray-500">
-            すでにアカウントをお持ちの方は{" "}
-            <Link href={loginHref} className="text-blue-600 hover:underline">こちら</Link>
-          </p>
+          <Link href={loginHref}
+            className="block w-full py-3 text-center rounded-xl text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
+            すでにアカウントをお持ちの方はこちら
+          </Link>
         </form>
       </div>
     </div>

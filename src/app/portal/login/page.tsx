@@ -10,6 +10,7 @@ function CustomerLoginForm() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("token") ?? "";
+  const breweryInviteToken = searchParams.get("invite") ?? "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,11 +27,11 @@ function CustomerLoginForm() {
       });
       clearTimeout(timeoutId);
       if (res.ok) {
-        if (inviteToken) {
+        if (inviteToken || breweryInviteToken) {
           const assocRes = await fetch("/api/portal/associate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ inviteToken }),
+            body: JSON.stringify({ inviteToken: inviteToken || undefined, breweryInviteToken: breweryInviteToken || undefined }),
           });
           if (assocRes.ok) {
             const assocData = await assocRes.json();

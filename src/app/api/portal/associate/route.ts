@@ -6,7 +6,20 @@ export async function POST(req: NextRequest) {
   const customer = await getCustomerSession();
   if (!customer) return NextResponse.json({ error: "未ログイン" }, { status: 401 });
 
-  const { inviteToken } = await req.json();
+  const { inviteToken, breweryInviteToken } = await req.json();
+
+  // QRコード経由（酒蔵共通トークン）
+  if (breweryInviteToken) {
+    const setting = await prisma.adminSetting.findUnique({ where: { inviteToken: breweryInviteToken } });
+    if (!setting) return NextResponse.json({ ok: true });
+    await prisma.customerCompany.upsert({
+      where: { customerId_companyId: { customerId: customer.id, companyId: setting.companyId } },
+      create: { customerId: customer.id, companyId: setting.companyId },
+      update: {},
+    });
+    return NextResponse.json({ ok: true, companyId: setting.companyId });
+  }
+
   if (!inviteToken) return NextResponse.json({ ok: true });
 
   const invite = await prisma.companyInvite.findUnique({
