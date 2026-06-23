@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     });
     if (duplicate) {
       return NextResponse.json(
-        { error: `この会員コードはすでに「${duplicate.name}」で使用されています` },
+        { error: "この会員コードはすでに使用されています" },
         { status: 409 }
       );
     }
