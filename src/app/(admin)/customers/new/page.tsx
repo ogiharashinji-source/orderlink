@@ -179,7 +179,8 @@ export default function InviteCustomerPage() {
                   <p className="text-xs text-gray-400 border-t pt-3">なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。</p>
                 </div>
               </div>
-              <div className="flex gap-3 pt-1">
+              <p className="text-sm font-medium text-gray-700 text-center">こちらの内容で送信します。よろしいですか？</p>
+              <div className="flex gap-3">
                 <button onClick={handleSingleSubmit} disabled={sending}
                   className="flex-1 py-3 rounded-lg text-sm font-bold text-white disabled:opacity-50"
                   style={{ background: "#1e3a8a" }}>
