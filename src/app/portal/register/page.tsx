@@ -53,7 +53,7 @@ function RegisterForm() {
   const loginHref = `/portal/login${inviteToken ? `?token=${inviteToken}` : breweryInviteToken ? `?invite=${breweryInviteToken}` : ""}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center p-4 pt-8">
+    <div className="bg-gray-50 flex items-start justify-center p-4 pt-8">
       <div className="w-full max-w-lg space-y-4">
         <div className="text-center mb-2">
           <h1 className="text-2xl font-bold text-gray-900">OrderLink</h1>
