@@ -286,8 +286,10 @@ function PortalOrderContent() {
             )}
             {variants.map((v) => {
               const qty = quantities[v.key] ?? 0;
+              const productIdx = products.findIndex((p) => p.id === v.product.id);
+              const rowBg = qty > 0 ? "bg-blue-50" : productIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
               return (
-                <tr key={v.key} className={qty > 0 ? "bg-blue-50" : "hover:bg-gray-50"}>
+                <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 font-medium text-gray-900" title={v.product.name}>
                     {v.product.name.length > 14 ? v.product.name.slice(0, 14) + "…" : v.product.name}
                   </td>
