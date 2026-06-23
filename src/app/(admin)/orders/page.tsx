@@ -55,7 +55,7 @@ export default function OrdersPage() {
   };
 
   const handleCsvExport = () => {
-    const header = ["受注日", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "販売数", "備考"];
+    const header = ["受注日", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "販売数", "税込合計", "備考"];
     const rows: (string | number | null)[][] = [];
     orders.forEach((o) => {
       const date = new Date(o.orderDate).toLocaleDateString("ja-JP");
@@ -70,7 +70,9 @@ export default function OrdersPage() {
           ? (item.product?.wholesalePrice1800 ?? "")
           : (item.product?.wholesalePrice720 ?? "");
         const lot = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
-        rows.push([date, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, item.quantity, o.notes ?? ""]);
+        const wp = typeof wholesalePrice === "number" ? wholesalePrice : 0;
+        const taxIncTotal = wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
+        rows.push([date, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, item.quantity, taxIncTotal, o.notes ?? ""]);
       });
     });
     const date = new Date().toISOString().slice(0, 10);
