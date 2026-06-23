@@ -235,7 +235,7 @@ export default function ProductForm({ initialData, productId }: Props) {
         <div className="border border-gray-100 rounded-lg p-4">
           <p className="text-sm font-semibold text-gray-700 mb-3">その他のサイズ</p>
           <div className="grid grid-cols-2 gap-4">
-            <Field label="容量" required error={errors.volumeOther}>
+            <Field label="容量 (ml)" required error={errors.volumeOther}>
               <input value={form.volumeOther} onChange={set("volumeOther")} className={ic(errors.volumeOther)} />
             </Field>
             <Field label="限定">
