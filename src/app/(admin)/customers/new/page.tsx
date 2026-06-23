@@ -188,18 +188,28 @@ export default function InviteCustomerPage() {
             </div>
           ) : confirming ? (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">以下の内容で招待メールを送信します。</p>
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
+              <div className="text-sm space-y-1">
                 <div className="flex gap-2">
-                  <span className="text-gray-500 w-32 shrink-0">送信先</span>
+                  <span className="text-gray-500 w-20 shrink-0">送信先</span>
                   <span className="font-medium text-gray-900">{email}</span>
                 </div>
                 <div className="flex gap-2">
-                  <span className="text-gray-500 w-32 shrink-0">内容</span>
-                  <span className="text-gray-700">ポータルへの登録招待リンク（有効期限24時間）</span>
+                  <span className="text-gray-500 w-20 shrink-0">件名</span>
+                  <span className="text-gray-700">【OrderLink】ポータル登録のご案内</span>
                 </div>
               </div>
-              <div className="flex gap-3 pt-1">
+              <div className="border border-gray-200 rounded-lg overflow-hidden text-sm">
+                <div className="bg-[#1e3a8a] text-white text-center py-3 font-bold text-base tracking-wide">OrderLink</div>
+                <div className="p-4 space-y-3 text-gray-700 bg-white">
+                  <p>様より OrderLink ポータルへご招待されました。</p>
+                  <p>OrderLinkにご登録いただくことで、商品をオンラインで簡単にご注文いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。</p>
+                  <div className="text-center py-2">
+                    <span className="inline-block bg-[#1e3a8a] text-white px-6 py-2 rounded-lg text-sm font-bold">アカウントを登録する</span>
+                  </div>
+                  <p className="text-xs text-gray-400">なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
                 <button onClick={handleSingleSubmit} disabled={sending}
                   className="flex-1 py-2.5 rounded-lg text-sm font-bold text-white disabled:opacity-50"
                   style={{ background: "#1e3a8a" }}>
