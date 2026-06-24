@@ -6,14 +6,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const customerId = parseInt(id);
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
   if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
-  // メールアドレス重複チェック（自分以外の承認済みアカウントのみブロック）
+
+  // 他アカウントが同メールを持っていたら先に外す（スーパー管理者は強制再割り当て可能）
   if (email) {
-    const existing = await prisma.customer.findFirst({
-      where: { email, id: { not: customerId }, deleted: false, approved: true },
+    await prisma.customer.updateMany({
+      where: { email, id: { not: customerId } },
+      data: { email: null },
     });
-    if (existing) {
-      return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 409 });
-    }
   }
 
   try {
