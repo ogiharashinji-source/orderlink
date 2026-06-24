@@ -131,7 +131,6 @@ export default function RootPage() {
             </div>
           </div>
           <p className="text-sm opacity-70 mb-8">まずはお気軽にお試しください！</p>
-          <p className="text-amber-400 font-bold text-lg mb-6">先着 30蔵限定　モニター募集中！</p>
           <Link href="/register"
             className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
             今すぐ5分でカンタン登録！
