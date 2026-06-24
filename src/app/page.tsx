@@ -34,18 +34,6 @@ export default function RootPage() {
         </h1>
         <p className="text-2xl font-bold opacity-90 mt-4 mb-10">販売店からの注文を、もっと簡単に。</p>
 
-        {/* バッジ */}
-        <div className="flex justify-center gap-4 flex-wrap mb-10">
-          {[
-            { label: "完全", sub: "無料※", color: "bg-amber-400 text-[#1e3a5f]" },
-            { label: "5分で", sub: "始められる", color: "bg-white text-[#1e3a5f]" },
-          ].map((b) => (
-            <div key={b.label} className={`${b.color} rounded-full w-24 h-24 flex flex-col items-center justify-center font-black shadow-lg`}>
-              <span className="text-lg leading-none">{b.label}</span>
-              <span className="text-sm leading-none">{b.sub}</span>
-            </div>
-          ))}
-        </div>
 
         <Link href="/register"
           className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
