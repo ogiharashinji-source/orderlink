@@ -39,7 +39,6 @@ export default function RootPage() {
           {[
             { label: "完全", sub: "無料※", color: "bg-amber-400 text-[#1e3a5f]" },
             { label: "5分で", sub: "始められる", color: "bg-white text-[#1e3a5f]" },
-            { label: "FAX", sub: "不要", color: "bg-amber-400 text-[#1e3a5f]" },
           ].map((b) => (
             <div key={b.label} className={`${b.color} rounded-full w-24 h-24 flex flex-col items-center justify-center font-black shadow-lg`}>
               <span className="text-lg leading-none">{b.label}</span>
