@@ -32,7 +32,7 @@ export default function RootPage() {
         <h1 className="text-4xl md:text-5xl font-black leading-tight mb-2">
           FAX受注、<br />まだ続けますか？
         </h1>
-        <p className="text-base opacity-80 mt-4 mb-10">販売店からの注文を、もっと簡単に。</p>
+        <p className="text-2xl font-bold opacity-90 mt-4 mb-10">販売店からの注文を、もっと簡単に。</p>
 
         {/* バッジ */}
         <div className="flex justify-center gap-4 flex-wrap mb-10">
