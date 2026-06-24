@@ -7,15 +7,6 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
   if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
 
-  // メールが変更される場合のみ重複チェック
-  const current = await prisma.customer.findUnique({ where: { id: customerId }, select: { email: true } });
-  if (email && email !== current?.email) {
-    const existing = await prisma.customer.findFirst({ where: { email, id: { not: customerId } } });
-    if (existing) {
-      return NextResponse.json({ error: "このメールアドレスは別のアカウントで使用されています" }, { status: 409 });
-    }
-  }
-
   try {
     const customer = await prisma.customer.update({
       where: { id: customerId },
