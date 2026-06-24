@@ -7,6 +7,20 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
   if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
 
+  // 削除済みレコードに同じメール/ログインIDが残っていると @unique 制約に引っかかるので先にクリア
+  if (email) {
+    await prisma.customer.updateMany({
+      where: { email, id: { not: customerId }, deleted: true },
+      data: { email: null },
+    });
+  }
+  if (loginId) {
+    await prisma.customer.updateMany({
+      where: { loginId, id: { not: customerId }, deleted: true },
+      data: { loginId: null },
+    });
+  }
+
   try {
     const customer = await prisma.customer.update({
       where: { id: customerId },
