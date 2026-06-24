@@ -161,7 +161,7 @@ export default function OrdersPage() {
                     >
                       {/* 受注日時 */}
                       {idx === 0 && (
-                        <td className="px-4 py-3 text-gray-500 align-top text-center whitespace-nowrap" rowSpan={o.items.length}>
+                        <td className="px-4 py-3 text-gray-500 align-middle text-center whitespace-nowrap" rowSpan={o.items.length}>
                           {new Date(o.orderDate).toLocaleDateString("ja-JP")}
                           <div className="mt-0.5">
                             {new Date(o.orderDate).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
