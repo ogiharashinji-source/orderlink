@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
     : null;
 
   if (existingEmail) {
-    // 有効なポータル登録済み（削除されていない＋loginIdあり）→重複エラー
-    if (!existingEmail.deleted && existingEmail.loginId) {
+    // 承認済みの有効アカウントが存在する場合のみ重複エラー
+    if (!existingEmail.deleted && existingEmail.loginId && existingEmail.approved) {
       return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
     }
     // 管理者登録済み or 削除済み → 既存レコードを更新して再利用
