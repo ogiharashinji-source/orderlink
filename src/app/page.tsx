@@ -119,7 +119,7 @@ export default function RootPage() {
       <section className="bg-[#1e3a5f] text-white px-6 py-14 text-center">
         <div className="max-w-2xl mx-auto">
           <div className="inline-block bg-amber-400 text-[#1e3a5f] font-black rounded-full px-6 py-2 text-sm mb-6">
-            酒蔵様限定　完全無料
+            完全無料
           </div>
           <div className="flex justify-center gap-10 mb-4">
             <div>
