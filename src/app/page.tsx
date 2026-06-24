@@ -26,7 +26,9 @@ export default function RootPage() {
 
       {/* ヒーロー */}
       <section className="bg-[#1e3a5f] text-white text-center px-6 py-16">
-        <p className="text-sm font-medium mb-3 opacity-80 tracking-widest">酒蔵向け受発注システム</p>
+        <div className="inline-block border-2 border-amber-400 rounded-xl px-6 py-3 mb-6">
+          <p className="text-amber-400 font-black text-xl md:text-2xl tracking-widest">酒蔵向け受発注システム</p>
+        </div>
         <h1 className="text-4xl md:text-5xl font-black leading-tight mb-2">
           FAX受注、<br />まだ続けますか？
         </h1>
