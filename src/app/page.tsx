@@ -51,7 +51,7 @@ export default function RootPage() {
           className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
           今すぐ無料で始める →
         </Link>
-        <p className="text-xs opacity-60 mt-3">※酒蔵様限定で、初期費用・月額費用ともに0円でご利用いただけます。</p>
+        <p className="text-xs opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
       </section>
 
       {/* お悩みセクション */}
