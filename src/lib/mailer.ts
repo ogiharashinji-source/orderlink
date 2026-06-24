@@ -220,6 +220,12 @@ export async function sendOrderLinkEmail({
             ${title ? `<p style="margin:0 0 12px;font-size:16px;font-weight:bold;color:#1e3a5f;">${title}</p>` : ""}
             ${bodyMessage ? `<p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>` : ""}
 
+            ${attachmentUrl ? `
+            <!-- 添付ファイル -->
+            <p style="margin:0 0 16px;font-size:13px;color:#555555;">
+              📎 添付資料：<a href="${attachmentUrl}" style="color:#1e3a5f;">${attachmentName ?? "ファイルを開く"}</a>
+            </p>` : ""}
+
             <!-- ログインボタン -->
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
@@ -231,12 +237,6 @@ export async function sendOrderLinkEmail({
                 </td>
               </tr>
             </table>
-
-            ${attachmentUrl ? `
-            <!-- 添付ファイル -->
-            <p style="margin:16px 0 0;font-size:13px;color:#555555;">
-              📎 添付資料：<a href="${attachmentUrl}" style="color:#1e3a5f;">${attachmentName ?? "ファイルを開く"}</a>
-            </p>` : ""}
           </td>
         </tr>
 
