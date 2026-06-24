@@ -6,6 +6,16 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const customerId = parseInt(id);
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
   if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
+  // メールアドレス重複チェック（自分以外の承認済みアカウントのみブロック）
+  if (email) {
+    const existing = await prisma.customer.findFirst({
+      where: { email, id: { not: customerId }, deleted: false, approved: true },
+    });
+    if (existing) {
+      return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 409 });
+    }
+  }
+
   try {
     const customer = await prisma.customer.update({
       where: { id: customerId },
@@ -20,8 +30,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       },
     });
     return NextResponse.json(customer);
-  } catch {
-    return NextResponse.json({ error: "更新に失敗しました（IDまたはメールが重複している可能性があります）" }, { status: 400 });
+  } catch (e: unknown) {
+    const err = e as { code?: string };
+    if (err.code === "P2002") {
+      return NextResponse.json({ error: "このメールアドレスまたはログインIDはすでに使用されています" }, { status: 409 });
+    }
+    return NextResponse.json({ error: "更新に失敗しました" }, { status: 500 });
   }
 }
 

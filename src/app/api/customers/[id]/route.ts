@@ -75,8 +75,26 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }
   }
 
-  const customer = await prisma.customer.update({ where: { id: customerId }, data });
-  return NextResponse.json(customer);
+  // メールアドレス重複チェック（承認済みアカウントのみブロック）
+  if (body.email) {
+    const existing = await prisma.customer.findFirst({
+      where: { email: body.email, id: { not: customerId }, deleted: false, approved: true },
+    });
+    if (existing) {
+      return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 409 });
+    }
+  }
+
+  try {
+    const customer = await prisma.customer.update({ where: { id: customerId }, data });
+    return NextResponse.json(customer);
+  } catch (e: unknown) {
+    const err = e as { code?: string };
+    if (err.code === "P2002") {
+      return NextResponse.json({ error: "入力内容が他のアカウントと重複しています" }, { status: 409 });
+    }
+    return NextResponse.json({ error: "更新に失敗しました" }, { status: 500 });
+  }
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
