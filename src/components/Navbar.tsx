@@ -12,11 +12,17 @@ const navItems = [
 
 let _cachedCompanyName = "";
 
+function getInitialCompanyName() {
+  if (_cachedCompanyName) return _cachedCompanyName;
+  if (typeof window !== "undefined") return localStorage.getItem("nav_company") ?? "";
+  return "";
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
-  const [companyName, setCompanyName] = useState(_cachedCompanyName);
+  const [companyName, setCompanyName] = useState(getInitialCompanyName);
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
@@ -38,6 +44,7 @@ export default function Navbar() {
         if (!d) return;
         if (d.companyName) {
           _cachedCompanyName = d.companyName;
+          localStorage.setItem("nav_company", d.companyName);
           setCompanyName(d.companyName);
         }
         setPendingCount(d.pendingCount ?? 0);
