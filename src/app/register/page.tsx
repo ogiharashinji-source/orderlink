@@ -57,7 +57,13 @@ export default function AdminRegisterPage() {
       </header>
       <div className="flex-1 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">酒蔵新規アカウント登録</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-gray-900">酒蔵新規アカウント登録</h1>
+          <div className="flex gap-3 text-xs text-blue-500">
+            <Link href="/terms" target="_blank" className="hover:underline">利用規約</Link>
+            <Link href="/privacy" target="_blank" className="hover:underline">プライバシーポリシー</Link>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-4">
 
@@ -107,13 +113,6 @@ export default function AdminRegisterPage() {
               ログインはこちら
             </Link>
           </div>
-          <p className="text-xs text-gray-400 pt-2">
-            登録することで
-            <Link href="/terms" target="_blank" className="text-blue-500 hover:underline mx-1">利用規約</Link>
-            および
-            <Link href="/privacy" target="_blank" className="text-blue-500 hover:underline mx-1">プライバシーポリシー</Link>
-            に同意したものとみなします。
-          </p>
         </form>
       </div>
       </div>
