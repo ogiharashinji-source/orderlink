@@ -3,11 +3,11 @@ import { SampleNav } from "../_nav";
 export const metadata = { title: "顧客管理 - OrderLink" };
 
 const customers = [
-  { id: 1, code: "001", name: "田中酒店", address: "長野県長野市", phone: "026-000-0001", email: "tanaka@example.com", approved: true },
-  { id: 2, code: "002", name: "佐藤商店", address: "長野県松本市", phone: "0263-00-0002", email: "sato@example.com", approved: true },
-  { id: 3, code: "003", name: "鈴木酒販", address: "長野県上田市", phone: "0268-00-0003", email: "suzuki@example.com", approved: true },
-  { id: 4, code: "004", name: "高橋食品", address: "長野県飯田市", phone: "0265-00-0004", email: "takahashi@example.com", approved: true },
-  { id: 5, code: "",    name: "伊藤酒店", address: "長野県諏訪市", phone: "0266-00-0005", email: "ito@example.com", approved: false },
+  { id: 1, code: "001", name: "田中酒店",   address: "東京都新宿区",   phone: "03-0000-0001", email: "tanaka@example.com",    approved: true },
+  { id: 2, code: "002", name: "佐藤商店",   address: "大阪府大阪市",   phone: "06-0000-0002", email: "sato@example.com",      approved: true },
+  { id: 3, code: "003", name: "鈴木酒販",   address: "愛知県名古屋市", phone: "052-000-0003", email: "suzuki@example.com",    approved: true },
+  { id: 4, code: "004", name: "高橋食品",   address: "福岡県福岡市",   phone: "092-000-0004", email: "takahashi@example.com", approved: true },
+  { id: 5, code: "",    name: "伊藤酒店",   address: "北海道札幌市",   phone: "011-000-0005", email: "ito@example.com",       approved: false },
 ];
 
 export default function SampleCustomersPage() {
