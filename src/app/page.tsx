@@ -185,7 +185,7 @@ export default function RootPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-white py-8 flex justify-center">
+      <section className="bg-white py-8 flex flex-col items-center gap-5">
         <div className="flex flex-row items-center gap-6">
           <div className="w-28 h-28 rounded-full border-4 border-amber-500 bg-amber-50 flex flex-col items-center justify-center shadow-md flex-shrink-0">
             <p className="text-[#1e3a5f] font-black text-xl leading-none">完全</p>
@@ -196,12 +196,12 @@ export default function RootPage() {
               初期費用 <span className="text-4xl">0</span>円　月額費用 <span className="text-4xl">0</span>円
             </p>
             <p className="text-amber-600 font-bold text-base mt-1">まずはお気軽にお試しください！</p>
-            <Link href="/register"
-              className="inline-block mt-3 bg-amber-400 text-[#1e3a5f] font-black text-base px-8 py-3 rounded-full shadow hover:bg-amber-300 transition">
-              今すぐ5分でカンタン登録！
-            </Link>
           </div>
         </div>
+        <Link href="/register"
+          className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-base px-8 py-3 rounded-full shadow hover:bg-amber-300 transition">
+          今すぐ5分でカンタン登録！
+        </Link>
       </section>
 
       {/* フッター */}
