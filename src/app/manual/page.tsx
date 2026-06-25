@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import Footer from "@/components/Footer";
 
 const STEPS = [
   {
@@ -230,19 +231,9 @@ export default function ManualPage() {
             </section>
           ))}
 
-          {/* CTA */}
-          <div className="bg-[#1e3a5f] text-white rounded-2xl px-8 py-10 text-center print:break-inside-avoid">
-            <p className="text-2xl font-black mb-2">導入まで<span className="text-amber-400 text-4xl mx-1">5</span>分。</p>
-            <p className="text-white/80 text-base mb-6">OrderLinkならFAX不要で、販売店との受発注をすぐに開始できます。</p>
-            <a
-              href="/register"
-              className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-base px-10 py-3 rounded-full hover:bg-amber-300 transition print:hidden"
-            >
-              無料で始める →
-            </a>
-          </div>
         </main>
       </div>
+      <Footer />
 
       {/* 画像モーダル */}
       {modalImg && (
