@@ -35,13 +35,13 @@ export default function RootPage() {
         <p className="text-2xl font-bold opacity-90 mt-4 mb-10">販売店からの注文を、もっと簡単に。</p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/register"
-            className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
-            今すぐ無料で始める →
-          </Link>
           <Link href="/manual"
             className="inline-block border-2 border-white text-white font-bold text-base px-8 py-4 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
             📖 ご利用ガイドを見る
+          </Link>
+          <Link href="/register"
+            className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
+            今すぐ無料で始める →
           </Link>
         </div>
         <p className="text-xs opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
