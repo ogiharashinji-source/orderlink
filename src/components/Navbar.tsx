@@ -18,14 +18,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
-  const [companyName, setCompanyName] = useState(_cachedCompanyName);
-
-  useEffect(() => {
-    if (!companyName) {
-      const cached = localStorage.getItem("nav_company");
-      if (cached) { _cachedCompanyName = cached; setCompanyName(cached); }
-    }
-  }, []);
+  const [companyName, setCompanyName] = useState(() => {
+    if (_cachedCompanyName) return _cachedCompanyName;
+    if (typeof window !== "undefined") return localStorage.getItem("nav_company") ?? "";
+    return "";
+  });
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
@@ -99,7 +96,7 @@ export default function Navbar() {
           </div>
           <div className="flex-1" />
           <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">ご利用ガイド</Link>
-          <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
+          <a href="/settings" suppressHydrationWarning className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
           <button
             onClick={handleLogout}
             className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"
