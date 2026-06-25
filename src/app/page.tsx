@@ -165,15 +165,15 @@ export default function RootPage() {
             ].map((m, i) => (
               <div
                 key={i}
-                className={`flex flex-col items-center text-center px-3 py-6 gap-2 ${i > 0 ? "border-l border-[#1e3a5f]/15" : ""}`}
+                className={`flex flex-col items-center text-center px-4 py-7 gap-3 ${i > 0 ? "border-l border-[#1e3a5f]/15" : ""}`}
               >
                 <div className="text-[#1e3a5f] opacity-70 mb-1">{m.icon}</div>
-                <p className="font-black text-[#1e3a5f] text-xs leading-snug whitespace-pre-line">
+                <p className="font-black text-[#1e3a5f] text-sm leading-snug whitespace-pre-line">
                   {m.num} {m.title}
                 </p>
-                <ul className="text-left space-y-0.5 mt-1">
+                <ul className="text-left space-y-1 mt-1">
                   {m.items.map((item, j) => (
-                    <li key={j} className="text-[11px] text-gray-600 leading-tight flex items-start gap-0.5">
+                    <li key={j} className="text-xs text-gray-600 leading-snug flex items-start gap-0.5">
                       <span className="flex-shrink-0">・</span><span>{item}</span>
                     </li>
                   ))}
