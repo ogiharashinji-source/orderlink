@@ -190,7 +190,6 @@ export default function RootPage() {
           <div className="w-28 h-28 rounded-full border-4 border-amber-500 bg-amber-50 flex flex-col items-center justify-center shadow-md flex-shrink-0">
             <p className="text-[#1e3a5f] font-black text-xl leading-none">完全</p>
             <p className="text-[#1e3a5f] font-black text-xl leading-none">無料</p>
-            <p className="text-[11px] text-gray-500 mt-0.5">※</p>
           </div>
           <div>
             <p className="text-[#1e3a5f] font-black text-xl">

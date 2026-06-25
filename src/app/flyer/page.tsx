@@ -160,7 +160,6 @@ export default function FlyerPage() {
             <div className="flex-shrink-0 w-24 h-24 rounded-full border-4 border-amber-500 bg-amber-50 flex flex-col items-center justify-center shadow-md">
               <p className="text-[#1e3a5f] font-black text-lg leading-none">完全</p>
               <p className="text-[#1e3a5f] font-black text-lg leading-none">無料</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">※</p>
             </div>
             {/* 料金 */}
             <div>
