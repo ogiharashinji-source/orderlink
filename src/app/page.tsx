@@ -79,8 +79,8 @@ export default function RootPage() {
                 className={`flex flex-col items-center text-center px-6 py-8 gap-3 ${i > 0 ? "border-l border-[#1e3a5f]/15" : ""}`}
               >
                 <div className="text-[#1e3a5f] opacity-60 mb-1">{item.icon}</div>
-                <p className="font-bold text-[#1e3a5f] text-sm leading-snug">{item.title}</p>
-                <p className="text-xs text-gray-500 whitespace-pre-line leading-relaxed">{item.desc}</p>
+                <p className="font-bold text-[#1e3a5f] text-base leading-snug">{item.title}</p>
+                <p className="text-sm text-gray-500 whitespace-pre-line leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
