@@ -48,40 +48,53 @@ export default function RootPage() {
       </section>
 
       {/* メリットセクション */}
-      <section className="bg-gray-50 px-6 py-14">
-        <h2 className="text-center text-xl font-black text-[#1e3a5f] mb-8">OrderLink導入のメリット</h2>
-        <div className="max-w-5xl mx-auto border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
-          <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+      <section className="bg-white px-6 py-16">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs font-bold tracking-widest text-amber-500 mb-2">— WHY ORDERLINK —</p>
+          <h2 className="text-center text-2xl font-black text-[#1e3a5f] mb-12">OrderLink導入のメリット</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {[
               {
-                num: "①", icon: "🛒", title: "FAX不要で\n簡単発注",
-                items: ["スマホ・PCで\n24時間注文", "FAX・電話不要"],
+                num: "01", icon: "🛒", title: "FAX不要で\n簡単発注",
+                items: ["スマホ・PCからいつでも発注", "24時間注文受付", "FAX・電話不要"],
+                color: "from-blue-50 to-indigo-50",
+                border: "border-blue-100",
               },
               {
-                num: "②", icon: "📋", title: "注文を\n一元管理",
-                items: ["履歴をすぐ検索", "商品・数量も\n一目でわかる"],
+                num: "02", icon: "📋", title: "注文を\n一元管理",
+                items: ["履歴をすぐ検索", "商品・数量を一目確認", "過去の発注もすぐわかる"],
+                color: "from-amber-50 to-yellow-50",
+                border: "border-amber-100",
               },
               {
-                num: "③", icon: "🛡️", title: "発注ミス\n防止",
-                items: ["聞き間違い防止", "発注漏れ・欠品\nリスクを軽減"],
+                num: "03", icon: "🛡️", title: "発注ミス\n防止",
+                items: ["聞き間違いゼロ", "見間違いを防止", "欠品リスクを軽減"],
+                color: "from-green-50 to-emerald-50",
+                border: "border-green-100",
               },
               {
-                num: "④", icon: "📦", title: "商品情報を\nいつでも確認",
-                items: ["最新の商品一覧", "価格表・新商品\nをすぐ確認"],
+                num: "04", icon: "📦", title: "商品情報を\nいつでも確認",
+                items: ["最新商品一覧を閲覧", "価格表もすぐ確認", "新商品情報をリアルタイム共有"],
+                color: "from-purple-50 to-violet-50",
+                border: "border-purple-100",
               },
               {
-                num: "⑤", icon: "📈", title: "売上アップ\nにつながる",
-                items: ["発注作業を削減", "欠品防止で販売\n機会を逃さない"],
+                num: "05", icon: "📈", title: "売上アップ\nにつながる",
+                items: ["発注作業の負担削減", "機会損失を防ぐ", "欠品防止で販売チャンス確保"],
+                color: "from-rose-50 to-pink-50",
+                border: "border-rose-100",
               },
             ].map((m) => (
-              <div key={m.num} className="flex flex-col items-center text-center px-4 py-6 gap-2">
-                <div className="text-3xl mb-1">{m.icon}</div>
-                <div className="text-amber-500 font-black text-sm">{m.num}</div>
+              <div key={m.num} className={`bg-gradient-to-b ${m.color} border ${m.border} rounded-2xl p-5 flex flex-col gap-3`}>
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">{m.icon}</span>
+                  <span className="text-xs font-black text-gray-300 tracking-widest">{m.num}</span>
+                </div>
                 <h3 className="font-black text-[#1e3a5f] text-sm leading-snug whitespace-pre-line">{m.title}</h3>
-                <ul className="mt-1 space-y-1 text-left w-full">
+                <ul className="space-y-1.5 mt-auto">
                   {m.items.map((item) => (
-                    <li key={item} className="flex items-start gap-1 text-xs text-gray-600 whitespace-pre-line">
-                      <span className="text-amber-400 font-bold flex-shrink-0 mt-0.5">・</span>
+                    <li key={item} className="flex items-start gap-1.5 text-xs text-gray-600">
+                      <span className="text-amber-400 font-black flex-shrink-0 mt-0.5">▶</span>
                       <span>{item}</span>
                     </li>
                   ))}
