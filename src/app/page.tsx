@@ -85,15 +85,30 @@ export default function RootPage() {
             </div>
             <p className="text-center text-xs text-gray-400 tracking-widest">オーダーリンク</p>
           </div>
-          <div className="flex-1 bg-gray-100 rounded-xl border border-gray-200 overflow-hidden shadow-md">
-            <div className="bg-gray-200 px-3 py-1.5 flex gap-1.5 items-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-              <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-              <span className="text-xs text-gray-500 ml-2">orderlink.jp</span>
+          {/* デバイスモックアップ */}
+          <div className="flex-1 relative flex items-end justify-center" style={{ minHeight: "220px" }}>
+            {/* PCフレーム */}
+            <div className="w-full max-w-xs bg-gray-800 rounded-t-xl rounded-b-md shadow-xl border border-gray-700">
+              <div className="bg-gray-700 px-3 py-1.5 rounded-t-xl flex gap-1.5 items-center">
+                <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
+                <span className="w-2 h-2 rounded-full bg-green-400"></span>
+                <span className="text-[10px] text-gray-400 ml-1">orderlink.jp</span>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/manual/orders.png" alt="OrderLink受注管理" className="w-full object-cover object-top rounded-b-md" style={{ maxHeight: "180px" }} />
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/manual/step6-v2.png" alt="OrderLink画面" className="w-full object-cover object-top" style={{ maxHeight: "220px" }} />
+            {/* スマホフレーム */}
+            <div className="absolute -bottom-2 -right-2 w-20 bg-gray-900 rounded-2xl shadow-2xl border-2 border-gray-700 overflow-hidden">
+              <div className="bg-gray-800 h-2 flex items-center justify-center">
+                <span className="w-6 h-0.5 rounded-full bg-gray-600"></span>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/manual/orders.png" alt="OrderLinkモバイル" className="w-full object-cover object-top" style={{ height: "110px" }} />
+              <div className="bg-gray-800 h-3 flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full border border-gray-600"></span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
