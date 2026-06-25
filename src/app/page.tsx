@@ -69,11 +69,6 @@ export default function RootPage() {
 
       {/* 解決策 */}
       <section className="px-6 py-14 bg-white text-center">
-        <p className="text-sm font-bold text-[#1e3a5f] tracking-widest mb-2">酒蔵の受発注を一元管理！</p>
-        <h2 className="text-3xl font-black text-gray-900 mb-1">酒蔵専用</h2>
-        <h2 className="text-3xl font-black text-[#1e3a5f] mb-2">受発注システム</h2>
-        <p className="text-lg font-bold tracking-widest text-gray-700 mb-10">— OrderLink —</p>
-
         {/* メリット */}
         <h3 className="text-base font-bold text-gray-600 mb-6">酒蔵のメリット</h3>
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-5">
