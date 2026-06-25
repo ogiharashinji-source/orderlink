@@ -166,58 +166,69 @@ export default function ManualPage() {
               </div>
 
               {/* コンテンツ */}
-              <div className="p-6 flex flex-col md:flex-row gap-6">
-                {/* 説明 */}
-                <div className="md:w-1/3 space-y-3">
-                  {s.body.map((p, i) => (
-                    <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
-                  ))}
-                  {/* ハイライトポイント */}
-                  <div className="mt-4 space-y-2">
-                    {s.highlights.map((h, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                        <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
-                        <span>{h}</span>
-                      </div>
+              {[1, 4].includes(s.num) ? (
+                // STEP1・4：横並び（説明左、画像右）
+                <div className="p-6 flex flex-col md:flex-row gap-6">
+                  <div className="md:w-1/3 space-y-3">
+                    {s.body.map((p, i) => (
+                      <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
                     ))}
-                  </div>
-                </div>
-
-                {/* 画像 */}
-                <div className="md:w-2/3">
-                  <div
-                    className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default"
-                    onClick={() => setModalImg(s.image)}
-                  >
-                    {/* ブラウザフレーム */}
-                    <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-                      <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-                      <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-                      <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
-                      <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
+                    <div className="mt-4 space-y-2">
+                      {s.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                          <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
+                          <span>{h}</span>
+                        </div>
+                      ))}
                     </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={s.image}
-                      alt={s.imageAlt}
-                      className="w-full object-cover object-top bg-gray-50"
-                      style={{ minHeight: "180px" }}
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        target.style.display = "none";
-                        const parent = target.parentElement;
-                        if (parent) {
-                          const ph = document.createElement("div");
-                          ph.className = "flex items-center justify-center text-gray-300 text-sm py-16 bg-gray-50";
-                          ph.textContent = `スクリーンショット準備中（${s.imageAlt}）`;
-                          parent.appendChild(ph);
-                        }
-                      }}
-                    />
+                  </div>
+                  <div className="md:w-2/3">
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
+                      <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+                        <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
+                        <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.image} alt={s.imageAlt} className="w-full object-cover object-top bg-gray-50" style={{ minHeight: "180px" }} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                // STEP2・3・5・6：縦並び（説明上、画像フルワイド）
+                <div className="p-6 space-y-4">
+                  <div className="flex flex-wrap gap-4">
+                    <div className="flex-1 min-w-[200px] space-y-2">
+                      {s.body.map((p, i) => (
+                        <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {s.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                          <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
+                          <span>{h}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="w-full">
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
+                      <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+                        <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
+                        <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.image} alt={s.imageAlt} className="w-full object-contain bg-gray-50" />
+                    </div>
+                  </div>
+                </div>
+              )}
             </section>
           ))}
 
