@@ -11,42 +11,44 @@ export default function LandingHeaderActions() {
   >({ type: "loading" });
 
   useEffect(() => {
-    fetch("/api/admin/nav")
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => {
-        if (d?.companyName) {
-          setState({ type: "admin", name: d.companyName });
+    (async () => {
+      try {
+        const r = await fetch("/api/admin/nav", { redirect: "manual" });
+        if (r.ok) {
+          const d = await r.json();
+          setState({ type: "admin", name: d.companyName ?? "" });
           return;
         }
-        return fetch("/api/portal/profile")
-          .then((r) => r.ok ? r.json() : null)
-          .then((d2) => {
-            if (d2?.name) setState({ type: "portal", name: d2.name });
-            else setState({ type: "guest" });
-          });
-      })
-      .catch(() => setState({ type: "guest" }));
+      } catch {}
+
+      try {
+        const r2 = await fetch("/api/portal/profile", { redirect: "manual" });
+        if (r2.ok) {
+          const d2 = await r2.json();
+          setState({ type: "portal", name: d2.name ?? "" });
+          return;
+        }
+      } catch {}
+
+      setState({ type: "guest" });
+    })();
   }, []);
 
   if (state.type === "loading") return <div className="w-40" />;
 
   if (state.type === "admin") {
     return (
-      <div className="flex items-center gap-3">
-        <a href="/requests" className="text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white/10 transition">
-          {state.name}
-        </a>
-      </div>
+      <a href="/requests" className="text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white/10 transition">
+        {state.name || "管理画面へ"}
+      </a>
     );
   }
 
   if (state.type === "portal") {
     return (
-      <div className="flex items-center gap-3">
-        <a href="/portal/order" className="text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white/10 transition">
-          {state.name}
-        </a>
-      </div>
+      <a href="/portal/order" className="text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white/10 transition">
+        {state.name || "発注ページへ"}
+      </a>
     );
   }
 
