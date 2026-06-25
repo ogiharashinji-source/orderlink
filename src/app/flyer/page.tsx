@@ -105,7 +105,7 @@ export default function FlyerPage() {
             <div className="py-2 text-center border-b border-[#1e3a5f]/20">
               <p className="text-[#1e3a5f] font-bold text-sm">OrderLink導入のメリット</p>
             </div>
-            <div className="grid grid-cols-5">
+            <div className="grid grid-cols-4">
               {[
                 {
                   icon: <Smartphone size={32} strokeWidth={1.3} />,
@@ -130,12 +130,6 @@ export default function FlyerPage() {
                   num: "④",
                   title: "商品情報を\nいつでも確認",
                   items: ["商品一覧・価格表を\n常に最新で閲覧", "新商品情報もすぐ確認"],
-                },
-                {
-                  icon: <TrendingUp size={32} strokeWidth={1.3} />,
-                  num: "⑤",
-                  title: "売上アップに\nつながる",
-                  items: ["発注作業の負担を削減", "欠品防止で\n販売機会を逃さない"],
                 },
               ].map((m, i) => (
                 <div
@@ -178,17 +172,6 @@ export default function FlyerPage() {
             <p className="text-amber-600 font-bold text-base mt-1">まずはお気軽にお試しください！</p>
           </div>
 
-          {/* 右：登録ボックス */}
-          <div className="flex-shrink-0 border-2 border-[#1e3a5f] rounded-md px-4 py-3 text-center w-44">
-            <p className="text-[#1e3a5f] font-bold text-xs mb-2">今すぐ5分でカンタン登録！</p>
-            <p className="text-[#1e3a5f] font-black text-base tracking-widest">OrderLink</p>
-            <p className="text-[9px] text-gray-400 tracking-widest mb-2">オーダーリンク</p>
-            {/* QRコードプレースホルダー */}
-            <div className="w-16 h-16 border border-gray-300 mx-auto mb-2 flex items-center justify-center bg-gray-50">
-              <span className="text-[9px] text-gray-400 text-center leading-tight">QR<br/>コード</span>
-            </div>
-            <p className="text-[9px] text-gray-500">https://www.orderlink.jp</p>
-          </div>
         </div>
 
       </div>
