@@ -47,43 +47,45 @@ export default function RootPage() {
         <p className="text-xs opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
       </section>
 
-      {/* お悩みセクション */}
+      {/* メリットセクション */}
       <section className="bg-gray-50 px-6 py-14">
-        <h2 className="text-center text-xl font-bold text-gray-800 mb-8">
-          酒蔵の受発注業務、こんなお悩みありませんか？
-        </h2>
-        <div className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <h2 className="text-center text-2xl font-black text-gray-900 mb-10">OrderLink導入のメリット</h2>
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { icon: "🖨️", title: "FAX整理が大変", desc: "注文書の管理や\n手入力に時間がかかる" },
-            { icon: "📞", title: "電話注文でミスが起きる", desc: "聞き間違いや\n書き間違いが発生する" },
-            { icon: "📁", title: "注文履歴が探せない", desc: "過去の注文を\nすぐに確認できない" },
-          ].map((p) => (
-            <div key={p.title} className="bg-white rounded-xl shadow p-6 text-center border border-gray-100">
-              <div className="text-4xl mb-3">{p.icon}</div>
-              <p className="font-bold text-gray-800 mb-2">{p.title}</p>
-              <p className="text-sm text-gray-500 whitespace-pre-line">{p.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 解決策 */}
-      <section className="px-6 py-14 bg-white text-center">
-        {/* メリット */}
-        <h3 className="text-base font-bold text-gray-600 mb-6">酒蔵のメリット</h3>
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-5">
-          {[
-            { icon: "📋", title: "FAX整理不要", desc: "紙の注文書整理や\n手入力の手間を削減" },
-            { icon: "🔍", title: "注文履歴を一元管理", desc: "過去の注文をすぐに\n検索・確認" },
-            { icon: "✅", title: "電話注文の聞き間違い削減", desc: "聞き間違いや書き間違い\nによるミスを防止" },
-            { icon: "⏱️", title: "発注業務の時短縮", desc: "受注処理にかかる\n時間を大幅に削減" },
-            { icon: "👤", title: "人手不足対策", desc: "少人数でも効率的に\n受注業務を運用" },
-            { icon: "🤝", title: "販売店とのやり取りを効率化", desc: "スムーズなコミュニケーションで\n信頼関係を強化" },
+            {
+              num: "①", title: "FAX不要で発注が簡単",
+              items: ["FAX送信・電話確認が不要", "スマホやPCからすぐ発注", "24時間いつでも注文可能"],
+            },
+            {
+              num: "②", title: "注文を一元管理",
+              items: ["注文履歴をまとめて確認", "過去の発注内容もすぐ検索", "どの商品をいつ注文したか一目でわかる"],
+            },
+            {
+              num: "③", title: "発注ミス・漏れを防止",
+              items: ["FAX未送信やメール送信忘れを防ぐ", "注文内容の見間違いがなくなる", "発注漏れによる欠品リスクを軽減"],
+            },
+            {
+              num: "④", title: "商品情報をいつでも確認",
+              items: ["商品一覧や価格表を常に最新状態で閲覧", "カタログを探す手間が不要", "新商品情報もすぐ確認できる"],
+            },
+            {
+              num: "⑤", title: "売上アップにつながる",
+              items: ["発注作業の負担を削減", "注文しやすくなり機会損失を防ぐ", "欠品防止で販売チャンスを逃さない"],
+            },
           ].map((m) => (
-            <div key={m.title} className="bg-gray-50 rounded-xl p-5 text-center border border-gray-100">
-              <div className="text-3xl mb-2">{m.icon}</div>
-              <p className="font-bold text-sm text-gray-800 mb-1">{m.title}</p>
-              <p className="text-xs text-gray-500 whitespace-pre-line">{m.desc}</p>
+            <div key={m.num} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-amber-500 font-black text-lg">{m.num}</span>
+                <h3 className="font-black text-gray-900 text-base">{m.title}</h3>
+              </div>
+              <ul className="space-y-1.5">
+                {m.items.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                    <span className="text-amber-400 font-bold mt-0.5 flex-shrink-0">▶</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
