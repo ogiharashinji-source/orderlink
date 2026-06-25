@@ -18,7 +18,7 @@ const orders = [
     time: "08:45",
     company: "佐藤商店",
     items: [
-      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 5 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 5 },
     ],
     note: "6月末納品希望",
   },
@@ -28,9 +28,9 @@ const orders = [
     time: "17:30",
     company: "鈴木酒販",
     items: [
-      { product: "〇〇 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 1 },
+      { product: "〇〇 山田錦 大吟醸 35", type: "大吟醸", rice: "山田錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 1 },
       { product: "〇〇 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,900", lot: 6, qty: 2 },
-      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,700", lot: 6, qty: 1 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,700", lot: 6, qty: 1 },
     ],
     note: "",
   },
@@ -50,8 +50,8 @@ const orders = [
     time: "11:05",
     company: "伊藤酒店",
     items: [
-      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 4 },
-      { product: "〇〇 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 2 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 4 },
+      { product: "〇〇 山田錦 大吟醸 35", type: "大吟醸", rice: "山田錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 2 },
     ],
     note: "7月上旬納品",
   },
