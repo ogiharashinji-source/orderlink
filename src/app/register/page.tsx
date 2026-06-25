@@ -39,11 +39,21 @@ export default function AdminRegisterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-[#1e3a5f] px-6 py-4">
+      <header className="bg-[#1e3a5f] px-6 py-4 flex items-center justify-between">
         <Link href="/">
           <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
           <span className="text-xs ml-2 text-white/70">オーダーリンク</span>
         </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/login"
+            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            ログイン
+          </Link>
+          <Link href="/register"
+            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+            新規登録
+          </Link>
+        </div>
       </header>
       <div className="flex-1 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl space-y-4">
