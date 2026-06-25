@@ -11,7 +11,7 @@ export default function SampleLoginPage() {
         <div className="bg-white rounded-2xl shadow-lg p-8 space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">ログインID</label>
-            <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400 bg-gray-50">yamasan</div>
+            <div className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-400 bg-gray-50">your-login-id</div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">パスワード</label>
