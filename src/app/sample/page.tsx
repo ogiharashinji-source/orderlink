@@ -7,8 +7,8 @@ const orders = [
     time: "09:12",
     company: "田中酒店",
     items: [
-      { product: "山三 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,900", lot: 6, qty: 2 },
-      { product: "山三 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,800", wholesale: "¥1,000", lot: 12, qty: 3 },
+      { product: "〇〇 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,900", lot: 6, qty: 2 },
+      { product: "〇〇 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,800", wholesale: "¥1,000", lot: 12, qty: 3 },
     ],
     note: "",
   },
@@ -18,7 +18,7 @@ const orders = [
     time: "08:45",
     company: "佐藤商店",
     items: [
-      { product: "山三 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 5 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 5 },
     ],
     note: "6月末納品希望",
   },
@@ -28,9 +28,9 @@ const orders = [
     time: "17:30",
     company: "鈴木酒販",
     items: [
-      { product: "山三 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 1 },
-      { product: "山三 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,900", lot: 6, qty: 2 },
-      { product: "山三 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,700", lot: 6, qty: 1 },
+      { product: "〇〇 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 1 },
+      { product: "〇〇 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,900", lot: 6, qty: 2 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "1800ml", retail: "¥3,600", wholesale: "¥1,700", lot: 6, qty: 1 },
     ],
     note: "",
   },
@@ -40,7 +40,7 @@ const orders = [
     time: "14:22",
     company: "高橋食品",
     items: [
-      { product: "山三 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,800", wholesale: "¥1,000", lot: 12, qty: 6 },
+      { product: "〇〇 純米大吟醸", type: "純米大吟醸", rice: "山田錦", volume: "720ml", retail: "¥1,800", wholesale: "¥1,000", lot: 12, qty: 6 },
     ],
     note: "",
   },
@@ -50,8 +50,8 @@ const orders = [
     time: "11:05",
     company: "伊藤酒店",
     items: [
-      { product: "山三 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 4 },
-      { product: "山三 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 2 },
+      { product: "〇〇 スパークリング", type: "純米吟醸", rice: "山恵錦", volume: "720ml", retail: "¥1,600", wholesale: "¥900", lot: 12, qty: 4 },
+      { product: "〇〇 金紋錦 大吟醸 35", type: "大吟醸", rice: "金紋錦", volume: "720ml", retail: "¥3,200", wholesale: "¥1,800", lot: 12, qty: 2 },
     ],
     note: "7月上旬納品",
   },
@@ -66,7 +66,7 @@ export default function SamplePage() {
         {["リクエスト", "受注", "商品", "顧客", "メール送信"].map((n) => (
           <span key={n} className={`cursor-pointer ${n === "受注" ? "border-b-2 border-amber-400 pb-1 font-bold" : "opacity-70"}`}>{n}</span>
         ))}
-        <span className="ml-auto opacity-70">山三酒造株式会社</span>
+        <span className="ml-auto opacity-70">〇〇酒造株式会社</span>
       </nav>
 
       <div className="p-6 space-y-4">
