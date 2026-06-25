@@ -121,7 +121,7 @@ export default function RootPage() {
                 <p className="font-black text-[#1e3a5f] text-base leading-snug whitespace-pre-line">
                   <span>{m.num} </span>{m.title}
                 </p>
-                <ul className="mt-1 space-y-1.5 w-full text-left">
+                <ul className="mt-1 space-y-1.5 text-left">
                   {m.items.map((item) => (
                     <li key={item} className="flex items-start gap-1 text-sm text-gray-600 whitespace-pre-line">
                       <span className="flex-shrink-0 mt-0.5">・</span>
