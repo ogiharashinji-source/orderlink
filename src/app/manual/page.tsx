@@ -143,32 +143,9 @@ export default function ManualPage() {
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 py-10 flex gap-8 relative">
-        {/* 左サイドナビ（PC固定） */}
-        <aside className="hidden lg:block w-52 flex-shrink-0 print:hidden">
-          <div className="sticky top-6 space-y-1">
-            <p className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">STEP一覧</p>
-            {STEPS.map((s) => (
-              <button
-                key={s.id}
-                onClick={() => scrollTo(s.id)}
-                className={`w-full text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
-                  activeStep === s.id
-                    ? "bg-[#1e3a5f] text-white font-bold shadow"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 ${
-                  activeStep === s.id ? "bg-amber-400 text-[#1e3a5f]" : "bg-gray-200 text-gray-600"
-                }`}>{s.num}</span>
-                <span className="leading-tight">{s.title}</span>
-              </button>
-            ))}
-          </div>
-        </aside>
-
+      <div className="max-w-5xl mx-auto px-4 py-10">
         {/* メインコンテンツ */}
-        <main className="flex-1 space-y-10">
+        <main className="space-y-10">
           {STEPS.map((s) => (
             <section
               key={s.id}
@@ -191,7 +168,7 @@ export default function ManualPage() {
               {/* コンテンツ */}
               <div className="p-6 flex flex-col md:flex-row gap-6">
                 {/* 説明 */}
-                <div className="md:w-2/5 space-y-3">
+                <div className="md:w-1/3 space-y-3">
                   {s.body.map((p, i) => (
                     <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
                   ))}
@@ -207,7 +184,7 @@ export default function ManualPage() {
                 </div>
 
                 {/* 画像 */}
-                <div className="md:w-3/5">
+                <div className="md:w-2/3">
                   <div
                     className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default"
                     onClick={() => setModalImg(s.image)}
