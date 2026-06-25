@@ -18,11 +18,20 @@ export default function Navbar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
-  const [companyName, setCompanyName] = useState(() => {
-    if (_cachedCompanyName) return _cachedCompanyName;
-    if (typeof window !== "undefined") return localStorage.getItem("nav_company") ?? "";
-    return "";
-  });
+  const [companyName, setCompanyName] = useState("");
+
+  // マウント後にキャッシュ or localStorage から即座に反映
+  useEffect(() => {
+    if (_cachedCompanyName) {
+      setCompanyName(_cachedCompanyName);
+    } else {
+      const stored = localStorage.getItem("nav_company");
+      if (stored) {
+        _cachedCompanyName = stored;
+        setCompanyName(stored);
+      }
+    }
+  }, []);
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
@@ -30,10 +39,10 @@ export default function Navbar() {
     window.location.href = "/login";
   };
 
-  const fetchNav = useCallback((redirectOnUnauth = false) => {
+  const fetchNav = useCallback((redirectOnUnauth = false, currentPath = "") => {
     fetch("/api/admin/nav")
       .then((r) => {
-        if (r.status === 401 && redirectOnUnauth && pathname !== "/manual") {
+        if (r.status === 401 && redirectOnUnauth && currentPath !== "/manual") {
           window.location.href = "/admin/login";
           return null;
         }
@@ -55,7 +64,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    fetchNav(true);
+    fetchNav(true, pathname);
   }, [pathname, fetchNav]);
 
   useEffect(() => {
@@ -96,7 +105,9 @@ export default function Navbar() {
           </div>
           <div className="flex-1" />
           <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">ご利用ガイド</Link>
-          <a href="/settings" suppressHydrationWarning className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
+          {companyName && (
+            <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
+          )}
           <button
             onClick={handleLogout}
             className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"
