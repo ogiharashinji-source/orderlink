@@ -119,7 +119,7 @@ export default function RootPage() {
           <div className="bg-white border-b border-[#1e3a5f]/20 text-center py-3">
             <p className="font-bold text-[#1e3a5f] text-base">OrderLink導入のメリット</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[#1e3a5f]/20">
+          <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#1e3a5f]/20">
             {[
               {
                 num: "❶", icon: "📱", title: "FAX不要で\n簡単発注",
@@ -137,19 +137,15 @@ export default function RootPage() {
                 num: "❹", icon: "📦", title: "商品情報を\nいつでも確認",
                 items: ["最新の商品一覧", "価格表・新商品\nをすぐ確認"],
               },
-              {
-                num: "❺", icon: "📈", title: "売上アップ\nにつながる",
-                items: ["発注作業を削減", "欠品防止で販売\n機会を逃さない"],
-              },
             ].map((m) => (
-              <div key={m.num} className="flex flex-col items-center text-center px-3 py-6 gap-2">
-                <div className="text-4xl mb-1">{m.icon}</div>
-                <p className="font-black text-[#1e3a5f] text-sm leading-snug whitespace-pre-line">
-                  <span className="text-[#1e3a5f]">{m.num} </span>{m.title}
+              <div key={m.num} className="flex flex-col items-center text-center px-4 py-8 gap-3">
+                <div className="text-5xl mb-1">{m.icon}</div>
+                <p className="font-black text-[#1e3a5f] text-base leading-snug whitespace-pre-line">
+                  <span>{m.num} </span>{m.title}
                 </p>
-                <ul className="mt-1 space-y-1 text-left w-full px-1">
+                <ul className="mt-1 space-y-1.5 text-left w-full px-2">
                   {m.items.map((item) => (
-                    <li key={item} className="flex items-start gap-1 text-xs text-gray-600 whitespace-pre-line">
+                    <li key={item} className="flex items-start gap-1 text-sm text-gray-600 whitespace-pre-line">
                       <span className="flex-shrink-0 mt-0.5">・</span>
                       <span>{item}</span>
                     </li>
