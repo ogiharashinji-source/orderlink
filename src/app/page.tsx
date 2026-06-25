@@ -112,7 +112,7 @@ export default function RootPage() {
                 items: ["聞き間違い防止", "発注漏れ・欠品\nリスクを軽減"],
               },
               {
-                num: "❹", icon: "📦", title: "商品情報を\nいつでも確認",
+                num: "❹", icon: "📦", title: "商品情報を\nいつでも最新に",
                 items: ["最新の商品一覧", "価格表・新商品\nをすぐ確認"],
               },
             ].map((m) => (
