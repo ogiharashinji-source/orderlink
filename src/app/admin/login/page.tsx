@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-800 flex flex-col">
+    <div className="min-h-screen bg-[#1e3a5f] flex flex-col">
       <header className="px-6 py-4">
         <Link href="/">
           <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
@@ -79,7 +79,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-slate-800 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-700 disabled:opacity-50 transition-colors"
+            className="w-full bg-[#1e3a5f] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2d5a8e] disabled:opacity-50 transition-colors"
           >
             {loading ? "ログイン中..." : "ログイン"}
           </button>
