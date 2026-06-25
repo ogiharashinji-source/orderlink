@@ -4,32 +4,24 @@ export const metadata = { title: "リクエスト - OrderLink" };
 
 const requests = [
   {
-    id: 1,
-    date: "2026/6/25 09:45",
-    customer: "田中酒店",
+    id: 1, date: "2026/6/25", time: "09:45", customer: "田中酒店",
     items: [
-      { product: "〇〇 純米大吟醸", volume: "1800ml", qty: 2, price: 1900 },
-      { product: "〇〇 純米大吟醸", volume: "720ml",  qty: 3, price: 1000 },
+      { product: "〇〇 純米大吟醸", category: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: 3600, wholesale: 1900, lot: "6本", qty: 2 },
+      { product: "〇〇 純米大吟醸", category: "純米大吟醸", rice: "山田錦", volume: "720ml",  retail: 1800, wholesale: 1000, lot: "12本", qty: 3 },
     ],
-    note: "",
   },
   {
-    id: 2,
-    date: "2026/6/25 08:30",
-    customer: "佐藤商店",
+    id: 2, date: "2026/6/25", time: "08:30", customer: "佐藤商店",
     items: [
-      { product: "〇〇 スパークリング", volume: "720ml", qty: 5, price: 900 },
+      { product: "〇〇 スパークリング", category: "純米吟醸", rice: "山田錦", volume: "720ml", retail: 1600, wholesale: 900, lot: "12本", qty: 5 },
     ],
-    note: "6月末納品希望",
   },
   {
-    id: 3,
-    date: "2026/6/24 16:10",
-    customer: "鈴木酒販",
+    id: 3, date: "2026/6/24", time: "16:10", customer: "鈴木酒販",
     items: [
-      { product: "〇〇 大吟醸", volume: "720ml", qty: 6, price: 1800 },
+      { product: "〇〇 大吟醸 35", category: "大吟醸", rice: "山田錦", volume: "720ml",  retail: 3200, wholesale: 1800, lot: "12本", qty: 1 },
+      { product: "〇〇 純米大吟醸", category: "純米大吟醸", rice: "山田錦", volume: "1800ml", retail: 3600, wholesale: 1900, lot: "6本",  qty: 2 },
     ],
-    note: "",
   },
 ];
 
@@ -38,43 +30,64 @@ export default function SampleRequestsPage() {
     <div className="min-h-screen bg-gray-100 font-sans">
       <SampleNav active="リクエスト" />
       <div className="p-6 space-y-4">
-        <h1 className="text-xl font-bold text-gray-900">リクエスト一覧</h1>
-        <div className="space-y-4">
-          {requests.map((r) => (
-            <div key={r.id} className="bg-white rounded-xl shadow p-5 space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-gray-800 text-base">{r.customer}</span>
-                  <span className="text-xs text-gray-400 ml-3">{r.date}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button className="px-4 py-1.5 text-sm font-bold text-white rounded-lg bg-blue-600">受注確定</button>
-                  <button className="px-4 py-1.5 text-sm font-medium text-red-500 rounded-lg border border-red-300">却下</button>
-                </div>
-              </div>
-              <table className="w-full text-sm">
-                <thead className="text-xs text-gray-500 border-b">
-                  <tr>
-                    <th className="text-left py-1">商品</th>
-                    <th className="text-center py-1">容量</th>
-                    <th className="text-center py-1">数量</th>
-                    <th className="text-right py-1">卸値</th>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
+          <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">3件</span>
+        </div>
+
+        <div className="bg-white rounded-lg shadow overflow-x-auto">
+          <table className="w-full text-sm whitespace-nowrap">
+            <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+              <tr>
+                <th className="px-4 py-3 text-center">リクエスト日</th>
+                <th className="px-4 py-3 text-left">会社名</th>
+                <th className="px-4 py-3 text-left">商品</th>
+                <th className="px-4 py-3 text-left">種別</th>
+                <th className="px-4 py-3 text-left">酒米</th>
+                <th className="px-4 py-3 text-center">容量</th>
+                <th className="px-4 py-3 text-center">小売値</th>
+                <th className="px-4 py-3 text-center">卸売値</th>
+                <th className="px-4 py-3 text-center">ロット</th>
+                <th className="px-4 py-3 text-center">希望ケース</th>
+                <th className="px-4 py-3 text-center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requests.map((req, ri) =>
+                req.items.map((item, idx) => (
+                  <tr key={`${req.id}-${idx}`}
+                    className={`border-t border-gray-100 ${idx === req.items.length - 1 ? "border-b-2 border-b-gray-200" : ""}`}>
+                    {idx === 0 && (
+                      <td className="px-4 py-3 text-gray-500 align-middle text-center whitespace-nowrap" rowSpan={req.items.length}>
+                        <div>{req.date}</div>
+                        <div className="mt-0.5 text-xs">{req.time}</div>
+                      </td>
+                    )}
+                    {idx === 0 && (
+                      <td className="px-4 py-3 text-left text-gray-800 font-medium align-middle" rowSpan={req.items.length}>
+                        {req.customer}
+                      </td>
+                    )}
+                    <td className="px-4 py-3 text-left text-gray-800 font-medium">{item.product}</td>
+                    <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.category}</td>
+                    <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.rice}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">{item.volume}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">¥{item.retail.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">¥{item.wholesale.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">{item.lot}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">{item.qty}</td>
+                    {idx === 0 && (
+                      <td className="px-4 py-3 text-center align-middle" rowSpan={req.items.length}>
+                        <button className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap">
+                          確認
+                        </button>
+                      </td>
+                    )}
                   </tr>
-                </thead>
-                <tbody>
-                  {r.items.map((item, i) => (
-                    <tr key={i} className="border-b border-gray-50">
-                      <td className="py-1.5 text-gray-700">{item.product}</td>
-                      <td className="py-1.5 text-center text-gray-500">{item.volume}</td>
-                      <td className="py-1.5 text-center font-bold text-blue-600">{item.qty}</td>
-                      <td className="py-1.5 text-right text-gray-700">¥{item.price.toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {r.note && <p className="text-xs text-gray-500 bg-gray-50 rounded px-3 py-1.5">備考：{r.note}</p>}
-            </div>
-          ))}
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
