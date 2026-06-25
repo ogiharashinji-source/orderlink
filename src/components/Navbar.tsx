@@ -35,7 +35,7 @@ export default function Navbar() {
   const fetchNav = useCallback((redirectOnUnauth = false) => {
     fetch("/api/admin/nav")
       .then((r) => {
-        if (r.status === 401 && redirectOnUnauth) {
+        if (r.status === 401 && redirectOnUnauth && pathname !== "/manual") {
           window.location.href = "/admin/login";
           return null;
         }
