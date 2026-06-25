@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { setAdminLoggedIn } from "@/lib/authState";
+import Link from "next/link";
 
 const navItems = [
   { href: "/requests", label: "リクエスト", badge: true },
@@ -96,7 +97,7 @@ export default function Navbar() {
             })}
           </div>
           <div className="flex-1" />
-          <a href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">ご利用ガイド</a>
+          <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">ご利用ガイド</Link>
           <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
           <button
             onClick={handleLogout}
