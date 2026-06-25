@@ -167,35 +167,33 @@ export default function ManualPage() {
 
               {/* コンテンツ */}
               {[1, 4].includes(s.num) ? (
-                // STEP1・4：横並び（説明左、画像右）、ハイライト下部右揃え
-                <div className="p-6 space-y-4">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="md:w-1/3 space-y-3">
-                      {s.body.map((p, i) => (
-                        <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
+                // STEP1・4：横並び（説明左、画像右）
+                <div className="p-6 flex flex-col md:flex-row gap-6">
+                  <div className="md:w-1/3 space-y-3">
+                    {s.body.map((p, i) => (
+                      <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
+                    ))}
+                    <div className="mt-4 space-y-2">
+                      {s.highlights.map((h, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                          <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
+                          <span>{h}</span>
+                        </div>
                       ))}
                     </div>
-                    <div className="md:w-2/3">
-                      <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
-                        <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
-                          <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
-                          <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
-                          <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
-                          <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
-                          <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
-                        </div>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={s.image} alt={s.imageAlt} className="w-full object-cover object-top bg-gray-50" style={{ minHeight: "180px" }} />
-                      </div>
-                    </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    {s.highlights.map((h, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                        <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
-                        <span>{h}</span>
+                  <div className="md:w-2/3">
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
+                      <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+                        <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
+                        <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
                       </div>
-                    ))}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.image} alt={s.imageAlt} className="w-full object-cover object-top bg-gray-50" style={{ minHeight: "180px" }} />
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -207,7 +205,7 @@ export default function ManualPage() {
                         <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
                       ))}
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col items-end gap-2">
                       {s.highlights.map((h, i) => (
                         <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                           <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
