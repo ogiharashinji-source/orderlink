@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 
 const STEPS = [
   {
@@ -233,7 +232,6 @@ export default function ManualPage() {
 
         </main>
       </div>
-      <Footer />
 
       {/* 画像モーダル */}
       {modalImg && (
