@@ -148,7 +148,7 @@ export default function ManualPage() {
         </div>
       </header>
       {/* タイトル・説明 */}
-      <div className="bg-white px-6 py-8 max-w-5xl mx-auto">
+      <div className="px-6 py-8 max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-3">
           <span className="text-xl font-bold text-gray-900">ご利用ガイド</span>
           <span className="bg-amber-400 text-[#1e3a5f] text-xs font-black px-3 py-1 rounded-full">酒蔵様向け</span>
