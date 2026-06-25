@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 const STEPS = [
   {
@@ -98,10 +99,15 @@ export default function ManualPage() {
   const [activeStep, setActiveStep] = useState("step1");
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [showTop, setShowTop] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const stepRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const setRef = useCallback((id: string) => (el: HTMLElement | null) => {
     stepRefs.current[id] = el;
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/nav").then((r) => { if (r.ok) setIsLoggedIn(true); }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -130,23 +136,26 @@ export default function ManualPage() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans print:bg-white">
       {/* ヘッダー */}
-      {/* ナビバー */}
-      <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between print:hidden">
-        <Link href="/">
-          <span className="text-xl font-bold tracking-widest">OrderLink</span>
-          <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
-        </Link>
-        <div className="flex gap-3">
-          <Link href="/admin/login"
-            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
-            ログイン
+      {isLoggedIn ? (
+        <div className="print:hidden"><Navbar /></div>
+      ) : (
+        <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between print:hidden">
+          <Link href="/">
+            <span className="text-xl font-bold tracking-widest">OrderLink</span>
+            <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
           </Link>
-          <Link href="/register"
-            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
-            新規登録
-          </Link>
-        </div>
-      </header>
+          <div className="flex gap-3">
+            <Link href="/admin/login"
+              className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+              ログイン
+            </Link>
+            <Link href="/register"
+              className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+              新規登録
+            </Link>
+          </div>
+        </header>
+      )}
       {/* タイトル・説明 */}
       <div className="px-6 py-8 max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-3">
