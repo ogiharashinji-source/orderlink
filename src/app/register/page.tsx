@@ -107,6 +107,13 @@ export default function AdminRegisterPage() {
               ログインはこちら
             </Link>
           </div>
+          <p className="text-xs text-gray-400 pt-2">
+            登録することで
+            <Link href="/terms" target="_blank" className="text-blue-500 hover:underline mx-1">利用規約</Link>
+            および
+            <Link href="/privacy" target="_blank" className="text-blue-500 hover:underline mx-1">プライバシーポリシー</Link>
+            に同意したものとみなします。
+          </p>
         </form>
       </div>
       </div>
