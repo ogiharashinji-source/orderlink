@@ -151,7 +151,7 @@ export default function RootPage() {
               <p className="text-5xl font-black">¥0</p>
             </div>
           </div>
-          <p className="text-xl font-normal mb-8">まずはお試しください</p>
+          <p className="text-2xl font-bold opacity-90 mb-8">まずはお試しください</p>
           <Link href="/register"
             className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-lg px-10 py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
             今すぐ5分でカンタン登録！
