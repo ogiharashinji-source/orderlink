@@ -154,24 +154,22 @@ export default function FlyerPage() {
         </div>
 
         {/* ⑤ CTA下部 */}
-        <div className="bg-white px-5 py-5 flex flex-col sm:flex-row items-center gap-5">
-          {/* 完全無料バッジ */}
-          <div className="flex-shrink-0 relative w-24 h-24 flex items-center justify-center">
-            <div className="w-24 h-24 rounded-full border-4 border-amber-500 bg-amber-50 flex flex-col items-center justify-center shadow-md">
+        <div className="bg-white py-5 flex justify-center">
+          <div className="flex flex-row items-center gap-5">
+            {/* 完全無料バッジ */}
+            <div className="flex-shrink-0 w-24 h-24 rounded-full border-4 border-amber-500 bg-amber-50 flex flex-col items-center justify-center shadow-md">
               <p className="text-[#1e3a5f] font-black text-lg leading-none">完全</p>
               <p className="text-[#1e3a5f] font-black text-lg leading-none">無料</p>
               <p className="text-[10px] text-gray-500 mt-0.5">※</p>
             </div>
+            {/* 料金 */}
+            <div>
+              <p className="text-[#1e3a5f] font-black text-lg">
+                初期費用 <span className="text-3xl">0</span>円　月額費用 <span className="text-3xl">0</span>円
+              </p>
+              <p className="text-amber-600 font-bold text-base mt-1">まずはお気軽にお試しください！</p>
+            </div>
           </div>
-
-          {/* 中央：料金 */}
-          <div className="flex-1 text-center sm:text-left">
-            <p className="text-[#1e3a5f] font-black text-lg">
-              初期費用 <span className="text-3xl">0</span>円　月額費用 <span className="text-3xl">0</span>円
-            </p>
-            <p className="text-amber-600 font-bold text-base mt-1">まずはお気軽にお試しください！</p>
-          </div>
-
         </div>
 
       </div>
