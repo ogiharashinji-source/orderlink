@@ -1,15 +1,17 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+const inputCls = "w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] transition";
 
 export default function ContactPage() {
-  const router = useRouter();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [form, setForm] = useState({ name: "", company: "", email: "", phone: "", message: "" });
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
+
+  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,69 +20,116 @@ export default function ContactPage() {
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, message }),
+      body: JSON.stringify(form),
     });
+    setSending(false);
     if (res.ok) {
       setDone(true);
     } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "送信に失敗しました");
+      const d = await res.json().catch(() => ({}));
+      setError(d.error ?? "送信に失敗しました");
     }
-    setSending(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-bold text-gray-900">お問い合わせ</h1>
-          {!done && <button onClick={() => router.back()} className="text-sm text-blue-500 hover:text-blue-700">戻る</button>}
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* ヘッダー */}
+      <header className="bg-[#1e3a5f] px-6 py-4 flex items-center justify-between">
+        <Link href="/">
+          <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
+          <span className="text-xs ml-2 text-white/70">オーダーリンク</span>
+        </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/login"
+            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            ログイン
+          </Link>
+          <Link href="/register"
+            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+            新規登録
+          </Link>
         </div>
+      </header>
 
-        {done ? (
-          <div className="text-center space-y-4">
-            <p className="text-green-600 font-medium">送信が完了しました。</p>
-            <p className="text-sm text-gray-500">内容を確認の上、ご連絡いたします。</p>
-            <button onClick={() => router.back()}
-              className="mt-4 text-sm text-blue-600 hover:underline">
-              ← 前のページに戻る
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">お名前</label>
-              <input
-                value={name} onChange={(e) => setName(e.target.value)}
-                required className={inputCls} placeholder="山三 太郎"
-              />
+      <div className="flex-1 flex items-center justify-center px-6 py-14">
+        <div className="w-full max-w-xl">
+          {done ? (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center space-y-4">
+              <div className="text-5xl">✅</div>
+              <h2 className="text-xl font-black text-[#1e3a5f]">送信が完了しました</h2>
+              <p className="text-sm text-gray-500">お問い合わせありがとうございます。<br />内容を確認のうえ、担当者よりご連絡いたします。</p>
+              <Link href="/" className="inline-block mt-4 text-sm text-[#1e3a5f] font-bold hover:underline">
+                トップページへ戻る
+              </Link>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
-              <input
-                type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                required className={inputCls} placeholder="example@email.com"
-              />
+          ) : (
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
+              <div>
+                <h1 className="text-2xl font-black text-[#1e3a5f]">お問い合わせ</h1>
+                <p className="text-sm text-gray-500 mt-1">ご不明な点やご相談はお気軽にどうぞ。</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      お名前 <span className="text-red-500">*</span>
+                    </label>
+                    <input required value={form.name} onChange={set("name")} placeholder="山田 太郎" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">会社名</label>
+                    <input value={form.company} onChange={set("company")} placeholder="〇〇酒造株式会社" className={inputCls} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      メールアドレス <span className="text-red-500">*</span>
+                    </label>
+                    <input required type="email" value={form.email} onChange={set("email")} placeholder="example@email.com" className={inputCls} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">電話番号</label>
+                    <input value={form.phone} onChange={set("phone")} placeholder="03-0000-0000" className={inputCls} />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    お問い合わせ内容 <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    required
+                    value={form.message}
+                    onChange={set("message")}
+                    rows={5}
+                    placeholder="ご質問・ご相談内容をご記入ください"
+                    className={inputCls + " resize-none"}
+                  />
+                </div>
+
+                {error && <p className="text-sm text-red-500">{error}</p>}
+
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="w-full bg-[#1e3a5f] text-white font-black py-3 rounded-xl hover:bg-[#2d5a8e] disabled:opacity-50 transition text-base"
+                >
+                  {sending ? "送信中..." : "送信する →"}
+                </button>
+
+                <p className="text-xs text-center text-gray-400">
+                  送信することで
+                  <Link href="/privacy" target="_blank" className="text-blue-500 hover:underline mx-1">プライバシーポリシー</Link>
+                  に同意したものとみなします。
+                </p>
+              </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">お問い合わせ内容</label>
-              <textarea
-                value={message} onChange={(e) => setMessage(e.target.value)}
-                required rows={6} className={inputCls}
-              />
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <button
-              type="submit" disabled={sending}
-              className="w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
-            >
-              {sending ? "送信中..." : "送信する"}
-            </button>
-          </form>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";

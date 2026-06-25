@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 export async function POST(req: NextRequest) {
-  const { name, email, message } = await req.json();
+  const { name, company, email, phone, message } = await req.json();
   if (!name || !email || !message) {
-    return NextResponse.json({ error: "すべての項目を入力してください" }, { status: 400 });
+    return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
   }
 
   const to = process.env.CONTACT_EMAIL;
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     to,
     replyTo: email,
     subject: `【OrderLink お問い合わせ】${name} 様より`,
-    text: `お名前: ${name}\nメールアドレス: ${email}\n\n${message}`,
+    text: `お名前: ${name}\n会社名: ${company || "未記入"}\nメールアドレス: ${email}\n電話番号: ${phone || "未記入"}\n\n${message}`,
   });
 
   return NextResponse.json({ ok: true });

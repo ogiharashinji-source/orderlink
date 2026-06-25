@@ -130,10 +130,14 @@ export default function RootPage() {
       </section>
 
       {/* フッター */}
-      <footer className="bg-[#0f2340] text-white px-6 py-6 text-center text-xs space-y-1">
-        <p className="font-bold text-base mb-2">OrderLink　オーダーリンク</p>
+      <footer className="bg-[#0f2340] text-white px-6 py-8 text-center text-xs space-y-2">
+        <p className="font-bold text-base mb-3">OrderLink　オーダーリンク</p>
         <p>https://www.orderlink.jp</p>
-        <p className="opacity-60 mt-3">お問い合わせ：support@orderlink.jp</p>
+        <div className="flex justify-center gap-6 mt-3 opacity-70">
+          <Link href="/terms" className="hover:opacity-100 hover:underline">利用規約</Link>
+          <Link href="/privacy" className="hover:opacity-100 hover:underline">プライバシーポリシー</Link>
+          <Link href="/contact" className="hover:opacity-100 hover:underline">お問い合わせ</Link>
+        </div>
       </footer>
 
     </div>
