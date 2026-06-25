@@ -8,16 +8,36 @@ const navItems = [
   { href: "/portal/orders", label: "発注管理" },
 ];
 
+const LS_KEY = "portal_customer_name";
+let _cachedCustomerName = "";
+
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [customerName, setCustomerName] = useState("");
+
+  // マウント直後にキャッシュ/localStorageから即座に反映
+  useEffect(() => {
+    if (_cachedCustomerName) {
+      setCustomerName(_cachedCustomerName);
+    } else {
+      const stored = localStorage.getItem(LS_KEY);
+      if (stored) {
+        _cachedCustomerName = stored;
+        setCustomerName(stored);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) return;
     fetch("/api/customer/me").then((r) => {
       if (!r.ok) { window.location.href = "/portal/login"; return; }
       fetch("/api/portal/profile").then((r2) => r2.ok ? r2.json() : null).then((d) => {
-        if (d?.name) setCustomerName(d.name);
+        if (d?.name) {
+          _cachedCustomerName = d.name;
+          localStorage.setItem(LS_KEY, d.name);
+          setCustomerName(d.name);
+        }
       });
     });
   }, [pathname]);
