@@ -130,27 +130,20 @@ export default function ManualPage() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans print:bg-white">
       {/* ヘッダー */}
-      <header className="bg-[#1e3a5f] text-white py-10 px-6 print:py-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-2xl font-black tracking-widest">OrderLink</span>
-            <span className="text-xl font-bold text-white/80">ご利用ガイド</span>
-            <span className="bg-amber-400 text-[#1e3a5f] text-xs font-black px-3 py-1 rounded-full">酒蔵様向け</span>
-            <div className="ml-auto flex gap-3">
-              <Link href="/admin/login"
-                className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
-                ログイン
-              </Link>
-              <Link href="/register"
-                className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
-                新規登録
-              </Link>
-            </div>
-          </div>
-          <p className="text-white/70 text-sm mt-3 max-w-2xl">
-            OrderLinkは、酒蔵と販売店の受発注をスムーズにするクラウドサービスです。
-            このガイドでは、酒蔵アカウント登録から販売店登録、商品登録、リクエスト確認、受注管理までの基本操作をご説明します。
-          </p>
+      <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between print:hidden">
+        <Link href="/">
+          <span className="text-xl font-bold tracking-widest">OrderLink</span>
+          <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
+        </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/login"
+            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            ログイン
+          </Link>
+          <Link href="/register"
+            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+            新規登録
+          </Link>
         </div>
       </header>
 
