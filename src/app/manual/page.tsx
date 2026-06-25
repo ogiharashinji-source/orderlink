@@ -102,7 +102,6 @@ export default function ManualPage() {
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [showTop, setShowTop] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(_loginCache ?? false);
-  const [loginChecked, setLoginChecked] = useState(_loginCache !== null);
   const stepRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const setRef = useCallback((id: string) => (el: HTMLElement | null) => {
@@ -114,8 +113,7 @@ export default function ManualPage() {
       const loggedIn = r.ok;
       _loginCache = loggedIn;
       setIsLoggedIn(loggedIn);
-      setLoginChecked(true);
-    }).catch(() => { setLoginChecked(true); });
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -144,7 +142,7 @@ export default function ManualPage() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans print:bg-white">
       {/* ヘッダー */}
-      {!loginChecked ? null : isLoggedIn ? (
+      {isLoggedIn ? (
         <div className="print:hidden"><Navbar /></div>
       ) : (
         <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between print:hidden">
