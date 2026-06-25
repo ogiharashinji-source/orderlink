@@ -51,7 +51,7 @@ export default function LoginPage() {
       </header>
       <div className="flex-1 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <p className="text-white/80 text-center text-sm font-medium mb-6">酒蔵専用ログインページ</p>
+        <p className="text-white text-center text-xl font-bold mb-6">酒蔵専用ログインページ</p>
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8 space-y-5">
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-600">
