@@ -14,7 +14,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
-  const [companyName, setCompanyName] = useState("");
+  const [companyName, setCompanyName] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("nav_company") ?? "";
+    return "";
+  });
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
@@ -34,7 +37,10 @@ export default function Navbar() {
       })
       .then((d) => {
         if (!d) return;
-        if (d.companyName) setCompanyName(d.companyName);
+        if (d.companyName) {
+          setCompanyName(d.companyName);
+          localStorage.setItem("nav_company", d.companyName);
+        }
         setPendingCount(d.pendingCount ?? 0);
         setApprovalCount(d.approvalCount ?? 0);
       })
