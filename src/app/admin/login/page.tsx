@@ -39,7 +39,7 @@ export default function LoginPage() {
         </Link>
         <div className="flex gap-3">
           <Link href="/admin/login"
-            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            className="hidden sm:inline-block border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
             ログイン
           </Link>
           <Link href="/register"
