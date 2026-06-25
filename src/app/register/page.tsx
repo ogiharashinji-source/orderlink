@@ -39,7 +39,7 @@ export default function AdminRegisterPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900">新規アカウント登録</h1>
+        <h1 className="text-2xl font-bold text-gray-900">酒蔵新規アカウント登録</h1>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow p-6 space-y-4">
 
