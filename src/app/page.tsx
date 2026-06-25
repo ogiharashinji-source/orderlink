@@ -48,7 +48,7 @@ export default function RootPage() {
       </section>
 
       {/* 解決策セクション */}
-      <section className="bg-white px-6 pb-12">
+      <section className="bg-white px-6 pt-14 pb-12">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1">
             <p className="text-[#1e3a5f] font-bold text-sm mb-2">酒蔵の受発注を一元管理！</p>
