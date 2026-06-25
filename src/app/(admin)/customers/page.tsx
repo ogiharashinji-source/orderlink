@@ -313,7 +313,7 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-center">
                       {c.approved
                         ? <span className="text-xs text-gray-400">登録済</span>
-                        : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700">承認</button>}
+                        : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600">未承認</button>}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
