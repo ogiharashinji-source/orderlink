@@ -1,43 +1,29 @@
 import Link from "next/link";
-import { cookies } from "next/headers";
 import { Printer, Phone, FolderOpen, Smartphone, ClipboardList, ShieldCheck, Package } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import PortalTopNav from "@/components/PortalTopNav";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
-export default async function RootPage() {
-  const cookieStore = await cookies();
-  const isAdmin = !!cookieStore.get("auth_token")?.value;
-  const isPortal = !!cookieStore.get("customer_auth")?.value;
-
+export default function RootPage() {
   return (
     <div className="min-h-screen bg-white font-sans">
 
-      {isAdmin ? (
-        <Navbar />
-      ) : isPortal ? (
-        <PortalTopNav />
-      ) : (
-        /* ヘッダー（未ログイン） */
-        <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between">
-          <div>
-            <span className="text-xl font-bold tracking-widest">OrderLink</span>
-            <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
-          </div>
-          <div className="flex gap-3">
-            <Link href="/admin/login"
-              className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
-              ログイン
-            </Link>
-            <Link href="/register"
-              className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
-              新規登録
-            </Link>
-          </div>
-        </header>
-      )}
+      {/* ヘッダー */}
+      <header className="bg-[#1e3a5f] text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <span className="text-xl font-bold tracking-widest">OrderLink</span>
+          <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
+        </div>
+        <div className="flex gap-3">
+          <Link href="/admin/login"
+            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            ログイン
+          </Link>
+          <Link href="/register"
+            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+            新規登録
+          </Link>
+        </div>
+      </header>
 
       {/* ヒーロー */}
       <section className="bg-[#1e3a5f] text-white text-center px-6 py-16">
@@ -218,18 +204,14 @@ export default async function RootPage() {
         </Link>
       </section>
 
-      {(isAdmin || isPortal) ? (
-        <Footer />
-      ) : (
-        /* フッター（未ログイン） */
-        <footer className="bg-[#0f2340] text-white px-6 py-8 text-center text-xs space-y-4">
-          <p className="font-bold text-base">OrderLink</p>
-          <Link href="/contact"
-            className="inline-block border border-white/50 text-white/80 text-sm px-6 py-2 rounded-full hover:bg-white hover:text-[#0f2340] transition">
-            お問い合わせ
-          </Link>
-        </footer>
-      )}
+      {/* フッター */}
+      <footer className="bg-[#0f2340] text-white px-6 py-8 text-center text-xs space-y-4">
+        <p className="font-bold text-base">OrderLink</p>
+        <Link href="/contact"
+          className="inline-block border border-white/50 text-white/80 text-sm px-6 py-2 rounded-full hover:bg-white hover:text-[#0f2340] transition">
+          お問い合わせ
+        </Link>
+      </footer>
 
     </div>
   );

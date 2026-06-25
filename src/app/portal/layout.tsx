@@ -36,7 +36,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       <nav className="bg-slate-800 text-white overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
-            <a href="/portal/order" className="text-base font-bold text-white whitespace-nowrap hover:text-slate-300">OrderLink</a>
+            <span className="text-base font-bold text-white whitespace-nowrap">OrderLink</span>
             <div className="flex flex-nowrap items-center gap-3">
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));
