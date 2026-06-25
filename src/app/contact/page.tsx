@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import CloseButton from "@/components/CloseButton";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f] transition";
 
@@ -33,15 +34,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <div className="flex justify-end px-6 pt-4">
-        <button
-          onClick={() => window.close()}
-          className="text-gray-400 hover:text-gray-600 text-sm flex items-center gap-1 transition"
-        >
-          ✕ 閉じる
-        </button>
-      </div>
-      <div className="flex-1 flex items-center justify-center px-6 py-8">
+      <div className="flex-1 flex items-center justify-center px-6 py-14">
         <div className="w-full max-w-xl">
           {done ? (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center space-y-4">
@@ -111,6 +104,9 @@ export default function ContactPage() {
                 </button>
 
               </form>
+              <div className="pt-4 border-t border-gray-100">
+                <CloseButton />
+              </div>
             </div>
           )}
         </div>
