@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Printer, Phone, FolderOpen, Smartphone, ClipboardList, ShieldCheck, Package } from "lucide-react";
+import LandingHeaderActions from "@/components/LandingHeaderActions";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
@@ -13,16 +14,7 @@ export default function RootPage() {
           <span className="text-xl font-bold tracking-widest">OrderLink</span>
           <span className="text-xs ml-2 opacity-70">オーダーリンク</span>
         </div>
-        <div className="flex gap-3">
-          <Link href="/admin/login"
-            className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
-            ログイン
-          </Link>
-          <Link href="/register"
-            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
-            新規登録
-          </Link>
-        </div>
+        <LandingHeaderActions />
       </header>
 
       {/* ヒーロー */}
