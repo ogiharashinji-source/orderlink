@@ -47,28 +47,6 @@ export default function RootPage() {
         <p className="text-xs opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
       </section>
 
-      {/* お悩みセクション */}
-      <section className="bg-white px-6 py-12">
-        <div className="max-w-4xl mx-auto border-2 border-[#1e3a5f] rounded-2xl overflow-hidden">
-          <div className="bg-[#1e3a5f] text-white text-center py-3 px-4">
-            <p className="font-bold text-base">酒蔵の受発注業務、こんなお悩みありませんか？</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#1e3a5f]/20">
-            {[
-              { icon: "📠", title: "FAX 整理が大変", desc: "注文書の管理や\n手入力に時間がかかる" },
-              { icon: "📞", title: "電話注文でミスが起きる", desc: "聞き間違いや\n書き間違いが発生する" },
-              { icon: "📁", title: "注文履歴が探せない", desc: "過去の注文を\nすぐに確認できない" },
-            ].map((p) => (
-              <div key={p.title} className="flex flex-col items-center text-center px-6 py-8 gap-3">
-                <span className="text-5xl">{p.icon}</span>
-                <p className="font-black text-[#1e3a5f] text-base">{p.title}</p>
-                <p className="text-sm text-gray-500 whitespace-pre-line leading-relaxed">{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* 解決策セクション */}
       <section className="bg-white px-6 pb-12">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8">
