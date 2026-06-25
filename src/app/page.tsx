@@ -45,7 +45,7 @@ export default function RootPage() {
             今すぐ無料で始める →
           </Link>
         </div>
-        <p className="text-xs opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
+        <p className="text-base opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
       </section>
 
       {/* お悩み3項目 */}
