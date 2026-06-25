@@ -168,8 +168,8 @@ function RegisterForm() {
               <input type="tel" value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} placeholder="例: 03-1234-5679" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
-              <input type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="例: info@yamada.co.jp" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
+              <input required type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="例: info@yamada.co.jp" />
             </div>
             <div className="border-t pt-3 space-y-3">
               <p className="text-xs text-gray-500">ログインに使うIDとパスワードを設定してください</p>
