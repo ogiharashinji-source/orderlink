@@ -1,6 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { setAdminLoggedIn } from "@/lib/authState";
 
 const navItems = [
   { href: "/requests", label: "リクエスト", badge: true },
@@ -42,6 +43,7 @@ export default function Navbar() {
       })
       .then((d) => {
         if (!d) return;
+        setAdminLoggedIn(true);
         if (d.companyName) {
           _cachedCompanyName = d.companyName;
           localStorage.setItem("nav_company", d.companyName);

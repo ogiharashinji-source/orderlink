@@ -2,8 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-
-let _loginCache: boolean | null = null;
+import { isAdminLoggedIn, setAdminLoggedIn } from "@/lib/authState";
 
 const STEPS = [
   {
@@ -101,7 +100,7 @@ export default function ManualPage() {
   const [activeStep, setActiveStep] = useState("step1");
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [showTop, setShowTop] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(_loginCache ?? false);
+  const [isLoggedIn, setIsLoggedIn] = useState(isAdminLoggedIn);
   const stepRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const setRef = useCallback((id: string) => (el: HTMLElement | null) => {
@@ -111,7 +110,7 @@ export default function ManualPage() {
   useEffect(() => {
     fetch("/api/admin/nav").then((r) => {
       const loggedIn = r.ok;
-      _loginCache = loggedIn;
+      setAdminLoggedIn(loggedIn);
       setIsLoggedIn(loggedIn);
     }).catch(() => {});
   }, []);
