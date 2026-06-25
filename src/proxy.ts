@@ -3,11 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 const SECRET = process.env.AUTH_SECRET ?? "sake-system-secret-2026";
 
 const PUBLIC_PATHS = [
+  "/",
   "/login",
   "/admin/login",
   "/register",
+  "/manual",
+  "/contact",
+  "/flyer",
+  "/lp",
+  "/terms",
+  "/privacy",
   "/api/auth/login",
   "/api/auth/register",
+  "/api/contact",
   "/order/",
   "/superadmin/login",
   "/api/superadmin/auth",
