@@ -120,11 +120,6 @@ export default function ContactPage() {
                   {sending ? "送信中..." : "送信する →"}
                 </button>
 
-                <p className="text-xs text-center text-gray-400">
-                  送信することで
-                  <Link href="/privacy" target="_blank" className="text-blue-500 hover:underline mx-1">プライバシーポリシー</Link>
-                  に同意したものとみなします。
-                </p>
               </form>
             </div>
           )}
