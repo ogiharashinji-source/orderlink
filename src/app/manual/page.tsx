@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 
 const STEPS = [
   {
@@ -135,6 +136,16 @@ export default function ManualPage() {
             <span className="text-2xl font-black tracking-widest">OrderLink</span>
             <span className="text-xl font-bold text-white/80">ご利用ガイド</span>
             <span className="bg-amber-400 text-[#1e3a5f] text-xs font-black px-3 py-1 rounded-full">酒蔵様向け</span>
+            <div className="ml-auto flex gap-3">
+              <Link href="/admin/login"
+                className="border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+                ログイン
+              </Link>
+              <Link href="/register"
+                className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+                新規登録
+              </Link>
+            </div>
           </div>
           <p className="text-white/70 text-sm mt-3 max-w-2xl">
             OrderLinkは、酒蔵と販売店の受発注をスムーズにするクラウドサービスです。
