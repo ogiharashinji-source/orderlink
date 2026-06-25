@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function AdminRegisterPage() {
@@ -37,7 +38,14 @@ export default function AdminRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-[#1e3a5f] px-6 py-4">
+        <Link href="/">
+          <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
+          <span className="text-xs ml-2 text-white/70">オーダーリンク</span>
+        </Link>
+      </header>
+      <div className="flex-1 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl space-y-4">
         <h1 className="text-2xl font-bold text-gray-900">酒蔵新規アカウント登録</h1>
 
@@ -90,6 +98,7 @@ export default function AdminRegisterPage() {
             </Link>
           </div>
         </form>
+      </div>
       </div>
     </div>
   );

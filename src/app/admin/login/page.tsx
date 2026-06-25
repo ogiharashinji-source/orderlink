@@ -32,7 +32,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-800 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-800 flex flex-col">
+      <header className="px-6 py-4">
+        <Link href="/">
+          <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
+          <span className="text-xs ml-2 text-white/70">オーダーリンク</span>
+        </Link>
+      </header>
+      <div className="flex-1 flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-white tracking-wide">OrderLink</h1>
@@ -83,6 +90,7 @@ export default function LoginPage() {
             <ManualModal type="admin" />
           </div>
         </form>
+      </div>
       </div>
     </div>
   );
