@@ -49,45 +49,46 @@ export default function RootPage() {
 
       {/* メリットセクション */}
       <section className="bg-gray-50 px-6 py-14">
-        <h2 className="text-center text-2xl font-black text-gray-900 mb-10">OrderLink導入のメリット</h2>
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              num: "①", title: "FAX不要で発注が簡単",
-              items: ["FAX送信・電話確認が不要", "スマホやPCからすぐ発注", "24時間いつでも注文可能"],
-            },
-            {
-              num: "②", title: "注文を一元管理",
-              items: ["注文履歴をまとめて確認", "過去の発注内容もすぐ検索", "どの商品をいつ注文したか一目でわかる"],
-            },
-            {
-              num: "③", title: "発注ミス・漏れを防止",
-              items: ["FAX未送信やメール送信忘れを防ぐ", "注文内容の見間違いがなくなる", "発注漏れによる欠品リスクを軽減"],
-            },
-            {
-              num: "④", title: "商品情報をいつでも確認",
-              items: ["商品一覧や価格表を常に最新状態で閲覧", "カタログを探す手間が不要", "新商品情報もすぐ確認できる"],
-            },
-            {
-              num: "⑤", title: "売上アップにつながる",
-              items: ["発注作業の負担を削減", "注文しやすくなり機会損失を防ぐ", "欠品防止で販売チャンスを逃さない"],
-            },
-          ].map((m) => (
-            <div key={m.num} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-amber-500 font-black text-lg">{m.num}</span>
-                <h3 className="font-black text-gray-900 text-base">{m.title}</h3>
+        <h2 className="text-center text-xl font-black text-[#1e3a5f] mb-8">OrderLink導入のメリット</h2>
+        <div className="max-w-5xl mx-auto border border-gray-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
+            {[
+              {
+                num: "①", icon: "🛒", title: "FAX不要で\n簡単発注",
+                items: ["スマホ・PCで\n24時間注文", "FAX・電話不要"],
+              },
+              {
+                num: "②", icon: "📋", title: "注文を\n一元管理",
+                items: ["履歴をすぐ検索", "商品・数量も\n一目でわかる"],
+              },
+              {
+                num: "③", icon: "🛡️", title: "発注ミス\n防止",
+                items: ["聞き間違い防止", "発注漏れ・欠品\nリスクを軽減"],
+              },
+              {
+                num: "④", icon: "📦", title: "商品情報を\nいつでも確認",
+                items: ["最新の商品一覧", "価格表・新商品\nをすぐ確認"],
+              },
+              {
+                num: "⑤", icon: "📈", title: "売上アップ\nにつながる",
+                items: ["発注作業を削減", "欠品防止で販売\n機会を逃さない"],
+              },
+            ].map((m) => (
+              <div key={m.num} className="flex flex-col items-center text-center px-4 py-6 gap-2">
+                <div className="text-3xl mb-1">{m.icon}</div>
+                <div className="text-amber-500 font-black text-sm">{m.num}</div>
+                <h3 className="font-black text-[#1e3a5f] text-sm leading-snug whitespace-pre-line">{m.title}</h3>
+                <ul className="mt-1 space-y-1 text-left w-full">
+                  {m.items.map((item) => (
+                    <li key={item} className="flex items-start gap-1 text-xs text-gray-600 whitespace-pre-line">
+                      <span className="text-amber-400 font-bold flex-shrink-0 mt-0.5">・</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-1.5">
-                {m.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
-                    <span className="text-amber-400 font-bold mt-0.5 flex-shrink-0">▶</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
