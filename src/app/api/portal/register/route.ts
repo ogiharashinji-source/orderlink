@@ -49,6 +49,11 @@ export async function POST(req: NextRequest) {
     if (!existingRecord.deleted && existingRecord.loginId && existingRecord.approved) {
       return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
     }
+    // 別の削除済みレコードが同じloginIdを持つ場合、ユニーク制約違反を防ぐためクリア
+    await prisma.customer.updateMany({
+      where: { loginId, deleted: true, id: { not: existingRecord.id } },
+      data: { loginId: null },
+    });
     // 管理者登録済み or 削除済み → 既存レコードを更新して再利用
     customer = await prisma.customer.update({
       where: { id: existingRecord.id },
