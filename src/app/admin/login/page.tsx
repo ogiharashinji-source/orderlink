@@ -51,7 +51,7 @@ export default function LoginPage() {
           </Link>
         </div>
       </header>
-      <div className="flex-1 flex items-center justify-center px-4">
+      <div className="flex-1 flex items-start justify-center px-4 pt-10">
       <div className="w-full max-w-sm">
         <p className="text-white text-center text-xl font-bold mb-6">酒蔵専用ログインページ</p>
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-2xl p-8 space-y-5">
