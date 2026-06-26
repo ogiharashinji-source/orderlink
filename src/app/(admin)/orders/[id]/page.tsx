@@ -75,7 +75,6 @@ export default function OrderDetailPage() {
           <div><span className="text-gray-500">住所</span><p className="font-medium">{order.customerAddress ?? order.customer?.address ?? "—"}</p></div>
           <div><span className="text-gray-500">電話</span><p className="font-medium">{order.customerPhone ?? order.customer?.phone ?? "—"}</p></div>
           <div><span className="text-gray-500">FAX</span><p className="font-medium">{order.customerFax ?? order.customer?.faxNumber ?? "—"}</p></div>
-          <div><span className="text-gray-500">メール</span><p className="font-medium">{order.customerEmail ?? order.customer?.email ?? "—"}</p></div>
           {order.deliveryDate && <div><span className="text-gray-500">納品予定日</span><p className="font-medium">{new Date(order.deliveryDate).toLocaleDateString("ja-JP")}</p></div>}
         </div>
       </div>
