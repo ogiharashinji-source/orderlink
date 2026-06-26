@@ -312,7 +312,7 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
                       {c.approved
-                        ? <span className="text-xs text-gray-400">登録済</span>
+                        ? <span className="text-xs font-bold px-3 py-1 rounded-full bg-green-100 text-green-700">承認済</span>
                         : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600">未承認</button>}
                     </td>
                     <td className="px-4 py-3 text-right">
