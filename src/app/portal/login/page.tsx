@@ -68,7 +68,7 @@ function CustomerLoginForm() {
           </div>
           <h2 className="text-xl font-bold text-gray-900">登録が完了しました</h2>
           <p className="text-sm text-gray-600 leading-relaxed">
-            承認後、パソコンから以下のURLでご利用いただけます。
+            パソコンから以下のURLにアクセスいただきご利用ください。
           </p>
           <div className="bg-gray-50 rounded-xl px-4 py-3">
             <p className="text-sm font-medium text-blue-700 break-all">https://www.orderlink.jp/portal/login</p>
