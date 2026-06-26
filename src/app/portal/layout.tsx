@@ -57,13 +57,13 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
+      <nav className="bg-[#1e3a5f] text-white">
         <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
+          <div className="flex items-center h-16 gap-4">
             <div className="flex-shrink-0">
               <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
             </div>
-            <div className="flex flex-nowrap items-center gap-3">
+            <div className="flex items-center gap-1 sm:gap-3">
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));
                 return (
@@ -77,10 +77,10 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               })}
             </div>
             <div className="flex-1" />
-            <a href="/contact" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">お問合せ</a>
-            <a href="/portal/guide" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">マニュアル</a>
+            <a href="/contact" target="_blank" rel="noopener noreferrer" className="hidden sm:block whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">お問合せ</a>
+            <a href="/portal/guide" className="hidden sm:block whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">マニュアル</a>
             {customerName && (
-              <a href="/portal/profile" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 hover:text-slate-300 transition-colors">
+              <a href="/portal/profile" className="hidden sm:block whitespace-nowrap text-white text-sm font-semibold px-3 py-2 rounded hover:bg-white/10 transition-colors">
                 {customerName}
               </a>
             )}
@@ -88,7 +88,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-white/10 transition-colors">
               ログアウト
             </button>
-        </div>
+          </div>
         </div>
       </nav>
       <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
