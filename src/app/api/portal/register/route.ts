@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (!name || !loginId || !password)
     return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
 
-  const existingLoginId = await prisma.customer.findUnique({ where: { loginId } });
+  const existingLoginId = await prisma.customer.findFirst({ where: { loginId, deleted: false } });
   if (existingLoginId)
     return NextResponse.json({ error: "このログインIDはすでに使われています" }, { status: 400 });
 
@@ -37,20 +37,27 @@ export async function POST(req: NextRequest) {
   const existingEmail = email
     ? await prisma.customer.findFirst({ where: { email } })
     : null;
+  // 削除済みのloginIdレコードを検索（メール一致なしの場合）
+  const deletedLoginId = !existingEmail
+    ? await prisma.customer.findFirst({ where: { loginId, deleted: true } })
+    : null;
 
-  if (existingEmail) {
+  const existingRecord = existingEmail ?? deletedLoginId;
+
+  if (existingRecord) {
     // 承認済みの有効アカウントが存在する場合のみ重複エラー
-    if (!existingEmail.deleted && existingEmail.loginId && existingEmail.approved) {
+    if (!existingRecord.deleted && existingRecord.loginId && existingRecord.approved) {
       return NextResponse.json({ error: "このメールアドレスはすでに登録されています" }, { status: 400 });
     }
     // 管理者登録済み or 削除済み → 既存レコードを更新して再利用
     customer = await prisma.customer.update({
-      where: { id: existingEmail.id },
+      where: { id: existingRecord.id },
       data: {
         name,
-        address: address || existingEmail.address,
-        phone: phone || existingEmail.phone,
-        faxNumber: faxNumber || existingEmail.faxNumber,
+        address: address || existingRecord.address,
+        phone: phone || existingRecord.phone,
+        faxNumber: faxNumber || existingRecord.faxNumber,
+        email: email || existingRecord.email,
         loginId,
         password,
         approved: false,
