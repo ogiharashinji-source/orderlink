@@ -2,10 +2,21 @@ import Link from "next/link";
 import { Printer, Phone, FolderOpen, Smartphone, ClipboardList, ShieldCheck, Package } from "lucide-react";
 import LandingHeaderActions from "@/components/LandingHeaderActions";
 import LandingCTAButton from "@/components/LandingCTAButton";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { verifyAdminToken } from "@/lib/adminToken";
+import { verifyCustomerToken } from "@/lib/customerAuth";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
-export default function RootPage() {
+export default async function RootPage() {
+  const cookieStore = await cookies();
+  const adminToken = cookieStore.get("auth_token")?.value;
+  if (adminToken && verifyAdminToken(adminToken)) redirect("/requests");
+
+  const customerId = await verifyCustomerToken();
+  if (customerId) redirect("/portal/order");
+
   return (
     <div className="min-h-screen bg-white font-sans">
 
