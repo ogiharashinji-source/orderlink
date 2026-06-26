@@ -12,7 +12,7 @@ export default function RootPage() {
       {/* ヘッダー */}
       <header className="bg-[#1e3a5f] text-white px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
         <div className="flex-shrink-0">
-          <span className="text-xl font-bold tracking-widest">OrderLink</span>
+          <span className="text-base sm:text-xl font-bold tracking-widest">OrderLink</span>
           <span className="hidden sm:inline text-xs ml-2 opacity-70">オーダーリンク</span>
         </div>
         <LandingHeaderActions />
