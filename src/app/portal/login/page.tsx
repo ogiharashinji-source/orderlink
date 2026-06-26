@@ -74,7 +74,7 @@ function CustomerLoginForm() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-800 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#1e3a5f] flex items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-4">
         <div className="text-center mb-2">
           <h1 className="text-2xl font-bold text-white tracking-wide">OrderLink</h1>
