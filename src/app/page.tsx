@@ -27,7 +27,7 @@ export default async function RootPage() {
             <span className="text-lg sm:text-xl font-bold tracking-widest">OrderLink</span>
             <span className="hidden sm:inline text-xs opacity-70">オーダーリンク</span>
           </div>
-          <p className="sm:hidden text-[10px] opacity-70 tracking-widest">オーダーリンク</p>
+          <p className="sm:hidden text-[10px] opacity-70 tracking-widest text-center">オーダーリンク</p>
         </div>
         <LandingHeaderActions />
       </header>

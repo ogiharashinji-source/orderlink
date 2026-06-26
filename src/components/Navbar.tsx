@@ -79,12 +79,8 @@ export default function Navbar() {
     <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
       <div className="max-w-7xl mx-auto px-4">
       <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
-        <a href="/requests" className="flex-shrink-0 leading-tight hover:opacity-80">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
-            <span className="hidden sm:inline text-xs text-white/70">オーダーリンク</span>
-          </div>
-          <p className="sm:hidden text-[10px] text-white/70 tracking-widest">オーダーリンク</p>
+        <a href="/requests" className="flex-shrink-0 hover:opacity-80">
+          <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
         </a>
           <div className="flex flex-nowrap gap-6">
             {navItems.map((item) => {
