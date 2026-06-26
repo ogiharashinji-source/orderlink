@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
+import LandingHeaderActions from "@/components/LandingHeaderActions";
 
 const STEPS = [
   {
@@ -128,7 +128,19 @@ export default function ManualPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
+      {/* ヘッダー */}
+      <header className="bg-[#1e3a5f] text-white px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
+        <a href="/" className="flex-shrink-0 leading-tight">
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg sm:text-xl font-bold tracking-widest">OrderLink</span>
+            <span className="hidden sm:inline text-xs opacity-70">オーダーリンク</span>
+          </div>
+          <p className="sm:hidden text-[10px] opacity-70 tracking-widest">オーダーリンク</p>
+        </a>
+        <LandingHeaderActions />
+      </header>
+
       {/* タイトル・説明 */}
       <div className="px-6 py-8 max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-3">
@@ -141,8 +153,7 @@ export default function ManualPage() {
         </p>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        {/* メインコンテンツ */}
+      <div className="max-w-5xl mx-auto px-4 pb-10">
         <main className="space-y-10">
           {STEPS.map((s) => (
             <section
@@ -151,7 +162,6 @@ export default function ManualPage() {
               ref={setRef(s.id)}
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden scroll-mt-6 print:break-inside-avoid print:border print:shadow-none"
             >
-              {/* ステップヘッダー */}
               <div className="bg-[#1e3a5f] px-6 py-4 flex items-center gap-3">
                 <span className="bg-amber-400 text-[#1e3a5f] font-black text-lg w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0">
                   {s.num}
@@ -163,9 +173,7 @@ export default function ManualPage() {
                 <span className="ml-auto text-2xl">{s.icon}</span>
               </div>
 
-              {/* コンテンツ */}
               {[1, 4].includes(s.num) ? (
-                // STEP1・4：横並び（説明左、画像右）
                 <div className="p-6 flex flex-col md:flex-row gap-6">
                   <div className="md:w-1/3 space-y-3">
                     {s.body.map((p, i) => (
@@ -181,13 +189,13 @@ export default function ManualPage() {
                     </div>
                   </div>
                   <div className="md:w-2/3">
-                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => setModalImg(s.image)}>
                       <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
                         <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
                         <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
-                        <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
+                        <span className="ml-auto text-[10px] text-gray-400">クリックで拡大</span>
                       </div>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={s.image} alt={s.imageAlt} className="w-full object-cover object-top bg-gray-50" style={{ minHeight: "180px" }} />
@@ -195,7 +203,6 @@ export default function ManualPage() {
                   </div>
                 </div>
               ) : (
-                // STEP2・3・5・6：縦並び（説明上、画像フルワイド）
                 <div className="p-6 space-y-4">
                   <div className="flex flex-wrap gap-4">
                     <div className="flex-1 min-w-[200px] space-y-2">
@@ -213,13 +220,13 @@ export default function ManualPage() {
                     </div>
                   </div>
                   <div className="w-full">
-                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow print:cursor-default" onClick={() => setModalImg(s.image)}>
+                    <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => setModalImg(s.image)}>
                       <div className="bg-gray-100 px-3 py-1.5 flex items-center gap-1.5 border-b border-gray-200">
                         <span className="w-2.5 h-2.5 rounded-full bg-red-400"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-green-400"></span>
                         <span className="text-[10px] text-gray-400 ml-2">orderlink.jp</span>
-                        <span className="ml-auto text-[10px] text-gray-400 print:hidden">クリックで拡大</span>
+                        <span className="ml-auto text-[10px] text-gray-400">クリックで拡大</span>
                       </div>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={s.image} alt={s.imageAlt} className="w-full object-contain bg-gray-50" />
@@ -229,39 +236,34 @@ export default function ManualPage() {
               )}
             </section>
           ))}
-
         </main>
       </div>
 
+      {/* フッター */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-4 text-xs text-gray-400 text-center">
+          <span>© {new Date().getFullYear()} OrderLink</span>
+        </div>
+      </footer>
+
       {/* 画像モーダル */}
       {modalImg && (
-        <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 print:hidden"
-          onClick={() => setModalImg(null)}
-        >
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setModalImg(null)}>
           <div className="relative max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={modalImg} alt="拡大表示" className="w-full rounded-xl shadow-2xl" />
-            <button
-              onClick={() => setModalImg(null)}
-              className="absolute -top-4 -right-4 bg-white text-gray-700 rounded-full w-9 h-9 flex items-center justify-center font-bold shadow-lg hover:bg-gray-100 text-lg"
-            >
+            <button onClick={() => setModalImg(null)} className="absolute -top-4 -right-4 bg-white text-gray-700 rounded-full w-9 h-9 flex items-center justify-center font-bold shadow-lg hover:bg-gray-100 text-lg">
               ✕
             </button>
           </div>
         </div>
       )}
 
-      {/* トップへ戻る */}
       {showTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-6 right-6 bg-[#1e3a5f] text-white w-11 h-11 rounded-full shadow-lg flex items-center justify-center hover:bg-[#2d5a8e] transition print:hidden"
-          aria-label="ページトップへ"
-        >
+        <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-6 right-6 bg-[#1e3a5f] text-white w-11 h-11 rounded-full shadow-lg flex items-center justify-center hover:bg-[#2d5a8e] transition" aria-label="ページトップへ">
           ↑
         </button>
       )}
-    </>
+    </div>
   );
 }
