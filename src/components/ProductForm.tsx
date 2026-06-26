@@ -34,6 +34,8 @@ type Errors = Partial<Record<keyof ProductData | "size", string>>;
 type Props = {
   initialData?: Partial<ProductData>;
   productId?: number;
+  onBack?: () => void;
+  onDelete?: () => void;
 };
 
 const empty: ProductData = {
@@ -44,7 +46,7 @@ const empty: ProductData = {
   volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "",
 };
 
-export default function ProductForm({ initialData, productId }: Props) {
+export default function ProductForm({ initialData, productId, onBack, onDelete }: Props) {
   const [form, setForm] = useState<ProductData>({ ...empty, ...initialData });
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
@@ -132,9 +134,20 @@ export default function ProductForm({ initialData, productId }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-5 max-w-2xl">
-      <Field label="商品名" required>
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-sm font-medium text-gray-700">
+            商品名<span className="text-red-500 ml-1">*</span>
+          </label>
+          {(onBack || onDelete) && (
+            <div className="flex items-center gap-3">
+              {onBack && <button type="button" onClick={onBack} className="text-sm text-gray-500 hover:text-gray-700">戻る</button>}
+              {onDelete && <button type="button" onClick={onDelete} className="text-sm text-red-500 hover:text-red-700">削除</button>}
+            </div>
+          )}
+        </div>
         <input required value={form.name} onChange={set("name")} onBlur={blur("name")} className={inputCls} />
-      </Field>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <Field label="種別">

@@ -28,15 +28,11 @@ export default function EditProductPage() {
         <span>›</span>
         <span>{String(product.name)}</span>
       </div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">商品編集</h1>
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/products")} className="text-sm text-gray-500 hover:text-gray-700">戻る</button>
-          <button onClick={handleDelete} className="text-sm text-red-500 hover:text-red-700">削除</button>
-        </div>
-      </div>
+      <h1 className="text-2xl font-bold text-gray-900">商品編集</h1>
       <ProductForm
         productId={Number(id)}
+        onBack={() => router.push("/products")}
+        onDelete={handleDelete}
         initialData={{
           name: String(product.name ?? ""),
           category: String(product.category ?? ""),
