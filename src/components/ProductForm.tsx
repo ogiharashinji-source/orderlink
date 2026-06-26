@@ -141,7 +141,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
           </label>
           {(onBack || onDelete) && (
             <div className="flex items-center gap-3">
-              {onBack && <button type="button" onClick={onBack} className="text-sm text-gray-500 hover:text-gray-700">戻る</button>}
+              {onBack && <button type="button" onClick={onBack} className="text-sm text-blue-600 hover:text-blue-800">戻る</button>}
               {onDelete && <button type="button" onClick={onDelete} className="text-sm text-red-500 hover:text-red-700">削除</button>}
             </div>
           )}
