@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#1e3a5f] flex flex-col">
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/">
-          <span className="text-xl font-bold tracking-widest text-white">OrderLink</span>
+          <span className="text-lg sm:text-xl font-bold tracking-widest text-white">OrderLink</span>
           <span className="text-xs ml-2 text-white/70">オーダーリンク</span>
         </Link>
         <div className="flex gap-3">

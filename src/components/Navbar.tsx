@@ -76,7 +76,7 @@ export default function Navbar() {
     <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
       <div className="max-w-7xl mx-auto px-4">
       <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
-        <a href="/requests" className="text-base font-bold text-white whitespace-nowrap hover:text-slate-300">OrderLink</a>
+        <a href="/requests" className="text-lg font-bold tracking-widest text-white whitespace-nowrap hover:text-slate-300">OrderLink</a>
           <div className="flex flex-nowrap gap-6">
             {navItems.map((item) => {
               const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
