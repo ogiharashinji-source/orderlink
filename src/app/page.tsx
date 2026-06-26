@@ -202,7 +202,7 @@ export default function RootPage() {
       </section>
 
       {/* フッター */}
-      <footer className="bg-[#0f2340] text-white px-6 py-8 text-center text-xs space-y-4">
+      <footer className="bg-[#1e3a5f] text-white px-6 py-8 text-center text-xs space-y-4">
         <p className="font-bold text-base">OrderLink</p>
         <a href="/contact" target="_blank" rel="noopener noreferrer"
           className="inline-block border border-white/50 text-white/80 text-sm px-6 py-2 rounded-full hover:bg-white hover:text-[#0f2340] transition">
