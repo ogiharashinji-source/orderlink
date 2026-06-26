@@ -73,7 +73,7 @@ export default function Navbar() {
   }, [fetchNav]);
 
   return (
-    <nav className="bg-slate-800 text-white overflow-x-auto">
+    <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
       <div className="max-w-7xl mx-auto px-4">
       <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
         <a href="/requests" className="text-base font-bold text-white whitespace-nowrap hover:text-slate-300">OrderLink</a>
@@ -85,7 +85,7 @@ export default function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={`relative whitespace-nowrap px-3 py-2 rounded text-sm font-medium transition-colors ${
-                    active ? "bg-slate-600 text-white" : "text-slate-300 hover:bg-slate-700 hover:text-white"
+                    active ? "bg-white/20 text-white" : "text-slate-300 hover:bg-white/10 hover:text-white"
                   }`}
                 >
                   {item.label}
@@ -104,13 +104,13 @@ export default function Navbar() {
             })}
           </div>
           <div className="flex-1" />
-          <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">ご利用ガイド</Link>
+          <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">ご利用ガイド</Link>
           {companyName && (
-            <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 transition-colors">{companyName}</a>
+            <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 transition-colors">{companyName}</a>
           )}
           <button
             onClick={handleLogout}
-            className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-slate-700 transition-colors"
+            className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-white/10 transition-colors"
           >
             ログアウト
           </button>
