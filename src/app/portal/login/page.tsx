@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import ManualModal from "@/components/ManualModal";
 
@@ -10,6 +10,12 @@ function CustomerLoginForm() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    fetch("/api/customer/me").then((r) => {
+      if (r.ok) window.location.href = "/portal/order";
+    }).catch(() => {});
+  }, []);
   const inviteToken = searchParams.get("token") ?? "";
   const breweryInviteToken = searchParams.get("invite") ?? "";
 
