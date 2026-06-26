@@ -8,58 +8,57 @@ type AuthState =
   | { type: "portal"; name: string }
   | { type: "guest" };
 
-const LS_KEY = "landing_auth";
+// モジュールキャッシュ：同一JSセッション内のみ有効（ページリロードでリセット）
 let _cached: AuthState | null = null;
+
+async function fetchAuthState(): Promise<AuthState> {
+  try {
+    const r = await fetch("/api/admin/nav", { redirect: "manual" });
+    if (r.ok) {
+      const d = await r.json();
+      return { type: "admin", name: d.companyName ?? "" };
+    }
+  } catch {}
+  try {
+    const r2 = await fetch("/api/portal/profile", { redirect: "manual" });
+    if (r2.ok) {
+      const d2 = await r2.json();
+      return { type: "portal", name: d2.name ?? "" };
+    }
+  } catch {}
+  return { type: "guest" };
+}
 
 export default function LandingHeaderActions() {
   const [state, setState] = useState<AuthState>({ type: "loading" });
 
   useEffect(() => {
-    // キャッシュ/localStorageから即座に表示
+    // モジュールキャッシュがあれば即表示（同セッション内のClient-side navigationで有効）
     if (_cached && _cached.type !== "loading") {
       setState(_cached);
-    } else {
-      try {
-        const stored = localStorage.getItem(LS_KEY);
-        if (stored) {
-          const parsed: AuthState = JSON.parse(stored);
-          _cached = parsed;
-          setState(parsed);
-        }
-      } catch {}
+      return;
     }
 
-    // バックグラウンドでフェッチして更新
-    (async () => {
-      try {
-        const r = await fetch("/api/admin/nav", { redirect: "manual" });
-        if (r.ok) {
-          const d = await r.json();
-          const next: AuthState = { type: "admin", name: d.companyName ?? "" };
-          _cached = next;
-          localStorage.setItem(LS_KEY, JSON.stringify(next));
-          setState(next);
-          return;
-        }
-      } catch {}
-
-      try {
-        const r2 = await fetch("/api/portal/profile", { redirect: "manual" });
-        if (r2.ok) {
-          const d2 = await r2.json();
-          const next: AuthState = { type: "portal", name: d2.name ?? "" };
-          _cached = next;
-          localStorage.setItem(LS_KEY, JSON.stringify(next));
-          setState(next);
-          return;
-        }
-      } catch {}
-
-      const next: AuthState = { type: "guest" };
+    // キャッシュなし → フェッチして確定
+    fetchAuthState().then((next) => {
       _cached = next;
-      localStorage.setItem(LS_KEY, JSON.stringify(next));
       setState(next);
-    })();
+    });
+  }, []);
+
+  // bfcache（ブラウザ戻るボタン）対応：ページ復元時に再検証
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        _cached = null;
+        fetchAuthState().then((next) => {
+          _cached = next;
+          setState(next);
+        });
+      }
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
   }, []);
 
   if (state.type === "loading") return <div className="w-24 sm:w-40" />;
