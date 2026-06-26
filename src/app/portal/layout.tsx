@@ -48,6 +48,9 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 
   const handleLogout = async () => {
     await fetch("/api/customer/logout", { method: "POST" });
+    localStorage.removeItem("landing_auth");
+    localStorage.removeItem("portal_customer_name");
+    _cachedCustomerName = "";
     window.location.href = "/portal/login";
   };
 

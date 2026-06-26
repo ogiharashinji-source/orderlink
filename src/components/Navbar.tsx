@@ -36,7 +36,10 @@ export default function Navbar() {
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
     await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
+    localStorage.removeItem("landing_auth");
+    localStorage.removeItem("nav_company");
+    _cachedCompanyName = "";
+    window.location.href = "/admin/login";
   };
 
   const fetchNav = useCallback((redirectOnUnauth = false, currentPath = "") => {
