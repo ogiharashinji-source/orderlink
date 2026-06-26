@@ -104,6 +104,7 @@ export default function Navbar() {
             })}
           </div>
           <div className="flex-1" />
+          <a href="/contact" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">お問い合わせ</a>
           <Link href="/manual" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-white/10 transition-colors">ご利用ガイド</Link>
           {companyName && (
             <a href="/settings" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 transition-colors">{companyName}</a>
