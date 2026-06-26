@@ -46,15 +46,6 @@ export default function PortalLayoutClient({ children }: { children: React.React
     return <>{children}</>;
   }
 
-  const handleLogout = async () => {
-    if (!confirm("ログアウトしますか？")) return;
-    await fetch("/api/customer/logout", { method: "POST" });
-    localStorage.removeItem("landing_auth");
-    localStorage.removeItem("portal_customer_name");
-    _cachedCustomerName = "";
-    window.location.href = "/portal/login";
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
@@ -84,10 +75,6 @@ export default function PortalLayoutClient({ children }: { children: React.React
                 {customerName}
               </a>
             )}
-            <button onClick={handleLogout}
-              className="whitespace-nowrap text-slate-300 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-white/10 transition-colors">
-              ログアウト
-            </button>
         </div>
         </div>
       </nav>
