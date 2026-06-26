@@ -15,10 +15,10 @@ const CompletionScreen = () => (
         </div>
         <h2 className="text-xl font-bold text-gray-900">登録が完了しました</h2>
         <p className="text-sm text-gray-600 leading-relaxed">
-          承認後、以下のURLからご利用いただけます。
+          承認後、パソコンから以下のURLでご利用いただけます。
         </p>
         <div className="bg-gray-50 rounded-xl px-4 py-3">
-          <a href="https://www.orderlink.jp/portal/login" className="text-sm font-medium text-blue-700 break-all underline">https://www.orderlink.jp/portal/login</a>
+          <p className="text-sm font-medium text-blue-700 break-all">https://www.orderlink.jp/portal/login</p>
         </div>
         <p className="text-xs text-gray-400">承認完了後にご案内が届く場合があります。しばらくお待ちください。</p>
       </div>
