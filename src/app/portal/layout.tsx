@@ -59,7 +59,13 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
       <nav className="bg-[#1e3a5f] text-white overflow-x-auto">
         <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-nowrap items-center h-16 gap-6 min-w-full">
-            <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
+            <div className="flex-shrink-0 leading-tight">
+              <div className="flex items-baseline gap-2">
+                <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
+                <span className="hidden sm:inline text-xs text-white/70">オーダーリンク</span>
+              </div>
+              <p className="sm:hidden text-[10px] text-white/70 tracking-widest">オーダーリンク</p>
+            </div>
             <div className="flex flex-nowrap items-center gap-3">
               {navItems.map((item) => {
                 const active = pathname === item.href || (item.href !== "/portal/order" && pathname.startsWith(item.href));
