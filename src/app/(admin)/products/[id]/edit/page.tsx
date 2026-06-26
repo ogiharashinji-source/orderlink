@@ -1,25 +1,35 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ProductForm from "@/components/ProductForm";
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [product, setProduct] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     fetch(`/api/products/${id}`).then((r) => r.json()).then(setProduct);
   }, [id]);
 
+  const handleDelete = async () => {
+    if (!confirm("この商品を削除しますか？")) return;
+    await fetch(`/api/products/${id}`, { method: "DELETE" });
+    router.push("/products");
+  };
+
   if (!product) return <div className="text-center py-20 text-gray-500">読み込み中...</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/products" className="hover:text-blue-600">商品管理</Link>
-        <span>›</span>
-        <span>{String(product.name)}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/products" className="hover:text-blue-600">商品管理</Link>
+          <span>›</span>
+          <span>{String(product.name)}</span>
+        </div>
+        <button onClick={handleDelete} className="text-red-500 hover:underline text-sm">削除</button>
       </div>
       <h1 className="text-2xl font-bold text-gray-900">商品編集</h1>
       <ProductForm

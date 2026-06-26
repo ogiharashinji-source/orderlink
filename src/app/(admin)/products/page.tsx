@@ -187,9 +187,8 @@ export default function ProductsPage() {
                           {p.published ? "公開中" : "非公開"}
                         </button>
                       </td>
-                      <td className="px-4 py-3 text-right space-x-2">
+                      <td className="px-4 py-3 text-right">
                         <button onClick={() => router.push(`/products/${p.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
-                        <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:underline text-xs">削除</button>
                       </td>
                     </tr>
                   );
@@ -244,9 +243,8 @@ export default function ProductsPage() {
                           </td>
                         )}
                         {idx === 0 && (
-                          <td className="px-4 py-3 text-right space-x-2 align-top" rowSpan={variants.length}>
+                          <td className="px-4 py-3 text-right align-top" rowSpan={variants.length}>
                             <button onClick={() => router.push(`/products/${p.id}/edit`)} className="text-blue-600 hover:underline text-xs">編集</button>
-                            <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:underline text-xs">削除</button>
                           </td>
                         )}
                       </tr>
