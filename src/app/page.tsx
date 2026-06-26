@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Printer, Phone, FolderOpen, Smartphone, ClipboardList, ShieldCheck, Package } from "lucide-react";
 import LandingHeaderActions from "@/components/LandingHeaderActions";
+import LandingCTAButton from "@/components/LandingCTAButton";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
@@ -32,10 +33,7 @@ export default function RootPage() {
             className="inline-block border-2 border-white text-white font-bold text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
             📖 ご利用ガイドを見る
           </Link>
-          <Link href="/register"
-            className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 rounded-full shadow-lg hover:bg-amber-300 transition">
-            今すぐ無料で始める →
-          </Link>
+          <LandingCTAButton />
         </div>
         <p className="text-sm opacity-60 mt-3">※初期費用・月額費用ともに0円でご利用いただけます。</p>
       </section>
@@ -197,10 +195,10 @@ export default function RootPage() {
             <p className="text-amber-600 font-bold text-sm sm:text-base mt-1">まずはお気軽にお試しください！</p>
           </div>
         </div>
-        <Link href="/register"
-          className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-sm sm:text-base px-8 py-3 rounded-full shadow hover:bg-amber-300 transition">
-          今すぐ5分でカンタン登録！
-        </Link>
+        <LandingCTAButton
+          label="今すぐ5分でカンタン登録！"
+          className="inline-block bg-amber-400 text-[#1e3a5f] font-black text-sm sm:text-base px-8 py-3 rounded-full shadow hover:bg-amber-300 transition"
+        />
       </section>
 
       {/* フッター */}
