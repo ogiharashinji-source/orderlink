@@ -4,7 +4,17 @@ import { useSearchParams } from "next/navigation";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
 
-const CompletionScreen = () => (
+const PORTAL_URL = "https://www.orderlink.jp/portal/login";
+
+const CompletionScreen = () => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(PORTAL_URL).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+  return (
   <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
     <div className="w-full max-w-lg mx-auto">
       <div className="bg-white rounded-2xl shadow p-8 text-center space-y-5">
@@ -17,14 +27,18 @@ const CompletionScreen = () => (
         <p className="text-sm text-gray-600 leading-relaxed">
           パソコンから下記URLにアクセスのうえ、ご利用ください。
         </p>
-        <div className="bg-gray-50 rounded-xl px-4 py-3">
-          <a href="https://www.orderlink.jp/portal/login" className="text-sm font-medium text-blue-700 break-all underline">https://www.orderlink.jp/portal/login</a>
+        <div className="bg-gray-50 rounded-xl px-4 py-3 flex items-center gap-3">
+          <a href={PORTAL_URL} className="text-sm font-medium text-blue-700 break-all underline flex-1 text-left">{PORTAL_URL}</a>
+          <button onClick={handleCopy} className="flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
+            {copied ? "コピー済" : "コピー"}
+          </button>
         </div>
         <p className="text-xs text-gray-400">承認完了後にご案内が届く場合があります。しばらくお待ちください。</p>
       </div>
     </div>
   </div>
-);
+  );
+};
 
 function RegisterForm() {
   const searchParams = useSearchParams();

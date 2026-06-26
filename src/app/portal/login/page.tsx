@@ -57,6 +57,15 @@ function CustomerLoginForm() {
     }
   };
 
+  const [copied, setCopied] = useState(false);
+  const PORTAL_URL = "https://www.orderlink.jp/portal/login";
+  const handleCopy = () => {
+    navigator.clipboard.writeText(PORTAL_URL).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   if (done) return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
       <div className="w-full max-w-lg mx-auto">
@@ -70,8 +79,11 @@ function CustomerLoginForm() {
           <p className="text-sm text-gray-600 leading-relaxed">
             パソコンから下記URLにアクセスのうえ、ご利用ください。
           </p>
-          <div className="bg-gray-50 rounded-xl px-4 py-3">
-            <p className="text-sm font-medium text-blue-700 break-all">https://www.orderlink.jp/portal/login</p>
+          <div className="bg-gray-50 rounded-xl px-4 py-3 flex items-center gap-3">
+            <a href={PORTAL_URL} className="text-sm font-medium text-blue-700 break-all underline flex-1 text-left">{PORTAL_URL}</a>
+            <button onClick={handleCopy} className="flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition">
+              {copied ? "コピー済" : "コピー"}
+            </button>
           </div>
           <p className="text-xs text-gray-400">承認完了後にご案内が届く場合があります。しばらくお待ちください。</p>
         </div>
