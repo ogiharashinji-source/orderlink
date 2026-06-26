@@ -200,7 +200,7 @@ export default function ManualPage() {
                         <p key={i} className="text-sm text-gray-700 leading-relaxed">{p}</p>
                       ))}
                     </div>
-                    <div className="md:w-1/3 space-y-2">
+                    <div className="w-full md:w-1/3 space-y-2">
                       {s.highlights.map((h, i) => (
                         <div key={i} className="flex items-start gap-2 text-xs text-gray-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
                           <span className="text-amber-500 font-bold mt-0.5 flex-shrink-0">▶</span>
