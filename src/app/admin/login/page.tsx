@@ -35,6 +35,7 @@ export default function LoginPage() {
       <header className="px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex-shrink-0">
           <span className="text-lg sm:text-xl font-bold tracking-widest text-white">OrderLink</span>
+          <span className="text-xs text-white/70 ml-2">オーダーリンク</span>
         </Link>
         <div className="flex gap-2">
           <Link href="/admin/login"
