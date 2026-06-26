@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
-import LandingHeaderActions from "@/components/LandingHeaderActions";
+import ManualHeader from "@/components/ManualHeader";
 
 const STEPS = [
   {
@@ -129,17 +129,7 @@ export default function ManualPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ヘッダー */}
-      <header className="bg-[#1e3a5f] text-white px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
-        <a href="/" className="flex-shrink-0 leading-tight">
-          <div className="flex items-baseline gap-2">
-            <span className="text-lg sm:text-xl font-bold tracking-widest">OrderLink</span>
-            <span className="hidden sm:inline text-xs opacity-70">オーダーリンク</span>
-          </div>
-          <p className="sm:hidden text-[10px] opacity-70 tracking-widest">オーダーリンク</p>
-        </a>
-        <LandingHeaderActions />
-      </header>
+      <ManualHeader />
 
       {/* タイトル・説明 */}
       <div className="px-6 py-8 max-w-5xl mx-auto">
