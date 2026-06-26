@@ -44,10 +44,16 @@ export default function AdminRegisterPage() {
           <span className="text-lg sm:text-xl font-bold tracking-widest text-white">OrderLink</span>
           <span className="hidden sm:inline text-xs ml-2 text-white/70">オーダーリンク</span>
         </Link>
-        <Link href="/admin/login"
-          className="border border-white text-white font-bold text-xs sm:text-sm px-3 sm:px-5 py-1.5 sm:py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition flex-shrink-0">
-          ログイン
-        </Link>
+        <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+          <Link href="/admin/login"
+            className="hidden sm:inline-block border border-white text-white font-bold text-sm px-5 py-2 rounded-full hover:bg-white hover:text-[#1e3a5f] transition">
+            ログイン
+          </Link>
+          <Link href="/register"
+            className="bg-amber-400 text-[#1e3a5f] font-bold text-sm px-5 py-2 rounded-full hover:bg-amber-300 transition">
+            新規登録
+          </Link>
+        </div>
       </header>
 
       <div className="flex-1 flex items-start sm:items-center justify-center p-4 sm:p-6 py-8">
