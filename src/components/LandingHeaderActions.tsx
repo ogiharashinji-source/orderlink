@@ -38,7 +38,7 @@ export default function LandingHeaderActions() {
 
   if (state.type === "admin") {
     return (
-      <a href="/requests" className="text-white font-bold text-sm px-4 sm:px-5 py-2 rounded-full hover:bg-white/10 transition truncate max-w-[160px] sm:max-w-none">
+      <a href="/requests" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 transition truncate max-w-[200px] sm:max-w-none">
         {state.name || "管理画面へ"}
       </a>
     );
@@ -46,7 +46,7 @@ export default function LandingHeaderActions() {
 
   if (state.type === "portal") {
     return (
-      <a href="/portal/order" className="text-white font-bold text-sm px-4 sm:px-5 py-2 rounded-full hover:bg-white/10 transition truncate max-w-[160px] sm:max-w-none">
+      <a href="/portal/order" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 transition truncate max-w-[200px] sm:max-w-none">
         {state.name || "発注ページへ"}
       </a>
     );
