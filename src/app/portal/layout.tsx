@@ -71,6 +71,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               })}
             </div>
             <div className="flex-1" />
+            <a href="/contact" target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">お問合せ</a>
             <a href="/portal/guide" className="whitespace-nowrap text-slate-300 hover:text-white text-sm px-3 py-2 rounded hover:bg-slate-700 transition-colors">マニュアル</a>
             {customerName && (
               <a href="/portal/profile" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-slate-700 hover:text-slate-300 transition-colors">

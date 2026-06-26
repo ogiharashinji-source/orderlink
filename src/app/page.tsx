@@ -209,7 +209,7 @@ export default function RootPage() {
         <p className="font-bold text-base">OrderLink</p>
         <a href="/contact" target="_blank" rel="noopener noreferrer"
           className="inline-block border border-white/50 text-white/80 text-sm px-6 py-2 rounded-full hover:bg-white hover:text-[#0f2340] transition">
-          お問い合わせ
+          お問合せ
         </a>
       </footer>
 
