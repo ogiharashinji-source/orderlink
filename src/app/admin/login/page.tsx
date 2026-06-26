@@ -32,7 +32,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#1e3a5f] flex flex-col">
-      <header className="px-6 py-4 flex items-center justify-between">
+      <header className="px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
         <Link href="/" className="flex-shrink-0 leading-tight">
           <div className="flex items-baseline gap-2">
             <span className="text-lg sm:text-xl font-bold tracking-widest text-white">OrderLink</span>
