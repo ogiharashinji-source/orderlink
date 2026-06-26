@@ -83,9 +83,20 @@ export default function SettingsPage() {
 
   const credsReady = creds.currentLoginId && creds.currentPassword && creds.newLoginId && creds.newPassword;
 
+  const handleLogout = async () => {
+    if (!confirm("ログアウトしますか？")) return;
+    await fetch("/api/auth/logout", { method: "POST" });
+    localStorage.removeItem("landing_auth");
+    localStorage.removeItem("nav_company");
+    window.location.href = "/admin/login";
+  };
+
   return (
     <div className="space-y-6 max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900">マイページ</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">マイページ</h1>
+        <button onClick={handleLogout} className="text-sm text-red-500 hover:text-red-700 font-medium">ログアウト</button>
+      </div>
 
       <div className="bg-white rounded-xl shadow p-6 space-y-4">
         <div>
