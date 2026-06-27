@@ -178,12 +178,12 @@ export default function OrdersPage() {
                       {/* 会社名 */}
                       {idx === 0 && (
                         <td className="px-4 py-3 text-left align-middle" rowSpan={o.items.length}>
-                          {(() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="font-medium text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
+                          {(() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
                         </td>
                       )}
 
                       {/* 商品名 */}
-                      <td className="px-4 py-3 text-left text-gray-800 font-medium" title={item.productName ?? item.product?.name ?? ""}>
+                      <td className="px-4 py-3 text-left text-gray-800" title={item.productName ?? item.product?.name ?? ""}>
                         {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 14 ? n.slice(0, 14) + "…" : n; })()}
                       </td>
 
