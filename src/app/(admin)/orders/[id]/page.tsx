@@ -29,9 +29,9 @@ type OrderDetail = {
     productSeimaiWari: string | null;
     productAlcohol: string | null;
     product: {
-      id: number; name: string; unit: string; unit1800: string | null; unit720: string | null;
+      id: number; name: string; unit: string; unit1800: string | null; unit720: string | null; unitOther: string | null;
       category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null;
-      wholesalePrice1800: number | null; wholesalePrice720: number | null;
+      wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null;
     } | null;
   }>;
 };
@@ -99,9 +99,9 @@ export default function OrderDetailPage() {
           </thead>
           <tbody>
             {order.items.map((item) => {
-              const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
-              const lotNum = (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1);
-              const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
+              const lot = item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—");
+              const lotNum = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : item.volume === "720ml" ? (item.product?.unit720 ?? "1") : (item.product?.unitOther ?? "1")) || 1;
+              const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : item.volume === "720ml" ? (item.product?.wholesalePrice720 ?? null) : (item.product?.wholesalePriceOther ?? null);
               const subtotal = wp != null ? item.quantity * lotNum * wp : null;
               return (
                 <tr key={item.id} className="border-t border-gray-100">
@@ -131,8 +131,8 @@ export default function OrderDetailPage() {
           <tfoot className="bg-gray-50">
             {(() => {
               const total = order.items.reduce((sum, item) => {
-                const lotNum = (parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1);
-                const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
+                const lotNum = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : item.volume === "720ml" ? (item.product?.unit720 ?? "1") : (item.product?.unitOther ?? "1")) || 1;
+                const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : item.volume === "720ml" ? (item.product?.wholesalePrice720 ?? null) : (item.product?.wholesalePriceOther ?? null);
                 if (wp == null) return sum;
                 return sum + item.quantity * lotNum * wp;
               }, 0);
