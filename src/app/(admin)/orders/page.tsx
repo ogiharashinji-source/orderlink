@@ -222,16 +222,12 @@ export default function OrdersPage() {
 
                       {/* 備考 + 操作（各行に表示） */}
                       <td className="px-4 py-3 text-center">
-                        {idx === 0 && (
-                          <span className="text-gray-500 text-xs max-w-[80px] truncate block mx-auto">
-                            {o.notes ? (o.notes.length > 10 ? o.notes.slice(0, 10) + "…" : o.notes) : ""}
-                          </span>
-                        )}
+                        <span className="text-gray-500 text-xs max-w-[80px] truncate block mx-auto">
+                          {o.notes ? (o.notes.length > 10 ? o.notes.slice(0, 10) + "…" : o.notes) : ""}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        {idx === 0 && (
-                          <button onClick={() => router.push(`/orders/${o.id}`)} className="text-blue-600 hover:underline text-xs whitespace-nowrap">詳細</button>
-                        )}
+                        <button onClick={() => router.push(`/orders/${o.id}`)} className="text-blue-600 hover:underline text-xs whitespace-nowrap">詳細</button>
                       </td>
                     </tr>
                   );})}
