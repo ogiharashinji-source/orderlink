@@ -82,7 +82,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   await prisma.orderRequest.update({
     where: { id: Number(id) },
-    data: { status: "CONFIRMED", confirmedAt: new Date(), orderId: order.id, adminReply: adminReply || null },
+    data: {
+      status: "CONFIRMED",
+      confirmedAt: new Date(),
+      orderId: order.id,
+      adminReply: adminReply || null,
+      requestedAt: request.requestedAt, // 顧客の発注時刻を保持
+    },
   });
 
   return NextResponse.json({ orderNumber: order.orderNumber, orderId: order.id }, { status: 201 });

@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
   const request = await prisma.orderRequest.create({
     data: {
       requestNumber: genRequestNumber(),
+      requestedAt: new Date(),
       companyId,
       customerId: customer.id,
       notes: notes || null,
