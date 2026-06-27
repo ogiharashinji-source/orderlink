@@ -77,11 +77,11 @@ export default function AdminRegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">会社名 <span className="text-red-500">*</span></label>
-              <input required value={form.companyName} onChange={set("companyName")} placeholder="例: 山三酒造株式会社" className={inputCls} />
+              <input required value={form.companyName} onChange={set("companyName")} placeholder="例: 〇〇酒造株式会社" className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">住所 <span className="text-red-500">*</span></label>
-              <input required value={form.address} onChange={set("address")} placeholder="例: 長野県佐久市..." className={inputCls} />
+              <input required value={form.address} onChange={set("address")} placeholder="例: 東京都千代田区..." className={inputCls} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -95,14 +95,14 @@ export default function AdminRegisterPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
-              <input required type="email" value={form.email} onChange={set("email")} placeholder="例: info@yamasan.co.jp" className={inputCls} />
+              <input required type="email" value={form.email} onChange={set("email")} placeholder="例: info@example.co.jp" className={inputCls} />
             </div>
 
             <div className="border-t pt-4 space-y-4">
               <p className="text-xs text-gray-500">ログインに使うIDとパスワードを設定してください</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">ID <span className="text-red-500">*</span></label>
-                <input required value={form.loginId} onChange={set("loginId")} onBlur={setHankaku("loginId")} placeholder="例: yamasan2025" className={inputCls} />
+                <input required value={form.loginId} onChange={set("loginId")} onBlur={setHankaku("loginId")} placeholder="例: sake-brewery2025" className={inputCls} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
