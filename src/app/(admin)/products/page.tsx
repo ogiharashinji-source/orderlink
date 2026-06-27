@@ -169,7 +169,7 @@ export default function ProductsPage() {
                         <input type="checkbox" checked={isChecked} onChange={() => toggleOne(p.id)}
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
                       </td>
-                      <td className="px-4 py-3 font-medium text-gray-900">
+                      <td className="px-4 py-3 text-gray-900">
                         {p.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
@@ -209,7 +209,7 @@ export default function ProductsPage() {
                           </td>
                         )}
                         {idx === 0 && (
-                          <td className="px-4 py-3 font-medium text-gray-900 align-top" rowSpan={variants.length}>
+                          <td className="px-4 py-3 text-gray-900 align-top" rowSpan={variants.length}>
                             {p.name}
                           </td>
                         )}

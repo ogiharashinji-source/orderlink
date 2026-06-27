@@ -316,7 +316,7 @@ export default function CustomersPage() {
                         : new Date(c.joinedAt ?? c.createdAt).toLocaleDateString("ja-JP")}
                     </td>
                     <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
-                    <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
+                    <td className="px-4 py-3 text-gray-900">{c.name}</td>
                     <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
