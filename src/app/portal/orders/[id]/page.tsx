@@ -128,6 +128,7 @@ export default function PortalOrderDetailPage() {
   };
 
   return (
+    <>
     <div className="space-y-4 max-w-5xl">
 
       {/* パンくず */}
@@ -283,5 +284,6 @@ export default function PortalOrderDetailPage() {
         </div>
       </div>
     )}
+    </>
   );
 }
