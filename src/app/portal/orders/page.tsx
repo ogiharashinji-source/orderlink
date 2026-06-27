@@ -31,6 +31,7 @@ type OrderRequest = {
   requestNumber: string;
   status: "PENDING" | "CONFIRMED" | "REJECTED";
   requestedAt: string;
+  confirmedAt: string | null;
   notes: string | null;
   sellerName: string | null;
   company: { setting: { companyName: string } | null } | null;
@@ -75,7 +76,7 @@ export default function PortalOrdersPage() {
 
   const filtered = orders
     .filter((o) => {
-      const d = o.requestedAt.slice(0, 10);
+      const d = (o.confirmedAt ?? o.requestedAt).slice(0, 10);
       if (dateFrom && d < dateFrom) return false;
       if (dateTo && d > dateTo) return false;
       return true;
@@ -154,9 +155,9 @@ export default function PortalOrdersPage() {
                         <tr key={item.id} className={`border-t border-gray-100 hover:bg-gray-50 ${idx === o.items.length - 1 ? "border-b-2 border-b-gray-200" : ""}`}>
                           {idx === 0 && (
                             <td className="px-4 py-3 text-gray-500 whitespace-nowrap align-top text-center" rowSpan={o.items.length}>
-                              {new Date(o.requestedAt).toLocaleDateString("ja-JP")}
+                              {new Date(o.confirmedAt ?? o.requestedAt).toLocaleDateString("ja-JP")}
                               <div className="mt-0.5">
-                                {new Date(o.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                                {new Date(o.confirmedAt ?? o.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
                               </div>
                             </td>
                           )}

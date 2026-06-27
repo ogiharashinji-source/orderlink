@@ -22,6 +22,7 @@ type OrderRequest = {
   requestNumber: string;
   status: "PENDING" | "CONFIRMED" | "REJECTED";
   requestedAt: string;
+  confirmedAt: string | null;
   notes: string | null;
   adminReply: string | null;
   customer: { name: string; address: string | null; phone: string | null; faxNumber: string | null; email: string | null };
@@ -141,7 +142,7 @@ export default function PortalOrderDetailPage() {
 
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-900">注文日：{new Date(order.requestedAt).toLocaleDateString("ja-JP")}</p>
+        <p className="text-sm text-gray-900">注文日：{new Date(order.confirmedAt ?? order.requestedAt).toLocaleDateString("ja-JP")}</p>
         <div className="flex items-center gap-2">
           {order.status === "PENDING" && !editing && (
             <button onClick={() => setEditing(true)}
