@@ -157,10 +157,6 @@ export default function OrderDetailPage() {
         </table>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-5">
-        <h2 className="font-semibold text-gray-800 mb-2">備考</h2>
-        <p className="text-sm text-gray-600 whitespace-pre-wrap">{order.notes ?? "—"}</p>
-      </div>
     </div>
   );
 }
