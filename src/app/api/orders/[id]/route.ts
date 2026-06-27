@@ -8,7 +8,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     include: { customer: true, items: { include: { product: true } } },
   });
   if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(order);
+  const orderRequest = await prisma.orderRequest.findFirst({
+    where: { orderId: Number(id) },
+    select: { adminReply: true },
+  });
+  return NextResponse.json({ ...order, adminReply: orderRequest?.adminReply ?? null });
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

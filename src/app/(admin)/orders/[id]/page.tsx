@@ -9,6 +9,7 @@ type OrderDetail = {
   status: string;
   totalAmount: number;
   notes: string | null;
+  adminReply: string | null;
   orderDate: string;
   deliveryDate: string | null;
   customerName: string | null;
@@ -157,9 +158,18 @@ export default function OrderDetailPage() {
         </table>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-5">
-        <h2 className="font-semibold text-gray-800 mb-2">メッセージ</h2>
-        <p className="text-sm text-gray-600 whitespace-pre-wrap">{order.notes ?? "—"}</p>
+      <div className="bg-white rounded-lg shadow p-5 space-y-3">
+        <h2 className="font-semibold text-gray-800">メッセージ</h2>
+        <div>
+          <p className="text-xs text-gray-400 mb-1">顧客メッセージ</p>
+          <p className="text-sm text-gray-600 whitespace-pre-wrap">{order.notes ?? "—"}</p>
+        </div>
+        {order.adminReply && (
+          <div>
+            <p className="text-xs text-gray-400 mb-1">返答メッセージ</p>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap">{order.adminReply}</p>
+          </div>
+        )}
       </div>
     </div>
   );
