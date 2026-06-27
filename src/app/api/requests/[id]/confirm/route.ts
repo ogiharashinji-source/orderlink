@@ -20,10 +20,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!request) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (request.status === "CONFIRMED") return NextResponse.json({ error: "すでに確定済みです" }, { status: 400 });
 
-  const { confirmedItems, notes, deliveryDate } = await req.json() as {
+  const { confirmedItems, notes, deliveryDate, adminReply } = await req.json() as {
     confirmedItems: { requestItemId: number; confirmedQty: number; unitPrice: number }[];
     notes?: string;
     deliveryDate?: string;
+    adminReply?: string;
   };
 
   // confirmedQty の保存（0含む全商品）
@@ -81,7 +82,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   await prisma.orderRequest.update({
     where: { id: Number(id) },
-    data: { status: "CONFIRMED", confirmedAt: new Date(), orderId: order.id },
+    data: { status: "CONFIRMED", confirmedAt: new Date(), orderId: order.id, adminReply: adminReply || null },
   });
 
   return NextResponse.json({ orderNumber: order.orderNumber, orderId: order.id }, { status: 201 });

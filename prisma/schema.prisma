@@ -134,6 +134,7 @@ model OrderRequest {
   customer      Customer?     @relation(fields: [customerId], references: [id])
   status        RequestStatus @default(PENDING)
   notes           String?
+  adminReply      String?
   sellerName      String?
   sellerAddress   String?
   sellerPhone     String?

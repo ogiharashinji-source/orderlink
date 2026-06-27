@@ -34,6 +34,7 @@ export default function RequestsPage() {
   const [editedQtys, setEditedQtys] = useState<Record<number, string>>({});
   const [confirming, setConfirming] = useState<number | null>(null);
   const [modal, setModal] = useState<ModalState>(null);
+  const [adminReply, setAdminReply] = useState("");
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
@@ -70,6 +71,7 @@ export default function RequestsPage() {
     if (!freshReq) { alert("リクエストが見つかりません"); return; }
     const modalQtys: Record<number, string> = {};
     freshReq.items.forEach((item) => { modalQtys[item.id] = String(item.requestedQty); });
+    setAdminReply("");
     setModal({ req, freshReq, modalQtys });
   };
 
@@ -86,7 +88,7 @@ export default function RequestsPage() {
     const res = await fetch(`/api/requests/${req.id}/confirm`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ confirmedItems }),
+      body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
     if (res.ok) {
       window.location.href = "/orders";
@@ -145,6 +147,16 @@ export default function RequestsPage() {
             <div className="bg-gray-50 rounded-lg px-4 py-3">
               <p className="text-xs text-gray-400 mb-1">メッセージ</p>
               <p className="text-sm text-gray-700 whitespace-pre-wrap">{modal.freshReq.notes || "—"}</p>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-gray-400">返答メッセージ（任意）</label>
+              <textarea
+                value={adminReply}
+                onChange={(e) => setAdminReply(e.target.value)}
+                rows={3}
+                placeholder="顧客へのメッセージを入力..."
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => setModal(null)}

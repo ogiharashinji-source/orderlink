@@ -23,6 +23,7 @@ type OrderRequest = {
   status: "PENDING" | "CONFIRMED" | "REJECTED";
   requestedAt: string;
   notes: string | null;
+  adminReply: string | null;
   customer: { name: string; address: string | null; phone: string | null; faxNumber: string | null; email: string | null };
   sellerName: string | null;
   sellerAddress: string | null;
@@ -289,6 +290,14 @@ export default function PortalOrderDetailPage() {
           <p className="text-sm text-gray-600 whitespace-pre-wrap">{order.notes || "—"}</p>
         )}
       </div>
+
+      {/* 酒蔵からの返答 */}
+      {order.adminReply && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-5">
+          <h2 className="font-semibold text-blue-800 mb-2">酒蔵からの返答</h2>
+          <p className="text-sm text-blue-900 whitespace-pre-wrap">{order.adminReply}</p>
+        </div>
+      )}
 
     </div>
 
