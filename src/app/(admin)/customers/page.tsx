@@ -199,7 +199,7 @@ export default function CustomersPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ approved: true }),
     });
-    load();
+    window.location.reload();
   };
 
   const handleDelete = async (id: number) => {
