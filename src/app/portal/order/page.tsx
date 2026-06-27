@@ -154,6 +154,7 @@ function PortalOrderContent() {
               <th className="px-3 py-3 text-center">小売値</th>
               <th className="px-3 py-3 text-center">卸売値</th>
               <th className="px-3 py-3 text-center">ロット</th>
+              <th className="px-3 py-3 text-center w-8"></th>
               <th className="px-3 py-3 text-center">注文数</th>
             </tr>
           </thead>
@@ -173,6 +174,12 @@ function PortalOrderContent() {
                   <td className="px-3 py-3 text-center text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-3 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500">{v.lot}</td>
+                  <td className="px-3 py-3 text-center">
+                    {v.product.description && (
+                      <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
+                        className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold hover:bg-blue-200 transition">?</button>
+                    )}
+                  </td>
                   <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{qty}</td>
                 </tr>
               );
@@ -201,18 +208,6 @@ function PortalOrderContent() {
           );
         })}
       </div>
-
-      {selected.some((v) => v.product.description) && (
-        <div className="bg-white rounded-xl shadow p-4 space-y-3">
-          <p className="text-sm font-medium text-gray-700">商品説明</p>
-          {selected.filter((v) => v.product.description).map((v) => (
-            <div key={v.key} className="border-l-4 border-blue-200 pl-3">
-              <p className="text-xs font-semibold text-gray-700 mb-0.5">{v.product.name}（{v.volume}）</p>
-              <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{v.product.description}</p>
-            </div>
-          ))}
-        </div>
-      )}
 
       <div className="bg-white rounded-xl shadow p-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">備考・納品希望日など</label>

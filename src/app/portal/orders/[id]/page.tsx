@@ -48,6 +48,7 @@ export default function PortalOrderDetailPage() {
   const [editNotes, setEditNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [descModal, setDescModal] = useState<{ name: string; description: string } | null>(null);
   const router = useRouter();
 
   const loadOrder = () => {
@@ -195,6 +196,7 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-right">小売値</th>
               <th className="px-3 py-2 text-right">卸売値</th>
               <th className="px-3 py-2 text-right">ロット</th>
+              <th className="px-3 py-2 text-center w-8"></th>
               <th className="px-3 py-2 text-right">ケース数</th>
             </tr>
           </thead>
@@ -223,6 +225,12 @@ export default function PortalOrderDetailPage() {
                   <td className="px-3 py-2 text-right">
                     {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
                   </td>
+                  <td className="px-3 py-2 text-center">
+                    {item.product?.description && (
+                      <button onClick={() => setDescModal({ name: item.productName ?? item.product?.name ?? "—", description: item.product!.description! })}
+                        className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold hover:bg-blue-200 transition">?</button>
+                    )}
+                  </td>
                   <td className="px-3 py-2 text-right">
                     {editing ? (
                       <input
@@ -248,19 +256,6 @@ export default function PortalOrderDetailPage() {
         </table>
       </div>
 
-      {/* 商品説明 */}
-      {order.items.some((item) => item.product?.description) && (
-        <div className="bg-white rounded-lg shadow p-5 space-y-3">
-          <h2 className="font-semibold text-gray-800">商品説明</h2>
-          {order.items.filter((item) => item.product?.description).map((item) => (
-            <div key={item.id} className="border-l-4 border-blue-200 pl-3">
-              <p className="text-xs font-semibold text-gray-700 mb-0.5">{item.productName ?? item.product?.name ?? "—"}（{item.volume}）</p>
-              <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{item.product!.description}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* 備考 */}
       <div className="bg-white rounded-lg shadow p-5">
         <h2 className="font-semibold text-gray-800 mb-2">備考</h2>
@@ -278,5 +273,15 @@ export default function PortalOrderDetailPage() {
       </div>
 
     </div>
+
+    {descModal && (
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setDescModal(null)}>
+        <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full space-y-3" onClick={(e) => e.stopPropagation()}>
+          <h3 className="font-bold text-gray-900">{descModal.name}</h3>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>
+          <button onClick={() => setDescModal(null)} className="w-full py-2 rounded-lg text-sm font-bold text-white" style={{ background: "#1e3a8a" }}>閉じる</button>
+        </div>
+      </div>
+    )}
   );
 }
