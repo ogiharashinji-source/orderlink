@@ -78,6 +78,7 @@ type Customer = {
   loginId: string | null;
   inviteToken: string | null;
   memberNumber: string | null;
+  customerNumber: number | null;
   approved: boolean;
   createdAt: string;
   joinedAt: string | null;
@@ -283,6 +284,7 @@ export default function CustomersPage() {
                 />
               </th>
               <th className="px-4 py-3 text-center">登録日</th>
+              <th className="px-4 py-3 text-center">会員番号</th>
               <th className="px-4 py-3 text-center">会員コード</th>
               <th className="px-4 py-3 text-left">会社名</th>
               <th className="px-4 py-3 text-left">住所</th>
@@ -294,7 +296,7 @@ export default function CustomersPage() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {customers.length === 0 ? (
-              <tr><td colSpan={9} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
+              <tr><td colSpan={10} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
               customers.map((c, idx) => {
                 const isChecked = selected.has(c.id);
@@ -313,6 +315,9 @@ export default function CustomersPage() {
                       {c.approved && c.approvedAt
                         ? new Date(c.approvedAt).toLocaleDateString("ja-JP")
                         : new Date(c.joinedAt ?? c.createdAt).toLocaleDateString("ja-JP")}
+                    </td>
+                    <td className="px-4 py-3 text-center text-sm font-mono text-gray-600 whitespace-nowrap">
+                      {c.customerNumber != null ? String(c.customerNumber).padStart(3, "0") : "—"}
                     </td>
                     <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
