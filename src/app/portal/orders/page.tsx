@@ -194,7 +194,11 @@ export default function PortalOrdersPage() {
                         })()}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
-                      <td className="px-4 py-3 text-center font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>
+                      <td className="px-4 py-3 text-center font-semibold">
+                        {o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty) === 0
+                          ? <span className="text-red-500 text-xs font-bold">在庫なし</span>
+                          : (item.confirmedQty ?? item.requestedQty)}
+                      </td>
                       <td className="px-4 py-3 text-center">
                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${st.cls}`}>{st.label}</span>
                       </td>

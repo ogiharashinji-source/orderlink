@@ -222,9 +222,7 @@ export default function OrdersPage() {
 
                       {/* 販売数 */}
                       <td className="px-4 py-3 text-center font-semibold text-gray-700">
-                        {item.quantity === 0
-                          ? <span className="text-red-500 text-xs font-bold">在庫なし</span>
-                          : item.quantity}
+                        {item.quantity}
                       </td>
 
 
