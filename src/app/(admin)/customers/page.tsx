@@ -79,6 +79,7 @@ type Customer = {
   inviteToken: string | null;
   memberNumber: string | null;
   approved: boolean;
+  createdAt: string;
   _count: { orders: number };
 };
 
@@ -284,13 +285,14 @@ export default function CustomersPage() {
               <th className="px-4 py-3 text-left">住所</th>
               <th className="px-4 py-3 text-left">電話番号</th>
               <th className="px-4 py-3 text-left">FAX番号</th>
+              <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">ステータス</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {customers.length === 0 ? (
-              <tr><td colSpan={8} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
+              <tr><td colSpan={9} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
               customers.map((c, idx) => {
                 const isChecked = selected.has(c.id);
@@ -310,6 +312,9 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
+                    <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
+                      {new Date(c.createdAt).toLocaleDateString("ja-JP")}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       {c.approved
                         ? <span className="text-xs text-gray-400">承認済</span>
