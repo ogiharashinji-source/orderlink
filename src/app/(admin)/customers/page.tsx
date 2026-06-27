@@ -283,8 +283,8 @@ export default function CustomersPage() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </th>
-              <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">会員番号</th>
+              <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">会員コード</th>
               <th className="px-4 py-3 text-left">会社名</th>
               <th className="px-4 py-3 text-left">住所</th>
@@ -311,13 +311,13 @@ export default function CustomersPage() {
                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
                     </td>
+                    <td className="px-4 py-3 text-center text-sm font-mono text-gray-600 whitespace-nowrap">
+                      {c.customerNumber != null ? String(c.customerNumber).padStart(3, "0") : "—"}
+                    </td>
                     <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
                       {c.approved && c.approvedAt
                         ? new Date(c.approvedAt).toLocaleDateString("ja-JP")
                         : new Date(c.joinedAt ?? c.createdAt).toLocaleDateString("ja-JP")}
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-mono text-gray-600 whitespace-nowrap">
-                      {c.customerNumber != null ? String(c.customerNumber).padStart(3, "0") : "—"}
                     </td>
                     <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
