@@ -92,7 +92,7 @@ export default function NewOrderPage() {
         <td className="px-3 py-2 text-center text-gray-500 text-xs">{p.seimaiWari ?? "—"}</td>
         <td className="px-3 py-2 text-center text-gray-500 text-xs">{p.alcohol ?? "—"}</td>
         <td className="px-3 py-2 text-center">
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{volume}</span>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${volume === "1800ml" ? "bg-amber-100 text-amber-700" : volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{volume}</span>
         </td>
         <td className="px-3 py-2 text-right">{retailPrice != null ? `¥${retailPrice.toLocaleString()}` : "—"}</td>
         <td className="px-3 py-2 text-right">{wp != null ? `¥${wp.toLocaleString()}` : "—"}</td>

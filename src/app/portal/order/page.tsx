@@ -180,7 +180,7 @@ function PortalOrderContent() {
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
                   <td className="px-3 py-3 text-center">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                   </td>
                   <td className="px-3 py-3 text-center text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-3 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
@@ -191,7 +191,7 @@ function PortalOrderContent() {
                         className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold inline-flex items-center justify-center hover:bg-blue-200 transition">?</button>
                     )}
                   </td>
-                  <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{qty}</td>
+                  <td className={`px-3 py-3 text-center font-bold ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{qty}</td>
                 </tr>
               );
             })}
@@ -208,7 +208,7 @@ function PortalOrderContent() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-gray-900 text-sm">{v.product.name}</span>
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                 </div>
                 {v.wholesalePrice != null && <p className="text-xs text-gray-500 mt-0.5">卸売値 ¥{v.wholesalePrice.toLocaleString()} / ロット {v.lot}</p>}
               </div>
@@ -357,7 +357,7 @@ function PortalOrderContent() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-gray-900">{v.product.name}</span>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${is1800 ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{v.volume}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${is1800 ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                   </div>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {[v.product.category, v.product.sakaMai].filter(Boolean).join(" / ")}

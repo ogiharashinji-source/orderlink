@@ -221,7 +221,7 @@ export default function PortalOrderDetailPage() {
                   <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
                   <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                   <td className="px-3 py-2 text-center">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume ?? "—"}</span>
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>
                   </td>
                   <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right text-gray-600">
