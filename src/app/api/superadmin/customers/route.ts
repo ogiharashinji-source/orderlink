@@ -5,10 +5,16 @@ export async function POST(req: Request) {
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
   if (!name) return NextResponse.json({ error: "会社名は必須です" }, { status: 400 });
 
-  // loginId重複チェック
+  // loginId重複チェック（削除済みは除外、ただしDB制約のためloginIdをnullにクリア）
   if (loginId) {
     const existingId = await prisma.customer.findUnique({ where: { loginId } });
-    if (existingId) return NextResponse.json({ error: "このログインIDはすでに使われています" }, { status: 400 });
+    if (existingId) {
+      if (!existingId.deleted) {
+        return NextResponse.json({ error: "このログインIDはすでに使われています" }, { status: 400 });
+      }
+      // 削除済みレコードのloginIdをnullにしてDB制約を解除
+      await prisma.customer.update({ where: { id: existingId.id }, data: { loginId: null } });
+    }
   }
 
   // メール重複チェック：有効なポータル登録済み（loginIdあり・未削除）のみブロック
