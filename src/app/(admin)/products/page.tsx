@@ -226,7 +226,7 @@ export default function ProductsPage() {
                           <td className="px-4 py-3 text-center text-gray-600 text-xs align-top" rowSpan={variants.length}>{p.alcohol ?? "—"}</td>
                         )}
                         <td className="px-4 py-3 text-center">
-                          <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{v.volume}</span>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                         </td>
                         <td className="px-4 py-3 text-center font-medium">¥{v.price.toLocaleString()}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
