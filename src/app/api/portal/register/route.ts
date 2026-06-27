@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
         password,
         approved: false,
         deleted: false,
+        memberNumber: null,
       },
     });
     await prisma.customerCompany.upsert({
