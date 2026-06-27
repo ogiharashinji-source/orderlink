@@ -12,7 +12,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
+  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; unitOther: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null } | null;
 };
 type OrderRequest = {
   id: number;
@@ -264,16 +264,19 @@ export default function RequestsPage() {
 
                       {/* 卸売値 */}
                       <td className="px-4 py-3 text-center text-sm text-gray-700">
-                        {item.product
-                          ? item.volume === "1800ml"
-                            ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
-                            : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
-                          : "—"}
+                        {(() => {
+                          const wp = item.volume === "1800ml"
+                            ? item.product?.wholesalePrice1800
+                            : item.volume === "720ml"
+                            ? item.product?.wholesalePrice720
+                            : item.product?.wholesalePriceOther;
+                          return wp != null ? `¥${wp.toLocaleString()}` : "—";
+                        })()}
                       </td>
 
                       {/* ロット */}
                       <td className="px-4 py-3 text-center text-sm text-gray-700">
-                        {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
+                        {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—")}
                       </td>
 
                       {/* 希望ケース（変更不可） */}
