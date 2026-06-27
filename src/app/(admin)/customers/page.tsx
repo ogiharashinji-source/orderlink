@@ -312,7 +312,7 @@ export default function CustomersPage() {
                       />
                     </td>
                     <td className="px-4 py-3 text-center text-sm font-mono text-gray-600 whitespace-nowrap">
-                      {c.customerNumber != null ? String(c.customerNumber).padStart(3, "0") : "—"}
+                      {c.customerNumber != null ? "P" + String(c.customerNumber).padStart(3, "0") : "—"}
                     </td>
                     <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
                       {c.approved && c.approvedAt

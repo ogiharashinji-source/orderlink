@@ -218,7 +218,7 @@ export default function SuperAdminCustomersPage() {
                 customers.map((c, idx) => (
                   <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
                     <td className="px-4 py-3 text-sm text-center text-gray-700 font-mono font-medium">
-                      {c.customerNumber != null ? String(c.customerNumber).padStart(3, "0") : "—"}
+                      {c.customerNumber != null ? "P" + String(c.customerNumber).padStart(3, "0") : "—"}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.appliedAt).toLocaleDateString("ja-JP")}

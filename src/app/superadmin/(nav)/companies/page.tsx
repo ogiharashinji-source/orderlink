@@ -72,7 +72,7 @@ export default function SuperAdminCompaniesPage() {
                 companies.map((c, idx) => (
                   <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
                     <td className="px-4 py-3 text-center text-sm font-mono text-gray-700 font-medium whitespace-nowrap">
-                      {c.companyNumber != null ? String(c.companyNumber).padStart(3, "0") : "—"}
+                      {c.companyNumber != null ? "A" + String(c.companyNumber).padStart(3, "0") : "—"}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("ja-JP")}
