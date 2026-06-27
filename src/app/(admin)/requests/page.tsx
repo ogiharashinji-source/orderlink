@@ -38,13 +38,28 @@ export default function RequestsPage() {
   const [adminReply, setAdminReply] = useState("");
   const router = useRouter();
 
-  const handleDelete = async (id: number) => {
-    await fetch(`/api/requests/${id}`, {
-      method: "PUT",
+  const handleOutOfStock = async () => {
+    if (!modal) return;
+    const { req, freshReq } = modal;
+    setModal(null);
+    setConfirming(req.id);
+    const confirmedItems = freshReq.items.map((item) => ({
+      requestItemId: item.id,
+      confirmedQty: 0,
+      unitPrice: item.unitPrice,
+    }));
+    const res = await fetch(`/api/requests/${req.id}/confirm`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "REJECTED" }),
+      body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
-    load();
+    if (res.ok) {
+      window.location.href = "/orders";
+    } else {
+      const result = await res.json();
+      alert(result.error ?? "エラーが発生しました");
+      setConfirming(null);
+    }
   };
 
   const load = useCallback(() => {
@@ -164,7 +179,7 @@ export default function RequestsPage() {
                 className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
                 キャンセル
               </button>
-              <button onClick={() => { if (!confirm("在庫なしとして処理しますか？")) return; setModal(null); handleDelete(modal.req.id); }}
+              <button onClick={() => { if (!confirm("在庫なしとして処理しますか？（受注数0で確定されます）")) return; handleOutOfStock(); }}
                 className="px-5 py-2 rounded-lg text-sm font-medium text-red-500 border border-red-300 hover:bg-red-50">
                 在庫なし
               </button>
