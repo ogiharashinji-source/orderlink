@@ -136,11 +136,11 @@ export default function SuperAdminCustomersPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
-            <input required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className={inputCls} />
+            <input required value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} onBlur={(e) => setForm((f) => ({ ...f, phone: toHankaku(e.target.value) }))} className={inputCls} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-            <input value={form.faxNumber} onChange={(e) => setForm((f) => ({ ...f, faxNumber: e.target.value }))} className={inputCls} />
+            <input value={form.faxNumber} onChange={(e) => setForm((f) => ({ ...f, faxNumber: e.target.value }))} onBlur={(e) => setForm((f) => ({ ...f, faxNumber: toHankaku(e.target.value) }))} className={inputCls} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span className="text-red-500">*</span></label>
