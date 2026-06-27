@@ -161,26 +161,24 @@ export default function OrdersPage() {
                     return (
                     <tr
                       key={item.id}
-                      className={`border-t border-gray-100 ${rowBg} ${
-                        idx === o.items.length - 1 ? "border-b-2 border-b-gray-200" : ""
-                      }`}
+                      className={`border-t border-gray-100 ${rowBg} border-b border-b-gray-200`}
                     >
                       {/* 受注日時 */}
-                      {idx === 0 && (
-                        <td className="px-4 py-3 text-gray-500 align-middle text-center whitespace-nowrap" rowSpan={o.items.length}>
-                          {new Date(o.orderDate).toLocaleDateString("ja-JP")}
-                          <div className="mt-0.5">
-                            {new Date(o.orderDate).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                          </div>
-                        </td>
-                      )}
+                      <td className="px-4 py-3 text-gray-500 text-center whitespace-nowrap">
+                        {idx === 0 ? (
+                          <>
+                            {new Date(o.orderDate).toLocaleDateString("ja-JP")}
+                            <div className="mt-0.5">
+                              {new Date(o.orderDate).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                            </div>
+                          </>
+                        ) : ""}
+                      </td>
 
                       {/* 会社名 */}
-                      {idx === 0 && (
-                        <td className="px-4 py-3 text-left align-middle" rowSpan={o.items.length}>
-                          {(() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
-                        </td>
-                      )}
+                      <td className="px-4 py-3 text-left">
+                        {idx === 0 && (() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
+                      </td>
 
                       {/* 商品名 */}
                       <td className="px-4 py-3 text-left text-gray-800" title={item.productName ?? item.product?.name ?? ""}>
@@ -226,19 +224,19 @@ export default function OrdersPage() {
                       </td>
 
 
-                      {/* 備考 + 操作（先頭行のみ rowspan） */}
-                      {idx === 0 && (
-                        <>
-                          <td className="px-4 py-3 align-middle text-center" rowSpan={o.items.length}>
-                            <span className="text-gray-500 text-xs max-w-[80px] truncate block mx-auto">
-                              {o.notes ? (o.notes.length > 10 ? o.notes.slice(0, 10) + "…" : o.notes) : ""}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 align-middle text-center" rowSpan={o.items.length}>
-                            <button onClick={() => router.push(`/orders/${o.id}`)} className="text-blue-600 hover:underline text-xs whitespace-nowrap">詳細</button>
-                          </td>
-                        </>
-                      )}
+                      {/* 備考 + 操作（各行に表示） */}
+                      <td className="px-4 py-3 text-center">
+                        {idx === 0 && (
+                          <span className="text-gray-500 text-xs max-w-[80px] truncate block mx-auto">
+                            {o.notes ? (o.notes.length > 10 ? o.notes.slice(0, 10) + "…" : o.notes) : ""}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {idx === 0 && (
+                          <button onClick={() => router.push(`/orders/${o.id}`)} className="text-blue-600 hover:underline text-xs whitespace-nowrap">詳細</button>
+                        )}
+                      </td>
                     </tr>
                   );})}
                 </React.Fragment>
