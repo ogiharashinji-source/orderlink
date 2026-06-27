@@ -175,8 +175,8 @@ export default function PortalOrdersPage() {
                         {dateStr}
                         <div className="mt-0.5">{timeStr}</div>
                       </td>
-                      <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{seller}</td>
-                      {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 font-medium text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
+                      <td className="px-4 py-3 text-gray-800 whitespace-nowrap">{seller}</td>
+                      {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
                       <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                       <td className="px-4 py-3 text-center">
