@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 type RequestItem = {
@@ -16,6 +16,7 @@ type RequestItem = {
 };
 type OrderRequest = {
   id: number;
+  requestNumber: string;
   status: "PENDING" | "CONFIRMED" | "REJECTED";
   requestedAt: string;
   notes: string | null;
@@ -209,99 +210,47 @@ export default function RequestsPage() {
                 </td>
               </tr>
             ) : (
-              requests.map((req) => (
-                <React.Fragment key={req.id}>
-                  {req.items.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      className={`border-t border-gray-100 hover:bg-gray-50 ${
-                        idx === req.items.length - 1 ? "border-b-2 border-b-gray-200" : ""
-                      }`}
-                    >
-                      {/* リクエスト日・備考（先頭行のみ rowspan） */}
-                      {idx === 0 && (
-                        <td
-                          className="px-4 py-3 text-gray-500 align-top text-center whitespace-nowrap"
-                          rowSpan={req.items.length}
-                        >
-                          {new Date(req.requestedAt).toLocaleDateString("ja-JP")}
-                          <div className="mt-0.5">
-                            {new Date(req.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                          </div>
-                        </td>
-                      )}
-
-                      {/* 顧客（先頭行のみ rowspan） */}
-                      {idx === 0 && (
-                        <td
-                          className="px-4 py-3 text-left text-gray-800 font-medium"
-                          rowSpan={req.items.length}
-                        >
-                          {req.customer.name}
-                        </td>
-                      )}
-
-                      {/* 商品名（1行1商品） */}
-                      <td className="px-4 py-3 text-left text-gray-800 font-medium">
-                        {item.productName ?? item.product?.name ?? "—"}
-                      </td>
-
-                      {/* 種別 */}
-                      <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
-
-                      {/* 酒米 */}
-                      <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
-
-                      {/* 容量 */}
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
-                        {item.volume ?? "—"}
-                      </td>
-
-                      {/* 小売値 */}
-                      <td className="px-4 py-3 text-center text-sm text-gray-700">
-                        ¥{item.unitPrice.toLocaleString()}
-                      </td>
-
-                      {/* 卸売値 */}
-                      <td className="px-4 py-3 text-center text-sm text-gray-700">
-                        {(() => {
-                          const wp = item.volume === "1800ml"
-                            ? item.product?.wholesalePrice1800
-                            : item.volume === "720ml"
-                            ? item.product?.wholesalePrice720
-                            : item.product?.wholesalePriceOther;
-                          return wp != null ? `¥${wp.toLocaleString()}` : "—";
-                        })()}
-                      </td>
-
-                      {/* ロット */}
-                      <td className="px-4 py-3 text-center text-sm text-gray-700">
-                        {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—")}
-                      </td>
-
-                      {/* 希望ケース（変更不可） */}
-                      <td className="px-4 py-3 text-center text-gray-700">
-                        {item.requestedQty}
-                      </td>
-
-                      {/* 確定ボタン（先頭行のみ rowspan） */}
-                      {idx === 0 && (
-                        <>
-                          <td className="px-4 py-3 align-middle text-center" rowSpan={req.items.length}>
-                            <button
-                              onClick={() => handleConfirm(req)}
-                              disabled={confirming === req.id}
-                              className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-50 whitespace-nowrap"
-                            >
-                              {confirming === req.id ? "処理中..." : "確認"}
-                            </button>
-                          </td>
-                        </>
-                      )}
-                    </tr>
-                  ))}
-                </React.Fragment>
-              ))
+              requests.flatMap((req) =>
+                req.items.map((item) => (
+                  <tr key={`${req.id}-${item.id}`} className="border-t border-gray-100 hover:bg-gray-50 border-b-2 border-b-gray-200">
+                    <td className="px-4 py-3 text-gray-500 text-center whitespace-nowrap">
+                      {new Date(req.requestedAt).toLocaleDateString("ja-JP")}
+                      <div className="mt-0.5">
+                        {new Date(req.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-left text-gray-800 font-medium">{req.customer.name}</td>
+                    <td className="px-4 py-3 text-left text-gray-800 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                    <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{item.volume ?? "—"}</td>
+                    <td className="px-4 py-3 text-center text-sm text-gray-700">¥{item.unitPrice.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-center text-sm text-gray-700">
+                      {(() => {
+                        const wp = item.volume === "1800ml"
+                          ? item.product?.wholesalePrice1800
+                          : item.volume === "720ml"
+                          ? item.product?.wholesalePrice720
+                          : item.product?.wholesalePriceOther;
+                        return wp != null ? `¥${wp.toLocaleString()}` : "—";
+                      })()}
+                    </td>
+                    <td className="px-4 py-3 text-center text-sm text-gray-700">
+                      {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—")}
+                    </td>
+                    <td className="px-4 py-3 text-center text-gray-700">{item.requestedQty}</td>
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => handleConfirm(req)}
+                        disabled={confirming === req.id}
+                        className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-50 whitespace-nowrap"
+                      >
+                        {confirming === req.id ? "処理中..." : "確認"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )
             )}
           </tbody>
         </table>

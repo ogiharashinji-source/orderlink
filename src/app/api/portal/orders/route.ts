@@ -33,36 +33,45 @@ export async function POST(req: NextRequest) {
 
   const setting = await prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true, address: true, phone: true, faxNumber: true, email: true } });
 
-  const seq = await nextOrderSequence();
-  const requestNumber = `REQ-${datePrefix()}-${seq}`;
+  const prefix = datePrefix();
+  const now = new Date();
+  const sellerData = {
+    sellerName:    setting?.companyName ?? null,
+    sellerAddress: setting?.address    ?? null,
+    sellerPhone:   setting?.phone      ?? null,
+    sellerFax:     setting?.faxNumber  ?? null,
+    sellerEmail:   setting?.email      ?? null,
+  };
 
-  const request = await prisma.orderRequest.create({
-    data: {
-      requestNumber,
-      requestedAt: new Date(),
-      companyId,
-      customerId: customer.id,
-      notes: notes || null,
-      sellerName:    setting?.companyName ?? null,
-      sellerAddress: setting?.address    ?? null,
-      sellerPhone:   setting?.phone      ?? null,
-      sellerFax:     setting?.faxNumber  ?? null,
-      sellerEmail:   setting?.email      ?? null,
-      items: {
-        create: items.map((i) => ({
-          product: { connect: { id: i.productId } },
-          productName: productMap[i.productId]?.name ?? null,
-          productCategory: productMap[i.productId]?.category ?? null,
-          productSakaMai: productMap[i.productId]?.sakaMai ?? null,
-          productSeimaiWari: productMap[i.productId]?.seimaiWari ?? null,
-          productAlcohol: productMap[i.productId]?.alcohol ?? null,
-          requestedQty: i.quantity,
-          unitPrice: i.unitPrice,
-          volume: i.volume,
-        })),
+  const created: string[] = [];
+  for (const i of items) {
+    const seq = await nextOrderSequence();
+    const requestNumber = `REQ-${prefix}-${seq}`;
+    await prisma.orderRequest.create({
+      data: {
+        requestNumber,
+        requestedAt: now,
+        companyId,
+        customerId: customer.id,
+        notes: notes || null,
+        ...sellerData,
+        items: {
+          create: [{
+            product: { connect: { id: i.productId } },
+            productName: productMap[i.productId]?.name ?? null,
+            productCategory: productMap[i.productId]?.category ?? null,
+            productSakaMai: productMap[i.productId]?.sakaMai ?? null,
+            productSeimaiWari: productMap[i.productId]?.seimaiWari ?? null,
+            productAlcohol: productMap[i.productId]?.alcohol ?? null,
+            requestedQty: i.quantity,
+            unitPrice: i.unitPrice,
+            volume: i.volume,
+          }],
+        },
       },
-    },
-  });
+    });
+    created.push(requestNumber);
+  }
 
-  return NextResponse.json({ requestNumber: request.requestNumber }, { status: 201 });
+  return NextResponse.json({ requestNumbers: created }, { status: 201 });
 }
