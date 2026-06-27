@@ -1,7 +1,6 @@
 "use client";
 import { useState, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import ManualModal from "@/components/ManualModal";
 
 function CustomerLoginForm() {
   const [loginId, setLoginId] = useState("");
@@ -130,9 +129,6 @@ function CustomerLoginForm() {
               {loading ? "ログイン中..." : "ログイン"}
             </button>
           </form>
-          <div className="text-center pt-2">
-            <ManualModal type="portal" />
-          </div>
         </div>
       </div>
     </div>
