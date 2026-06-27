@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-function genOrderNumber() {
-  const now = new Date();
-  const prefix = `ORD-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-  return `${prefix}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-}
+import { seqFromRequestNumber, datePrefix } from "@/lib/orderSequence";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -47,9 +42,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return sum + i.confirmedQty * lot * i.unitPrice;
   }, 0);
 
+  const orderNumber = `ORD-${datePrefix()}-${seqFromRequestNumber(request.requestNumber)}`;
+
   const order = await prisma.order.create({
     data: {
-      orderNumber: genOrderNumber(),
+      orderNumber,
       companyId: request.companyId,
       customerId: request.customerId,
       totalAmount,

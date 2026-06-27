@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+model Counter {
+  id    String @id
+  value Int    @default(0)
+}
+
 // 管理者アカウント
 model Admin {
   id           Int      @id @default(autoincrement())

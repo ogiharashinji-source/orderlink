@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCustomerSession } from "@/lib/customerAuth";
 import { prisma } from "@/lib/prisma";
-
-function genRequestNumber() {
-  const now = new Date();
-  return `REQ-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
-}
+import { nextOrderSequence, datePrefix } from "@/lib/orderSequence";
 
 export async function POST(req: NextRequest) {
   const customer = await getCustomerSession();
@@ -37,9 +33,12 @@ export async function POST(req: NextRequest) {
 
   const setting = await prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true, address: true, phone: true, faxNumber: true, email: true } });
 
+  const seq = await nextOrderSequence();
+  const requestNumber = `REQ-${datePrefix()}-${seq}`;
+
   const request = await prisma.orderRequest.create({
     data: {
-      requestNumber: genRequestNumber(),
+      requestNumber,
       requestedAt: new Date(),
       companyId,
       customerId: customer.id,

@@ -1,20 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
-
-function generateOrderNumber() {
-  const now = new Date();
-  const prefix = `ORD-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-  const suffix = String(Math.floor(Math.random() * 9000) + 1000);
-  return `${prefix}-${suffix}`;
-}
-
-function generateRequestNumber() {
-  const now = new Date();
-  const prefix = `REQ-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
-  const suffix = String(Math.floor(Math.random() * 9000) + 1000);
-  return `${prefix}-${suffix}`;
-}
+import { nextOrderSequence, datePrefix } from "@/lib/orderSequence";
 
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
@@ -92,9 +79,12 @@ export async function POST(req: NextRequest) {
 
   type ItemInput = { productId: number; quantity: number; unitPrice: number; volume?: string };
 
+  const seq = await nextOrderSequence();
+  const prefix = datePrefix();
+
   const order = await prisma.order.create({
     data: {
-      orderNumber: generateOrderNumber(),
+      orderNumber: `ORD-${prefix}-${seq}`,
       companyId,
       customerId: Number(customerId),
       notes,
@@ -119,7 +109,7 @@ export async function POST(req: NextRequest) {
   if (customerId) {
     await prisma.orderRequest.create({
       data: {
-        requestNumber: generateRequestNumber(),
+        requestNumber: `REQ-${prefix}-${seq}`,
         companyId,
         customerId: Number(customerId),
         status: "CONFIRMED",
