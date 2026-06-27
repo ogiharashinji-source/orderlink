@@ -10,7 +10,7 @@ export async function GET() {
   const numberMap = Object.fromEntries(allIds.map((c, i) => [c.id, i + 1]));
 
   const companies = await prisma.company.findMany({
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     include: {
       setting: { select: { companyName: true, email: true, phone: true, address: true } },
       admins: { select: { id: true, loginId: true, password: true, createdAt: true } },
