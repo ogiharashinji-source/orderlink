@@ -280,12 +280,12 @@ export default function CustomersPage() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </th>
+              <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">会員コード</th>
               <th className="px-4 py-3 text-left">会社名</th>
               <th className="px-4 py-3 text-left">住所</th>
               <th className="px-4 py-3 text-left">電話番号</th>
               <th className="px-4 py-3 text-left">FAX番号</th>
-              <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">ステータス</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
@@ -307,14 +307,14 @@ export default function CustomersPage() {
                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
                     </td>
+                    <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
+                      {new Date(c.createdAt).toLocaleDateString("ja-JP")}
+                    </td>
                     <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>
                     <td className="px-4 py-3 text-gray-600">{c.address ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
-                    <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
-                      {new Date(c.createdAt).toLocaleDateString("ja-JP")}
-                    </td>
                     <td className="px-4 py-3 text-center">
                       {c.approved
                         ? <span className="text-xs text-gray-400">承認済</span>
