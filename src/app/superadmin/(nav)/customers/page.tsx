@@ -16,6 +16,10 @@ type Customer = {
 
 const empty = { name: "", email: "", phone: "", faxNumber: "", address: "", loginId: "", password: "" };
 
+const toHankaku = (str: string) =>
+  str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+     .replace(/　/g, " ");
+
 export default function SuperAdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,11 +149,11 @@ export default function SuperAdminCustomersPage() {
           <div className="border-t pt-4 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">ログインID <span className="text-red-500">*</span></label>
-              <input value={form.loginId} onChange={(e) => setForm((f) => ({ ...f, loginId: e.target.value }))} className={inputCls} />
+              <input value={form.loginId} onChange={(e) => setForm((f) => ({ ...f, loginId: toHankaku(e.target.value) }))} className={inputCls} />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
-              <input value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} className={inputCls} />
+              <input value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: toHankaku(e.target.value) }))} className={inputCls} />
             </div>
           </div>
 
