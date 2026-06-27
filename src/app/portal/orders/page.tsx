@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type RequestItem = {
@@ -157,72 +157,60 @@ export default function PortalOrdersPage() {
             {filtered.length === 0 ? (
               <tr><td colSpan={12} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
             ) : (
-              filtered.map((o) => {
+              filtered.flatMap((o) => {
                 const st = STATUS_LABEL[o.status] ?? { label: o.status, cls: "bg-gray-100 text-gray-500" };
-                return (
-                  <React.Fragment key={o.id}>
-                    {o.items.map((item, idx) => {
-                      const lot = item.volume === "1800ml"
-                        ? (item.product?.unit1800 ?? "—")
-                        : item.volume === "720ml"
-                        ? (item.product?.unit720 ?? "—")
-                        : (item.product?.unitOther ?? "—");
-                      return (
-                        <tr key={item.id} className={`border-t border-gray-100 hover:bg-gray-50 ${idx === o.items.length - 1 ? "border-b-2 border-b-gray-200" : ""}`}>
-                          {idx === 0 && (
-                            <td className="px-4 py-3 text-gray-500 whitespace-nowrap align-top text-center" rowSpan={o.items.length}>
-                              {new Date(o.confirmedAt ?? o.requestedAt).toLocaleDateString("ja-JP")}
-                              <div className="mt-0.5">
-                                {new Date(o.confirmedAt ?? o.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                              </div>
-                            </td>
-                          )}
-                          {idx === 0 && (
-                            <td className="px-4 py-3 font-medium text-gray-800 align-middle whitespace-nowrap" rowSpan={o.items.length}>
-                              {o.sellerName ?? o.company?.setting?.companyName ?? "—"}
-                            </td>
-                          )}
-                          {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 font-medium text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
-                          <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
-                          <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume}</span>
-                          </td>
-                          <td className="px-4 py-3 text-right text-gray-600">¥{item.unitPrice.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-right text-gray-600">
-                            {(() => {
-                              const wp = item.volume === "1800ml"
-                                ? item.product?.wholesalePrice1800
-                                : item.volume === "720ml"
-                                ? item.product?.wholesalePrice720
-                                : item.product?.wholesalePriceOther;
-                              return wp != null ? `¥${wp.toLocaleString()}` : "—";
-                            })()}
-                          </td>
-                          <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
-                          <td className="px-4 py-3 text-center font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>
-                          {idx === 0 && (
-                            <td className="px-4 py-3 text-center align-middle" rowSpan={o.items.length}>
-                              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${st.cls}`}>{st.label}</span>
-                            </td>
-                          )}
-                          {idx === 0 && (
-                            <td className="px-4 py-3 text-center align-middle" rowSpan={o.items.length}>
-                              {o.status === "PENDING" && (
-                                <button onClick={() => router.push(`/portal/orders/${o.id}?edit=1`)}
-                                  className="text-xs text-blue-600 hover:underline">編集</button>
-                              )}
-                              {o.status === "CONFIRMED" && (
-                                <button onClick={() => router.push(`/portal/orders/${o.id}`)}
-                                  className="text-xs font-medium text-gray-500 hover:underline">確認</button>
-                              )}
-                            </td>
-                          )}
-                        </tr>
-                      );
-                    })}
-                  </React.Fragment>
-                );
+                const dateStr = new Date(o.confirmedAt ?? o.requestedAt).toLocaleDateString("ja-JP");
+                const timeStr = new Date(o.confirmedAt ?? o.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
+                const seller = o.sellerName ?? o.company?.setting?.companyName ?? "—";
+                return o.items.map((item, idx) => {
+                  const lot = item.volume === "1800ml"
+                    ? (item.product?.unit1800 ?? "—")
+                    : item.volume === "720ml"
+                    ? (item.product?.unit720 ?? "—")
+                    : (item.product?.unitOther ?? "—");
+                  const isLast = idx === o.items.length - 1;
+                  return (
+                    <tr key={item.id} className={`border-t border-gray-100 hover:bg-gray-50 ${isLast ? "border-b-2 border-b-gray-200" : ""}`}>
+                      <td className="px-4 py-3 text-gray-500 whitespace-nowrap text-center">
+                        {dateStr}
+                        <div className="mt-0.5">{timeStr}</div>
+                      </td>
+                      <td className="px-4 py-3 font-medium text-gray-800 whitespace-nowrap">{seller}</td>
+                      {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 font-medium text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
+                      <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : "bg-sky-100 text-sky-700"}`}>{item.volume}</span>
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-600">¥{item.unitPrice.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-right text-gray-600">
+                        {(() => {
+                          const wp = item.volume === "1800ml"
+                            ? item.product?.wholesalePrice1800
+                            : item.volume === "720ml"
+                            ? item.product?.wholesalePrice720
+                            : item.product?.wholesalePriceOther;
+                          return wp != null ? `¥${wp.toLocaleString()}` : "—";
+                        })()}
+                      </td>
+                      <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
+                      <td className="px-4 py-3 text-center font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${st.cls}`}>{st.label}</span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {o.status === "PENDING" && (
+                          <button onClick={() => router.push(`/portal/orders/${o.id}?edit=1`)}
+                            className="text-xs text-blue-600 hover:underline">編集</button>
+                        )}
+                        {o.status === "CONFIRMED" && (
+                          <button onClick={() => router.push(`/portal/orders/${o.id}`)}
+                            className="text-xs font-medium text-gray-500 hover:underline">確認</button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                });
               })
             )}
           </tbody>
