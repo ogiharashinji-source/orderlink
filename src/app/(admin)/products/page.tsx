@@ -228,8 +228,8 @@ export default function ProductsPage() {
                         <td className="px-4 py-3 text-center">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
                         </td>
-                        <td className="px-4 py-3 text-center text-sm font-medium text-gray-700">¥{v.price.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-center text-sm font-medium text-gray-700">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
+                        <td className="px-4 py-3 text-center text-sm text-gray-700">¥{v.price.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-center text-sm text-gray-700">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.unit}</td>
                         <td className="px-4 py-3 text-right">
                           <span className="font-semibold text-gray-700">{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>

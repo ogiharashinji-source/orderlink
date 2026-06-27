@@ -199,12 +199,12 @@ export default function OrdersPage() {
                       </td>
 
                       {/* 小売値 */}
-                      <td className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                      <td className="px-4 py-3 text-center text-sm text-gray-700">
                         ¥{item.unitPrice.toLocaleString()}
                       </td>
 
                       {/* 卸売値 */}
-                      <td className="px-4 py-3 text-center text-sm font-medium text-gray-700">
+                      <td className="px-4 py-3 text-center text-sm text-gray-700">
                         {(() => {
                           const wp = item.volume === "1800ml"
                             ? item.product?.wholesalePrice1800
