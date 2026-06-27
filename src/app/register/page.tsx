@@ -17,6 +17,10 @@ export default function AdminRegisterPage() {
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
+  const toHankaku = (str: string) =>
+    str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)).replace(/　/g, " ");
+  const setHankaku = (key: keyof typeof form) => (e: React.FocusEvent<HTMLInputElement>) =>
+    setForm((f) => ({ ...f, [key]: toHankaku(e.target.value) }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,12 +85,12 @@ export default function AdminRegisterPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
-                <input required value={form.phone} onChange={set("phone")} placeholder="例: 03-1234-5678" className={inputCls} />
+                <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span><span className="text-xs text-gray-400 font-normal ml-1">（ハイフンなし）</span></label>
+                <input required value={form.phone} onChange={set("phone")} onBlur={setHankaku("phone")} placeholder="例: 0312345678" className={inputCls} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-                <input value={form.faxNumber} onChange={set("faxNumber")} placeholder="例: 03-1234-5679" className={inputCls} />
+                <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号<span className="text-xs text-gray-400 font-normal ml-1">（ハイフンなし）</span></label>
+                <input value={form.faxNumber} onChange={set("faxNumber")} onBlur={setHankaku("faxNumber")} placeholder="例: 0312345679" className={inputCls} />
               </div>
             </div>
             <div>
@@ -98,11 +102,11 @@ export default function AdminRegisterPage() {
               <p className="text-xs text-gray-500">ログインに使うIDとパスワードを設定してください</p>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">ID <span className="text-red-500">*</span></label>
-                <input required value={form.loginId} onChange={set("loginId")} placeholder="例: yamasan2025" className={inputCls} />
+                <input required value={form.loginId} onChange={set("loginId")} onBlur={setHankaku("loginId")} placeholder="例: yamasan2025" className={inputCls} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
-                <input required type="password" value={form.password} onChange={set("password")} placeholder="6文字以上" className={inputCls} />
+                <input required type="password" value={form.password} onChange={set("password")} onBlur={setHankaku("password")} placeholder="6文字以上" className={inputCls} />
               </div>
             </div>
 
