@@ -65,7 +65,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     if (link) {
       await prisma.customerCompany.update({
         where: { customerId_companyId: { customerId, companyId: adminCompanyId } },
-        data: { approved: body.approved },
+        data: { approved: body.approved, ...(body.approved ? { approvedAt: new Date() } : {}) },
       });
       // プライマリ会員でない場合はCustomer本体は更新しない
       const customer = await prisma.customer.findUnique({ where: { id: customerId } });

@@ -27,9 +27,17 @@ export async function GET(req: NextRequest) {
   // 招待経由（CustomerCompany）の会員
   const secondaryLinks = await prisma.customerCompany.findMany({
     where: unapproved ? { companyId, approved: false } : { companyId },
+    select: { customerId: true, approved: true, joinedAt: true, approvedAt: true },
   });
   const primaryIds = primaryCustomers.map((c) => c.id);
   const extraIds = secondaryLinks.map((l) => l.customerId).filter((id) => !primaryIds.includes(id));
+
+  // プライマリ会員のCustomerCompanyも取得して登録日を正確に返す
+  const primaryLinks = await prisma.customerCompany.findMany({
+    where: { companyId, customerId: { in: primaryIds } },
+    select: { customerId: true, approved: true, joinedAt: true, approvedAt: true },
+  });
+  const primaryLinkMap = Object.fromEntries(primaryLinks.map((l) => [l.customerId, l]));
 
   const secondaryCustomers = extraIds.length > 0
     ? await prisma.customer.findMany({
@@ -43,12 +51,27 @@ export async function GET(req: NextRequest) {
       })
     : [];
 
-  const secondaryWithFlag = secondaryCustomers.map((c) => {
-    const link = secondaryLinks.find((l) => l.customerId === c.id);
-    return { ...c, approved: link?.approved ?? false, _secondary: true };
+  const primaryWithDates = primaryCustomers.map((c) => {
+    const link = primaryLinkMap[c.id];
+    return {
+      ...c,
+      joinedAt: link?.joinedAt ?? c.createdAt,
+      approvedAt: link?.approvedAt ?? null,
+    };
   });
 
-  return NextResponse.json([...primaryCustomers, ...secondaryWithFlag]);
+  const secondaryWithFlag = secondaryCustomers.map((c) => {
+    const link = secondaryLinks.find((l) => l.customerId === c.id);
+    return {
+      ...c,
+      approved: link?.approved ?? false,
+      joinedAt: link?.joinedAt ?? c.createdAt,
+      approvedAt: link?.approvedAt ?? null,
+      _secondary: true,
+    };
+  });
+
+  return NextResponse.json([...primaryWithDates, ...secondaryWithFlag]);
 }
 
 function generateReferralCode(): string {
@@ -66,6 +89,6 @@ export async function POST(req: NextRequest) {
     referralCode = generateReferralCode();
   } while (await prisma.customer.findUnique({ where: { referralCode } }));
   const customer = await prisma.customer.create({ data: { ...body, companyId, referralCode } });
-  await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: true } });
+  await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: true, approvedAt: new Date() } });
   return NextResponse.json(customer, { status: 201 });
 }

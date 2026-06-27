@@ -80,6 +80,8 @@ type Customer = {
   memberNumber: string | null;
   approved: boolean;
   createdAt: string;
+  joinedAt: string | null;
+  approvedAt: string | null;
   _count: { orders: number };
 };
 
@@ -308,7 +310,9 @@ export default function CustomersPage() {
                       />
                     </td>
                     <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
-                      {new Date(c.createdAt).toLocaleDateString("ja-JP")}
+                      {c.approved && c.approvedAt
+                        ? new Date(c.approvedAt).toLocaleDateString("ja-JP")
+                        : new Date(c.joinedAt ?? c.createdAt).toLocaleDateString("ja-JP")}
                     </td>
                     <MemberNumberCell customer={c} onSaved={handleMemberNumberSaved} />
                     <td className="px-4 py-3 font-medium text-gray-900">{c.name}</td>

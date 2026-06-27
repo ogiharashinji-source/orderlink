@@ -73,6 +73,7 @@ model CustomerCompany {
   companyId  Int
   inviteId   Int?
   approved   Boolean        @default(false)
+  approvedAt DateTime?
   company    Company        @relation(fields: [companyId], references: [id])
   invite     CompanyInvite? @relation(fields: [inviteId], references: [id])
   joinedAt   DateTime       @default(now())
