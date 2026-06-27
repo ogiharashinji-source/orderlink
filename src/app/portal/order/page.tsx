@@ -210,7 +210,7 @@ function PortalOrderContent() {
       </div>
 
       <div className="bg-white rounded-xl shadow p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">コメント</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">メッセージ</label>
         <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3}
           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>

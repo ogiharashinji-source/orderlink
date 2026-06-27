@@ -277,13 +277,13 @@ export default function PortalOrderDetailPage() {
 
       {/* 備考 */}
       <div className="bg-white rounded-lg shadow p-5">
-        <h2 className="font-semibold text-gray-800 mb-2">備考</h2>
+        <h2 className="font-semibold text-gray-800 mb-2">メッセージ</h2>
         {editing ? (
           <textarea
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
             rows={3}
-            placeholder="備考・納品希望日など"
+            placeholder="メッセージを入力"
             className="w-full border border-blue-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         ) : (
