@@ -202,10 +202,17 @@ function PortalOrderContent() {
         })}
       </div>
 
-      <div className="bg-white rounded-xl shadow p-4">
-        <p className="text-right text-sm text-gray-500 mb-1">合計（小売値基準）</p>
-        <p className="text-right text-2xl font-bold text-gray-900">¥{total.toLocaleString()}</p>
-      </div>
+      {selected.some((v) => v.product.description) && (
+        <div className="bg-white rounded-xl shadow p-4 space-y-3">
+          <p className="text-sm font-medium text-gray-700">商品説明</p>
+          {selected.filter((v) => v.product.description).map((v) => (
+            <div key={v.key} className="border-l-4 border-blue-200 pl-3">
+              <p className="text-xs font-semibold text-gray-700 mb-0.5">{v.product.name}（{v.volume}）</p>
+              <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{v.product.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="bg-white rounded-xl shadow p-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">備考・納品希望日など</label>
