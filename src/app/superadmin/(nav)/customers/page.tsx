@@ -180,15 +180,7 @@ export default function SuperAdminCustomersPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">ポータル会員一覧</h1>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-500">{customers.length}件</span>
-          <button
-            onClick={openNew}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
-          >
-            + 新規会員追加
-          </button>
-        </div>
+        <span className="text-sm text-gray-500">{customers.length}件</span>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
