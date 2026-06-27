@@ -165,19 +165,15 @@ export default function OrdersPage() {
                     >
                       {/* 受注日時 */}
                       <td className="px-4 py-3 text-gray-500 text-center whitespace-nowrap">
-                        {idx === 0 ? (
-                          <>
-                            {new Date(o.orderDate).toLocaleDateString("ja-JP")}
-                            <div className="mt-0.5">
-                              {new Date(o.orderDate).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
-                            </div>
-                          </>
-                        ) : ""}
+                        {new Date(o.orderDate).toLocaleDateString("ja-JP")}
+                        <div className="mt-0.5">
+                          {new Date(o.orderDate).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
+                        </div>
                       </td>
 
                       {/* 会社名 */}
                       <td className="px-4 py-3 text-left">
-                        {idx === 0 && (() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
+                        {(() => { const n = o.customerName ?? o.customer?.name ?? "—"; return <div className="text-gray-900" title={n}>{n.length > 12 ? n.slice(0, 12) + "…" : n}</div>; })()}
                       </td>
 
                       {/* 商品名 */}
