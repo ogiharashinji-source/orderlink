@@ -236,8 +236,8 @@ export default function RequestsPage() {
                         {new Date(req.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-left text-gray-800 font-medium">{req.customer.name}</td>
-                    <td className="px-4 py-3 text-left text-gray-800 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-left text-gray-800">{req.customer.name}</td>
+                    <td className="px-4 py-3 text-left text-gray-800">{item.productName ?? item.product?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                     <td className="px-4 py-3 text-center whitespace-nowrap">
