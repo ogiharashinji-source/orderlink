@@ -308,7 +308,7 @@ function PortalOrderContent() {
                   <td className="px-2 py-3 text-center">
                     {v.product.description && (
                       <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
-                        className="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center hover:bg-gray-300">?</button>
+                        className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center hover:bg-blue-200 transition">?</button>
                     )}
                   </td>
                   <td className="px-4 py-3 text-center">
