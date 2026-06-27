@@ -283,7 +283,6 @@ export default function CustomersPage() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </th>
-              <th className="px-4 py-3 text-center">会員番号</th>
               <th className="px-4 py-3 text-center">登録日</th>
               <th className="px-4 py-3 text-center">会員コード</th>
               <th className="px-4 py-3 text-left">会社名</th>
@@ -296,7 +295,7 @@ export default function CustomersPage() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {customers.length === 0 ? (
-              <tr><td colSpan={10} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
+              <tr><td colSpan={9} className="text-center py-8 text-gray-400">顧客データがありません</td></tr>
             ) : (
               customers.map((c, idx) => {
                 const isChecked = selected.has(c.id);
@@ -310,9 +309,6 @@ export default function CustomersPage() {
                         onChange={() => toggleOne(c.id)}
                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
-                    </td>
-                    <td className="px-4 py-3 text-center text-sm font-mono text-gray-600 whitespace-nowrap">
-                      {c.customerNumber != null ? "P" + String(c.customerNumber).padStart(3, "0") : "—"}
                     </td>
                     <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
                       {c.approved && c.approvedAt
