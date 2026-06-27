@@ -69,9 +69,8 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  // 会員番号割り当て用：id昇順で全顧客を取得
+  // 会員番号割り当て用：削除済みを含む全顧客でid昇順（削除しても番号がずれない）
   const allIds = await prisma.customer.findMany({
-    where: { deleted: false },
     select: { id: true },
     orderBy: { id: "asc" },
   });
