@@ -21,8 +21,10 @@ type RequestItem = {
     alcohol: string | null;
     unit1800: string | null;
     unit720: string | null;
+    unitOther: string | null;
     wholesalePrice1800: number | null;
     wholesalePrice720: number | null;
+    wholesalePriceOther: number | null;
   } | null;
 };
 
@@ -164,7 +166,7 @@ export default function PortalOrdersPage() {
                         ? (item.product?.unit1800 ?? "—")
                         : item.volume === "720ml"
                         ? (item.product?.unit720 ?? "—")
-                        : (item.product?.unit1800 ?? item.product?.unit720 ?? "—");
+                        : (item.product?.unitOther ?? "—");
                       return (
                         <tr key={item.id} className={`border-t border-gray-100 hover:bg-gray-50 ${idx === o.items.length - 1 ? "border-b-2 border-b-gray-200" : ""}`}>
                           {idx === 0 && (
@@ -188,11 +190,14 @@ export default function PortalOrdersPage() {
                           </td>
                           <td className="px-4 py-3 text-right text-gray-600">¥{item.unitPrice.toLocaleString()}</td>
                           <td className="px-4 py-3 text-right text-gray-600">
-                            {item.product
-                              ? item.volume === "1800ml"
-                                ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
-                                : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
-                              : "—"}
+                            {(() => {
+                              const wp = item.volume === "1800ml"
+                                ? item.product?.wholesalePrice1800
+                                : item.volume === "720ml"
+                                ? item.product?.wholesalePrice720
+                                : item.product?.wholesalePriceOther;
+                              return wp != null ? `¥${wp.toLocaleString()}` : "—";
+                            })()}
                           </td>
                           <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
                           <td className="px-4 py-3 text-center font-semibold">{o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty)}</td>

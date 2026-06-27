@@ -14,7 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; description: string | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
 };
 
 type OrderRequest = {
@@ -76,10 +76,16 @@ export default function PortalOrderDetailPage() {
   if (!order) return <div className="text-center py-20 text-gray-400">読み込み中...</div>;
 
   const getLot = (item: RequestItem) =>
-    parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : (item.product?.unit720 ?? "1")) || 1;
+    parseInt(
+      item.volume === "1800ml" ? (item.product?.unit1800 ?? "1")
+      : item.volume === "720ml" ? (item.product?.unit720 ?? "1")
+      : (item.product?.unitOther ?? "1")
+    ) || 1;
 
   const getWholesalePrice = (item: RequestItem): number | null =>
-    item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : (item.product?.wholesalePrice720 ?? null);
+    item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null)
+    : item.volume === "720ml" ? (item.product?.wholesalePrice720 ?? null)
+    : (item.product?.wholesalePriceOther ?? null);
 
   const currentQtys = editing
     ? editQtys
@@ -219,11 +225,10 @@ export default function PortalOrderDetailPage() {
                   </td>
                   <td className="px-3 py-2 text-right">¥{item.unitPrice.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right text-gray-600">
-                    {item.product
-                      ? item.volume === "1800ml"
-                        ? item.product.wholesalePrice1800 != null ? `¥${item.product.wholesalePrice1800.toLocaleString()}` : "—"
-                        : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
-                      : "—"}
+                    {(() => {
+                      const wp = getWholesalePrice(item);
+                      return wp != null ? `¥${wp.toLocaleString()}` : "—";
+                    })()}
                   </td>
                   <td className="px-3 py-2 text-center">
                     {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
