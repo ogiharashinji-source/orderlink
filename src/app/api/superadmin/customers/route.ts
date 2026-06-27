@@ -79,7 +79,7 @@ export async function GET() {
 
   const customers = await prisma.customer.findMany({
     where: { deleted: false },
-    orderBy: { createdAt: "asc" },
+    orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, address: true, phone: true, email: true,
       loginId: true, password: true, createdAt: true,
