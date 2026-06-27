@@ -14,7 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; description: string | null } | null;
 };
 
 type OrderRequest = {
@@ -247,6 +247,19 @@ export default function PortalOrderDetailPage() {
           </tbody>
         </table>
       </div>
+
+      {/* 商品説明 */}
+      {order.items.some((item) => item.product?.description) && (
+        <div className="bg-white rounded-lg shadow p-5 space-y-3">
+          <h2 className="font-semibold text-gray-800">商品説明</h2>
+          {order.items.filter((item) => item.product?.description).map((item) => (
+            <div key={item.id} className="border-l-4 border-blue-200 pl-3">
+              <p className="text-xs font-semibold text-gray-700 mb-0.5">{item.productName ?? item.product?.name ?? "—"}（{item.volume}）</p>
+              <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{item.product!.description}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* 備考 */}
       <div className="bg-white rounded-lg shadow p-5">
