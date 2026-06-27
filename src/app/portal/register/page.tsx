@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -44,6 +44,18 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("token") ?? "";
   const breweryInviteToken = searchParams.get("invite") ?? "";
+
+  const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!inviteToken && !breweryInviteToken) { setTokenValid(false); return; }
+    const params = new URLSearchParams();
+    if (breweryInviteToken) params.set("invite", breweryInviteToken);
+    else params.set("token", inviteToken);
+    fetch(`/api/portal/validate-invite?${params}`)
+      .then((r) => setTokenValid(r.ok))
+      .catch(() => setTokenValid(false));
+  }, [inviteToken, breweryInviteToken]);
 
   const [mode, setMode] = useState<"register" | "login">("register");
   const [done, setDone] = useState(false);
@@ -130,6 +142,26 @@ function RegisterForm() {
   };
 
   if (done) return <CompletionScreen />;
+
+  if (tokenValid === null) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <p className="text-gray-400 text-sm">確認中...</p>
+    </div>
+  );
+
+  if (tokenValid === false) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow p-8 text-center space-y-4 max-w-sm w-full">
+        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mx-auto">
+          <svg className="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-gray-900">この招待リンクは無効です</h2>
+        <p className="text-sm text-gray-500">リンクの有効期限が切れているか、無効なURLです。<br />酒蔵担当者にお問い合わせください。</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
