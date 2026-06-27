@@ -194,8 +194,8 @@ export default function OrdersPage() {
                       <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
 
                       {/* 容量 */}
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
-                        {item.volume ?? "—"}
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>
                       </td>
 
                       {/* 小売値 */}

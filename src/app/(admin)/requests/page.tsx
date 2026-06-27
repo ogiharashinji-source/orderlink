@@ -238,7 +238,9 @@ export default function RequestsPage() {
                     <td className="px-4 py-3 text-left text-gray-800 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{item.volume ?? "—"}</td>
+                    <td className="px-4 py-3 text-center whitespace-nowrap">
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>
+                    </td>
                     <td className="px-4 py-3 text-center text-sm text-gray-700">¥{item.unitPrice.toLocaleString()}</td>
                     <td className="px-4 py-3 text-center text-sm text-gray-700">
                       {(() => {
