@@ -199,6 +199,7 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-right">ロット</th>
               <th className="px-3 py-2 text-center w-8"></th>
               <th className="px-3 py-2 text-right">ケース数</th>
+              <th className="px-3 py-2 text-right">小計</th>
             </tr>
           </thead>
           <tbody>
@@ -249,6 +250,9 @@ export default function PortalOrderDetailPage() {
                     ) : (
                       qty
                     )}
+                  </td>
+                  <td className="px-3 py-2 text-right font-medium">
+                    {(() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
                   </td>
                 </tr>
               );
