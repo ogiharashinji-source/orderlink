@@ -7,6 +7,7 @@ type Company = {
   name: string;
   code: string;
   createdAt: string;
+  companyNumber: number | null;
   setting: { companyName: string; email: string | null; phone: string | null; address: string | null } | null;
   admins: { id: number; loginId: string; password: string; createdAt: string }[];
   _count: { memberships: number; orders: number };
@@ -53,6 +54,7 @@ export default function SuperAdminCompaniesPage() {
           <table className="w-full text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
+                <th className="px-4 py-3 text-center">会員番号</th>
                 <th className="px-4 py-3 text-left">登録日</th>
                 <th className="px-4 py-3 text-left">会社名</th>
                 <th className="px-4 py-3 text-left">住所</th>
@@ -65,10 +67,13 @@ export default function SuperAdminCompaniesPage() {
             </thead>
             <tbody>
               {companies.length === 0 ? (
-                <tr><td colSpan={8} className="text-center py-8 text-gray-400">データがありません</td></tr>
+                <tr><td colSpan={9} className="text-center py-8 text-gray-400">データがありません</td></tr>
               ) : (
                 companies.map((c, idx) => (
                   <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
+                    <td className="px-4 py-3 text-center text-sm font-mono text-gray-700 font-medium whitespace-nowrap">
+                      {c.companyNumber != null ? String(c.companyNumber).padStart(3, "0") : "—"}
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {new Date(c.createdAt).toLocaleDateString("ja-JP")}
                     </td>

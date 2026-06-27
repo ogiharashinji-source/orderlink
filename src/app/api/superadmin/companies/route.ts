@@ -2,15 +2,23 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
+  // 会員番号割り当て用：id昇順で全社取得
+  const allIds = await prisma.company.findMany({
+    select: { id: true },
+    orderBy: { id: "asc" },
+  });
+  const numberMap = Object.fromEntries(allIds.map((c, i) => [c.id, i + 1]));
+
   const companies = await prisma.company.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
     include: {
       setting: { select: { companyName: true, email: true, phone: true, address: true } },
       admins: { select: { id: true, loginId: true, password: true, createdAt: true } },
       _count: { select: { memberships: { where: { approved: true } }, orders: true } },
     },
   });
-  return NextResponse.json(companies);
+
+  return NextResponse.json(companies.map((c) => ({ ...c, companyNumber: numberMap[c.id] ?? null })));
 }
 
 export async function POST(req: Request) {
