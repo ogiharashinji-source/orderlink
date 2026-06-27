@@ -258,6 +258,20 @@ export default function PortalOrderDetailPage() {
               );
             })}
           </tbody>
+          <tfoot className="bg-gray-50">
+            <tr>
+              <td colSpan={11} className="px-3 py-2 text-right font-semibold text-gray-700">合計</td>
+              <td className="px-3 py-2 text-right font-bold text-gray-900">¥{total.toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td colSpan={11} className="px-3 py-2 text-right text-gray-600 text-sm">消費税（10%）</td>
+              <td className="px-3 py-2 text-right text-gray-800 text-sm">¥{Math.floor(total * 0.1).toLocaleString()}</td>
+            </tr>
+            <tr className="border-t border-gray-200">
+              <td colSpan={11} className="px-3 py-2 text-right font-bold text-gray-800">税込合計</td>
+              <td className="px-3 py-2 text-right font-bold text-gray-900">¥{Math.floor(total * 1.1).toLocaleString()}</td>
+            </tr>
+          </tfoot>
         </table>
       </div>
 
