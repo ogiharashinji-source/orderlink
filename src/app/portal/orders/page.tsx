@@ -62,7 +62,14 @@ export default function PortalOrdersPage() {
     if (!confirm("この注文を削除しますか？")) return;
     const res = await fetch(`/api/customer/orders/${id}`, { method: "DELETE" });
     if (res.ok) {
-      fetch("/api/customer/orders").then((r) => r.ok ? r.json() : []).then(setOrders);
+      fetch("/api/customer/orders").then((r) => r.ok ? r.json() : []).then((data) => {
+        const sorted = [...data].sort((a: OrderRequest, b: OrderRequest) => {
+          const ta = new Date(a.confirmedAt ?? a.requestedAt).getTime();
+          const tb = new Date(b.confirmedAt ?? b.requestedAt).getTime();
+          return tb - ta;
+        });
+        setOrders(sorted);
+      });
     } else {
       const data = await res.json();
       alert(data.error ?? "削除に失敗しました");
@@ -71,7 +78,14 @@ export default function PortalOrdersPage() {
 
   useEffect(() => {
     fetch("/api/customer/me").then((r) => { if (!r.ok) router.push("/portal/login"); });
-    fetch("/api/customer/orders").then((r) => r.ok ? r.json() : []).then(setOrders);
+    fetch("/api/customer/orders").then((r) => r.ok ? r.json() : []).then((data) => {
+      const sorted = [...data].sort((a: OrderRequest, b: OrderRequest) => {
+        const ta = new Date(a.confirmedAt ?? a.requestedAt).getTime();
+        const tb = new Date(b.confirmedAt ?? b.requestedAt).getTime();
+        return tb - ta;
+      });
+      setOrders(sorted);
+    });
   }, [router]);
 
   const filtered = orders
