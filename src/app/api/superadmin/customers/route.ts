@@ -69,6 +69,14 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+  // 会員番号割り当て用：id昇順で全顧客を取得
+  const allIds = await prisma.customer.findMany({
+    where: { deleted: false },
+    select: { id: true },
+    orderBy: { id: "asc" },
+  });
+  const numberMap = Object.fromEntries(allIds.map((c, i) => [c.id, i + 1]));
+
   const customers = await prisma.customer.findMany({
     where: { deleted: false },
     orderBy: { createdAt: "desc" },
@@ -79,16 +87,27 @@ export async function GET() {
     },
   });
 
-  // 承認済みのCustomerCompany件数を集計
-  const companyCounts = await prisma.customerCompany.groupBy({
-    by: ["customerId"],
+  // 承認済みCustomerCompany: 件数と最初の承認日を集計
+  const links = await prisma.customerCompany.findMany({
     where: { approved: true },
-    _count: { customerId: true },
+    select: { customerId: true, approvedAt: true },
+    orderBy: { approvedAt: "asc" },
   });
-  const countMap = Object.fromEntries(companyCounts.map((c) => [c.customerId, c._count.customerId]));
+
+  const countMap: Record<number, number> = {};
+  const firstApprovedAt: Record<number, string | null> = {};
+  for (const l of links) {
+    countMap[l.customerId] = (countMap[l.customerId] ?? 0) + 1;
+    if (!firstApprovedAt[l.customerId]) {
+      firstApprovedAt[l.customerId] = l.approvedAt ? l.approvedAt.toISOString() : null;
+    }
+  }
 
   const result = customers.map((c) => ({
     ...c,
+    customerNumber: numberMap[c.id] ?? null,
+    appliedAt: c.createdAt,
+    registeredAt: firstApprovedAt[c.id] ?? null,
     companyCount: countMap[c.id] ?? 0,
   }));
 

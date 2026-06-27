@@ -12,6 +12,9 @@ type Customer = {
   password: string | null;
   companyCount: number;
   createdAt: string;
+  customerNumber: number | null;
+  appliedAt: string;
+  registeredAt: string | null;
 };
 
 const empty = { name: "", email: "", phone: "", faxNumber: "", address: "", loginId: "", password: "" };
@@ -197,6 +200,8 @@ export default function SuperAdminCustomersPage() {
           <table className="w-full text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
+                <th className="px-4 py-3 text-center">会員番号</th>
+                <th className="px-4 py-3 text-left">申請日</th>
                 <th className="px-4 py-3 text-left">登録日</th>
                 <th className="px-4 py-3 text-left">会社名</th>
                 <th className="px-4 py-3 text-left">住所</th>
@@ -208,12 +213,18 @@ export default function SuperAdminCustomersPage() {
             </thead>
             <tbody>
               {customers.length === 0 ? (
-                <tr><td colSpan={7} className="text-center py-8 text-gray-400">データがありません</td></tr>
+                <tr><td colSpan={9} className="text-center py-8 text-gray-400">データがありません</td></tr>
               ) : (
                 customers.map((c, idx) => (
                   <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
+                    <td className="px-4 py-3 text-sm text-center text-gray-700 font-mono font-medium">
+                      {c.customerNumber != null ? String(c.customerNumber).padStart(5, "0") : "—"}
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
-                      {new Date(c.createdAt).toLocaleDateString("ja-JP")}
+                      {new Date(c.appliedAt).toLocaleDateString("ja-JP")}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
+                      {c.registeredAt ? new Date(c.registeredAt).toLocaleDateString("ja-JP") : "—"}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{c.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{c.address || "—"}</td>
