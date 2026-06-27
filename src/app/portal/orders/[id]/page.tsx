@@ -178,7 +178,6 @@ export default function PortalOrderDetailPage() {
           <div><span className="text-gray-500">住所</span><p className="font-medium">{order.sellerAddress ?? order.company?.setting?.address ?? "—"}</p></div>
           <div><span className="text-gray-500">電話</span><p className="font-medium">{order.sellerPhone ?? order.company?.setting?.phone ?? "—"}</p></div>
           <div><span className="text-gray-500">FAX</span><p className="font-medium">{order.sellerFax ?? order.company?.setting?.faxNumber ?? "—"}</p></div>
-          <div><span className="text-gray-500">メール</span><p className="font-medium">{order.sellerEmail ?? order.company?.setting?.email ?? "—"}</p></div>
         </div>
       </div>
 
@@ -196,7 +195,7 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-center">容量</th>
               <th className="px-3 py-2 text-right">小売値</th>
               <th className="px-3 py-2 text-right">卸売値</th>
-              <th className="px-3 py-2 text-right">ロット</th>
+              <th className="px-3 py-2 text-center">ロット</th>
               <th className="px-3 py-2 text-center w-8"></th>
               <th className="px-3 py-2 text-right">ケース数</th>
               <th className="px-3 py-2 text-right">小計</th>
@@ -224,7 +223,7 @@ export default function PortalOrderDetailPage() {
                         : item.product.wholesalePrice720 != null ? `¥${item.product.wholesalePrice720.toLocaleString()}` : "—"
                       : "—"}
                   </td>
-                  <td className="px-3 py-2 text-right">
+                  <td className="px-3 py-2 text-center">
                     {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
                   </td>
                   <td className="px-3 py-2 text-center">
