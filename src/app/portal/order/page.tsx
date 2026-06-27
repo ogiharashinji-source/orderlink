@@ -174,7 +174,7 @@ function PortalOrderContent() {
               const qty = quantities[v.key] ?? 0;
               return (
                 <tr key={v.key} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{v.product.name}</td>
+                  <td className="px-4 py-3 text-gray-900">{v.product.name}</td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
@@ -302,7 +302,7 @@ function PortalOrderContent() {
               const rowBg = qty > 0 ? "bg-blue-50" : rowIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
               return (
                 <tr key={v.key} className={rowBg}>
-                  <td className="px-4 py-3 font-medium text-gray-900" title={v.product.name}>
+                  <td className="px-4 py-3 text-gray-900" title={v.product.name}>
                     {v.product.name.length > 14 ? v.product.name.slice(0, 14) + "…" : v.product.name}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
