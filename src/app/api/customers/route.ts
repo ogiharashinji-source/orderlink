@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
+import { nextCustomerNumber } from "@/lib/customerNumber";
 
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
@@ -88,7 +89,8 @@ export async function POST(req: NextRequest) {
   do {
     referralCode = generateReferralCode();
   } while (await prisma.customer.findUnique({ where: { referralCode } }));
-  const customer = await prisma.customer.create({ data: { ...body, companyId, referralCode } });
+  const customerNumber = await nextCustomerNumber();
+  const customer = await prisma.customer.create({ data: { ...body, companyId, referralCode, customerNumber } });
   await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: true, approvedAt: new Date() } });
   return NextResponse.json(customer, { status: 201 });
 }

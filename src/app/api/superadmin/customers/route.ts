@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { nextCustomerNumber } from "@/lib/customerNumber";
 
 export async function POST(req: Request) {
   const { name, email, phone, faxNumber, address, loginId, password } = await req.json();
@@ -48,6 +49,7 @@ export async function POST(req: Request) {
     const firstCompany = await prisma.company.findFirst({ orderBy: { id: "asc" } });
     const defaultCompanyId = firstCompany?.id ?? 1;
 
+    const customerNumber = await nextCustomerNumber();
     const customer = await prisma.customer.create({
       data: {
         companyId: defaultCompanyId,
@@ -58,6 +60,7 @@ export async function POST(req: Request) {
         address: address || null,
         loginId: loginId || null,
         password: password || null,
+        customerNumber,
       },
     });
     return NextResponse.json(customer, { status: 201 });
@@ -69,20 +72,13 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  // 会員番号割り当て用：削除済みを含む全顧客でid昇順（削除しても番号がずれない）
-  const allIds = await prisma.customer.findMany({
-    select: { id: true },
-    orderBy: { id: "asc" },
-  });
-  const numberMap = Object.fromEntries(allIds.map((c, i) => [c.id, i + 1]));
-
   const customers = await prisma.customer.findMany({
     where: { deleted: false },
     orderBy: { createdAt: "desc" },
     select: {
       id: true, name: true, address: true, phone: true, email: true,
       loginId: true, password: true, createdAt: true,
-      companyId: true,
+      companyId: true, customerNumber: true,
     },
   });
 
@@ -104,7 +100,6 @@ export async function GET() {
 
   const result = customers.map((c) => ({
     ...c,
-    customerNumber: numberMap[c.id] ?? null,
     appliedAt: c.createdAt,
     registeredAt: firstApprovedAt[c.id] ?? null,
     companyCount: countMap[c.id] ?? 0,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { makeSessionToken, CUSTOMER_COOKIE } from "@/lib/customerAuth";
 import { sendBreweryNotificationEmail } from "@/lib/mailer";
+import { nextCustomerNumber } from "@/lib/customerNumber";
 
 export async function POST(req: NextRequest) {
   try {
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
       create: { customerId: customer.id, companyId, approved: false },
     });
   } else {
+    const customerNumber = await nextCustomerNumber();
     customer = await prisma.customer.create({
       data: {
         companyId,
@@ -87,6 +89,7 @@ export async function POST(req: NextRequest) {
         loginId,
         password,
         approved: false,
+        customerNumber,
       },
     });
     await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: false } });
