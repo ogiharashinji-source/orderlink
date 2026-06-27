@@ -143,7 +143,9 @@ export default function RequestsPage() {
                     <td className="px-3 py-2 text-gray-500">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                     <td className="px-3 py-2 text-center text-gray-500">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
                     <td className="px-3 py-2 text-center text-gray-500">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
-                    <td className="px-3 py-2 text-center">{item.volume ?? "—"}</td>
+                    <td className="px-3 py-2 text-center">
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>
+                    </td>
                     <td className="px-3 py-2 text-center text-gray-700">{item.requestedQty}</td>
                     <td className="px-3 py-2 text-center">
                       <select
