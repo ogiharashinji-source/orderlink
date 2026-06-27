@@ -15,6 +15,10 @@ export default function CompanyNewPage() {
 
   const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
+  const toHankaku = (str: string) =>
+    str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)).replace(/　/g, " ");
+  const setHankaku = (key: keyof typeof form) => (e: React.FocusEvent<HTMLInputElement>) =>
+    setForm((f) => ({ ...f, [key]: toHankaku(e.target.value) }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,12 +59,12 @@ export default function CompanyNewPage() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span></label>
-            <input required value={form.phone} onChange={set("phone")} className={inputCls} />
+            <label className="block text-sm font-medium text-gray-700 mb-1">電話番号 <span className="text-red-500">*</span><span className="text-xs text-gray-400 font-normal ml-1">（ハイフンなし）</span></label>
+            <input required value={form.phone} onChange={set("phone")} onBlur={setHankaku("phone")} className={inputCls} placeholder="例: 0312345678" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号</label>
-            <input value={form.faxNumber} onChange={set("faxNumber")} className={inputCls} />
+            <label className="block text-sm font-medium text-gray-700 mb-1">FAX番号<span className="text-xs text-gray-400 font-normal ml-1">（ハイフンなし）</span></label>
+            <input value={form.faxNumber} onChange={set("faxNumber")} onBlur={setHankaku("faxNumber")} className={inputCls} placeholder="例: 0312345679" />
           </div>
         </div>
         <div>
@@ -71,11 +75,11 @@ export default function CompanyNewPage() {
         <div className="border-t pt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">ID <span className="text-red-500">*</span></label>
-            <input required value={form.loginId} onChange={set("loginId")} className={inputCls} />
+            <input required value={form.loginId} onChange={set("loginId")} onBlur={setHankaku("loginId")} className={inputCls} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">パスワード <span className="text-red-500">*</span></label>
-            <input required type="password" value={form.password} onChange={set("password")} placeholder="6文字以上" className={inputCls} />
+            <input required type="password" value={form.password} onChange={set("password")} onBlur={setHankaku("password")} placeholder="6文字以上" className={inputCls} />
           </div>
         </div>
 
