@@ -142,10 +142,6 @@ export default function RequestsPage() {
                 ))}
               </tbody>
             </table>
-            <div className="bg-gray-50 rounded-lg px-4 py-3">
-              <p className="text-xs text-gray-400 mb-1">備考</p>
-              <p className="text-sm text-gray-700 whitespace-pre-wrap">{modal.freshReq.notes || "—"}</p>
-            </div>
             <div className="flex justify-end gap-3 pt-2">
               <button onClick={() => setModal(null)}
                 className="px-5 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
