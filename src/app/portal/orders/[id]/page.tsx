@@ -231,7 +231,7 @@ export default function PortalOrderDetailPage() {
                     })()}
                   </td>
                   <td className="px-3 py-2 text-center">
-                    {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unit1800 ?? item.product?.unit720 ?? "—")}
+                    {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—")}
                   </td>
                   <td className="px-3 py-2 text-center">
                     {item.product?.description && (
