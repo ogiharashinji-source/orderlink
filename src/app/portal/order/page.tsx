@@ -135,6 +135,17 @@ function PortalOrderContent() {
 
   if (confirming) return (
     <div className="space-y-4">
+      {descModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setDescModal(null)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-base font-bold text-gray-900">{descModal.name}</h2>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>
+            <div className="flex justify-end pt-1">
+              <button onClick={() => setDescModal(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">閉じる</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-gray-900">注文確認</h1>
         <button onClick={() => setConfirming(false)} className="text-sm text-blue-600 hover:underline">← 修正する</button>
