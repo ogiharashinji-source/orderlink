@@ -172,6 +172,113 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
   await getResend().emails.send({ from: FROM, to, subject, html, text });
 }
 
+export async function sendOrderConfirmationEmail({
+  to,
+  customerName,
+  orderNumber,
+  breweryName,
+  items,
+  adminReply,
+}: {
+  to: string;
+  customerName: string;
+  orderNumber: string;
+  breweryName: string;
+  items: { productName: string; volume: string | null; qty: number; unitPrice: number }[];
+  adminReply?: string | null;
+}) {
+  const subject = `【OrderLink】ご注文が確定しました（${orderNumber}）`;
+
+  const itemRows = items
+    .map(
+      (i) =>
+        `<tr>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;">${i.productName}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.volume ?? "—"}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.qty}ケース</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:right;">¥${i.unitPrice.toLocaleString()}</td>
+        </tr>`
+    )
+    .join("");
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 8px;font-size:16px;font-weight:bold;color:#222;">${customerName} 様</p>
+            <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
+              ${breweryName}よりご注文が確定しました。
+            </p>
+            <p style="margin:0 0 8px;font-size:13px;color:#888;">受注番号：${orderNumber}</p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:24px;">
+              <thead>
+                <tr style="background:#f8f9fb;">
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:left;">商品名</th>
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">容量</th>
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">数量</th>
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:right;">卸値</th>
+                </tr>
+              </thead>
+              <tbody>${itemRows}</tbody>
+            </table>
+            ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">蔵元からのメッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:8px 0 16px;">
+                  <a href="https://orderlink.jp/portal/orders"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;">
+                    発注履歴を確認する
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999;">このメールはOrderLinkから自動送信されています。返信はお受けできません。</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = [
+    `${customerName} 様`,
+    "",
+    `${breweryName}よりご注文が確定しました。`,
+    `受注番号：${orderNumber}`,
+    "",
+    ...items.map((i) => `・${i.productName} ${i.volume ?? ""} ${i.qty}ケース ¥${i.unitPrice.toLocaleString()}`),
+    ...(adminReply ? ["", "【蔵元からのメッセージ】", adminReply] : []),
+    "",
+    "https://orderlink.jp/portal/orders",
+  ].join("\n");
+
+  if (DEV) {
+    console.log("========== [注文確定メール] ==========");
+    console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
+    console.log(text);
+    console.log("======================================");
+    return;
+  }
+
+  await getResend().emails.send({ from: FROM, to, subject, html, text });
+}
+
 export async function sendOrderLinkEmail({
   to,
   customerName,

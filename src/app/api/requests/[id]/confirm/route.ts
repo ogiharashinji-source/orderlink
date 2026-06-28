@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { seqFromRequestNumber, datePrefix } from "@/lib/orderSequence";
+import { sendOrderConfirmationEmail } from "@/lib/mailer";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -10,6 +11,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     include: {
       items: { include: { product: true } },
       customer: { select: { name: true, company: true, address: true, phone: true, faxNumber: true, email: true } },
+      company: { select: { name: true } },
     },
   });
   if (!request) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -87,6 +89,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       requestedAt: request.requestedAt, // 顧客の発注時刻を保持
     },
   });
+
+  // 注文確定メールをポータル会員に送信
+  const customerEmail = request.customer?.email;
+  if (customerEmail) {
+    const emailItems = validItems.map((i) => {
+      const ri = itemMap[i.requestItemId];
+      return {
+        productName: ri.productName ?? ri.product?.name ?? "—",
+        volume: ri.volume ?? null,
+        qty: i.confirmedQty,
+        unitPrice: i.unitPrice,
+      };
+    });
+    await sendOrderConfirmationEmail({
+      to: customerEmail,
+      customerName: request.customer?.name ?? "",
+      orderNumber: order.orderNumber,
+      breweryName: request.company?.name ?? "",
+      items: emailItems,
+      adminReply: adminReply || null,
+    }).catch((e) => console.error("注文確定メール送信エラー:", e));
+  }
 
   return NextResponse.json({ orderNumber: order.orderNumber, orderId: order.id }, { status: 201 });
 }
