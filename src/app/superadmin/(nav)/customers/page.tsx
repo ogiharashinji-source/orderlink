@@ -17,6 +17,15 @@ type Customer = {
   registeredAt: string | null;
 };
 
+type BreweryLink = {
+  id: number;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  approved: boolean;
+  joinedAt: string;
+};
+
 const empty = { name: "", email: "", phone: "", faxNumber: "", address: "", loginId: "", password: "" };
 
 const toHankaku = (str: string) =>
@@ -27,6 +36,18 @@ export default function SuperAdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [breweryPopup, setBreweryPopup] = useState<{ customer: Customer; breweries: BreweryLink[] } | null>(null);
+  const [breweryPopupLoading, setBreweryPopupLoading] = useState(false);
+
+  const openBreweryPopup = async (customer: Customer) => {
+    setBreweryPopupLoading(true);
+    setBreweryPopup({ customer, breweries: [] });
+    const res = await fetch(`/api/superadmin/customers/${customer.id}/companies`);
+    const data = await res.json().catch(() => []);
+    setBreweryPopup({ customer, breweries: data });
+    setBreweryPopupLoading(false);
+  };
+
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState(empty);
@@ -178,6 +199,53 @@ export default function SuperAdminCustomersPage() {
 
   return (
     <div className="space-y-4">
+      {/* 登録酒蔵ポップアップ */}
+      {breweryPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setBreweryPopup(null)}>
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-6 py-4 border-b">
+              <h2 className="text-base font-bold text-gray-900">
+                {breweryPopup.customer.name} の登録酒蔵
+              </h2>
+              <button onClick={() => setBreweryPopup(null)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+            </div>
+            <div className="overflow-y-auto flex-1">
+              {breweryPopupLoading ? (
+                <p className="text-center py-8 text-gray-400 text-sm">読み込み中...</p>
+              ) : breweryPopup.breweries.length === 0 ? (
+                <p className="text-center py-8 text-gray-400 text-sm">登録酒蔵がありません</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50 text-gray-500 text-xs sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 text-left">酒蔵名</th>
+                      <th className="px-4 py-2 text-left">メール</th>
+                      <th className="px-4 py-2 text-center">承認</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {breweryPopup.breweries.map((b) => (
+                      <tr key={b.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-2 font-medium text-gray-900">{b.name}</td>
+                        <td className="px-4 py-2 text-gray-500">{b.email || "—"}</td>
+                        <td className="px-4 py-2 text-center">
+                          {b.approved
+                            ? <span className="text-green-600 font-medium">承認済</span>
+                            : <span className="text-yellow-600 font-medium">未承認</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+            <div className="px-6 py-3 border-t text-right text-xs text-gray-400">
+              {breweryPopup.breweries.length}件
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">ポータル会員一覧</h1>
         <span className="text-sm text-gray-500">{customers.length}件</span>
@@ -222,7 +290,11 @@ export default function SuperAdminCustomersPage() {
                     <td className="px-4 py-3 text-sm text-gray-600">{c.address || "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{c.phone || "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{c.email || "—"}</td>
-                    <td className="px-4 py-3 text-sm text-center text-gray-700 font-medium">{c.companyCount}</td>
+                    <td className="px-4 py-3 text-sm text-center">
+                      <button onClick={() => openBreweryPopup(c)} className="text-blue-600 hover:underline font-medium tabular-nums">
+                        {c.companyCount}
+                      </button>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-4">
                         <button onClick={() => openEdit(c)} className="text-blue-600 hover:underline text-xs">編集</button>
