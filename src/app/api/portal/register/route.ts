@@ -10,7 +10,13 @@ export async function POST(req: NextRequest) {
   if (!name || !loginId || !password)
     return NextResponse.json({ error: "必須項目を入力してください" }, { status: 400 });
 
-  const existingLoginId = await prisma.customer.findFirst({ where: { loginId, deleted: false } });
+  const existingLoginId = await prisma.customer.findFirst({
+    where: {
+      loginId,
+      deleted: false,
+      ...(email ? { email: { not: email } } : {}),
+    },
+  });
   if (existingLoginId)
     return NextResponse.json({ error: "このログインIDはすでに使われています" }, { status: 400 });
 
