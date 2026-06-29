@@ -290,7 +290,7 @@ export async function sendOrderConfirmationEmail({
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" style="padding:8px 0 16px;">
-                  <a href="https://orderlink.jp/portal/orders"
+                  <a href="https://www.orderlink.jp/portal/orders"
                      style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;">
                     確認する
                   </a>
