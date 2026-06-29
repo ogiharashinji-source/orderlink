@@ -14,6 +14,7 @@ let _cachedCustomerName = "";
 export default function PortalLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [customerName, setCustomerName] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
 
   // マウント直後にキャッシュ/localStorageから即座に反映
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function PortalLayoutClient({ children }: { children: React.React
   useEffect(() => {
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) return;
     fetch("/api/customer/me").then((r) => {
-      if (!r.ok) { window.location.href = "/portal/login"; return; }
+      if (!r.ok) { setRedirecting(true); window.location.href = "/portal/login"; return; }
       fetch("/api/portal/profile").then((r2) => r2.ok ? r2.json() : null).then((d) => {
         if (d?.name) {
           _cachedCustomerName = d.name;
@@ -51,6 +52,8 @@ export default function PortalLayoutClient({ children }: { children: React.React
   if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) {
     return <>{children}</>;
   }
+
+  if (redirecting) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">
