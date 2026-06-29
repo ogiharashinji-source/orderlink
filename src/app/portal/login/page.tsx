@@ -45,7 +45,7 @@ function CustomerLoginForm() {
           }
         }
         setRedirecting(true);
-        window.location.href = "/portal/order";
+        setTimeout(() => { window.location.href = "/portal/order"; }, 50);
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? "ログインに失敗しました");
@@ -67,7 +67,7 @@ function CustomerLoginForm() {
     });
   };
 
-  if (redirecting) return <div className="min-h-screen bg-[#1e3a5f]" />;
+  if (loading || redirecting) return <div className="min-h-screen bg-[#1e3a5f]" />;
 
   if (done) return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
