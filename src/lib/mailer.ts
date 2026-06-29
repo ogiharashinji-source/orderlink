@@ -216,7 +216,6 @@ export async function sendOrderConfirmationEmail({
         </tr>
         <tr>
           <td style="padding:40px 40px 32px;">
-            <p style="margin:0 0 8px;font-size:16px;font-weight:bold;color:#222;">${customerName} 様</p>
             <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
               ${breweryName}よりご注文が確定しました。
             </p>
@@ -258,8 +257,6 @@ export async function sendOrderConfirmationEmail({
 </html>`;
 
   const text = [
-    `${customerName} 様`,
-    "",
     `${breweryName}よりご注文が確定しました。`,
     `受注番号：${orderNumber}`,
     "",
