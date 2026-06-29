@@ -112,7 +112,7 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
 }
 
 export async function sendBreweryNotificationEmail(to: string, customerName: string, breweryName: string) {
-  const subject = `【OrderLink】${customerName}様が登録しました`;
+  const subject = `【OrderLink】新規登録のお知らせ`;
   const html = `<!DOCTYPE html>
 <html lang="ja">
 <head><meta charset="UTF-8"></head>
@@ -127,18 +127,19 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
         </tr>
         <tr>
           <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 8px;font-size:16px;font-weight:bold;color:#222;">新規登録のお知らせ</p>
             <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.9;">
-              <strong>${customerName}</strong>様がOrderLinkへ登録しました。
+              ${customerName}様がOrderLinkへ登録されました。
             </p>
             <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
-              管理画面から承認してください。
+              管理画面より内容をご確認のうえ、承認をお願いいたします。
             </p>
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" style="padding:8px 0 32px;">
                   <a href="https://www.orderlink.jp/customers"
                      style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
-                    管理画面で確認する
+                    確認する
                   </a>
                 </td>
               </tr>
@@ -158,7 +159,7 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
 </body>
 </html>`;
 
-  const text = `${customerName}様がOrderLinkへ登録しました。管理画面から承認してください。\nhttps://www.orderlink.jp/customers`;
+  const text = `新規登録のお知らせ\n${customerName}様がOrderLinkへ登録されました。\n管理画面より内容をご確認のうえ、承認をお願いいたします。\nhttps://www.orderlink.jp/customers`;
 
   if (DEV) {
     console.log("========== [登録通知メール] ==========");
