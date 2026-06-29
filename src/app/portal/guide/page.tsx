@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "ポータル会員向け操作マニュアル | OrderLink" };
+export const metadata = { title: "OrderLink 販売店マニュアル | OrderLink" };
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="space-y-3">
@@ -27,8 +27,7 @@ export default function PortalGuidePage() {
 
         {/* タイトル */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">マニュアル</h1>
-          <p className="text-sm text-gray-500 mt-1">販売店・取引先担当者向け操作ガイド</p>
+          <h1 className="text-2xl font-bold text-gray-900">OrderLink 販売店マニュアル</h1>
         </div>
 
         {/* 目次 */}
@@ -37,7 +36,7 @@ export default function PortalGuidePage() {
           <ol className="list-decimal list-inside space-y-1 text-sm text-blue-600">
             <li><a href="#register" className="hover:underline">アカウント登録</a></li>
             <li><a href="#login" className="hover:underline">ログイン・ログアウト</a></li>
-            <li><a href="#order" className="hover:underline">発注依頼の方法</a></li>
+            <li><a href="#order" className="hover:underline">発注方法</a></li>
             <li><a href="#history" className="hover:underline">発注履歴の確認</a></li>
             <li><a href="#profile" className="hover:underline">プロフィール・パスワード変更</a></li>
           </ol>
@@ -46,13 +45,12 @@ export default function PortalGuidePage() {
         {/* 1. アカウント登録 */}
         <div id="register" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="1. アカウント登録">
-            <p className="font-medium text-gray-800">招待メールからの登録</p>
-            <Step n={1}>招待メールまたは招待QRコードを開きます。</Step>
-            <Step n={2}>メール内の「登録はこちら」をクリックします。</Step>
-            <Step n={3}>登録フォームに必要事項（会社名・住所・電話番号・メールアドレス・ログインID・パスワード）を入力します。</Step>
-            <Step n={4}>「登録する」ボタンをクリックすると、登録が完了します。</Step>
-            <Step n={5}>酒蔵による承認が完了すると、OrderLinkポータルをご利用いただけます。</Step>
-            <Note>招待リンクの有効期限は24時間です。期限が切れた場合は酒蔵の担当者に再送信を依頼してください。</Note>
+            <p className="font-medium text-gray-800">招待メールから登録する</p>
+            <Step n={1}>招待メールまたは招待QRコードからアクセスします。</Step>
+            <Step n={2}>登録フォームに必要事項（会社名・住所・電話番号・メールアドレス・ログインID・パスワード）を入力します。</Step>
+            <Step n={3}>「登録する」ボタンをクリックすると、登録が完了します。</Step>
+            <Step n={4}>招待元による承認が完了すると、OrderLinkポータルをご利用いただけます。</Step>
+            <p className="font-medium text-gray-800 mt-2">ご注意</p>
             <Note>パスワードは6文字以上で設定してください。</Note>
           </Section>
         </div>
@@ -62,23 +60,21 @@ export default function PortalGuidePage() {
           <Section title="2. ログイン・ログアウト">
             <p className="font-medium text-gray-800">ログイン</p>
             <Step n={1}>https://www.orderlink.jp/portal にアクセスします。</Step>
-            <Step n={2}>設定したログインIDとパスワードを入力し「ログイン」を押します。</Step>
-
+            <Step n={2}>登録したIDとパスワードを入力し、「ログイン」ボタンをクリックします。</Step>
             <p className="font-medium text-gray-800 mt-4">パスワードを忘れた場合</p>
             <p>ログイン画面の「パスワードをお忘れの方」から再設定できます。</p>
           </Section>
         </div>
 
-        {/* 3. 発注依頼 */}
+        {/* 3. 発注方法 */}
         <div id="order" className="bg-white rounded-xl shadow p-6 space-y-4">
-          <Section title="3. 発注依頼の方法">
-            <p className="font-medium text-gray-800">メールのURLから発注する場合</p>
-            <Step n={1}>メール内のURLをクリックし、発注画面を開きます。</Step>
-            <Step n={2}>「発注依頼」画面で発注先を選択します。</Step>
+          <Section title="3. 発注方法">
+            <Step n={1}>ページ上部メニューの「発注依頼」をクリックします。</Step>
+            <Step n={2}>発注先を選択します。</Step>
             <Step n={3}>商品一覧からご希望商品の数量を入力します。</Step>
             <Step n={4}>納品希望日やご要望がある場合は、備考欄へ入力します。</Step>
             <Step n={5}>「この内容で発注依頼する」ボタンをクリックすると、発注依頼が完了します。</Step>
-            <p className="font-medium text-gray-800 mt-4">ご注意</p>
+            <p className="font-medium text-gray-800 mt-2">ご注意</p>
             <Note>「？」ボタンをクリックすると、商品の詳細説明をご確認いただけます。</Note>
             <Note>在庫数が設定されている商品は、在庫数を超える数量は入力できません。</Note>
           </Section>
@@ -88,14 +84,14 @@ export default function PortalGuidePage() {
         <div id="history" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="4. 発注履歴の確認">
             <Step n={1}>上部メニューの「発注管理」をクリックします。</Step>
-            <Step n={2}>過去の発注履歴が一覧で表示されます。発注先や日付で絞り込んで検索することもできます。</Step>
+            <Step n={2}>過去の発注履歴が一覧で表示されます。会社名や商品名で絞り込んで検索することもできます。</Step>
             <Step n={3}>各注文の「詳細」ボタンをクリックすると、注文内容や金額などの詳細をご確認いただけます。</Step>
 
             <div className="mt-2 space-y-1">
               <p className="font-medium text-gray-800">ステータスについて</p>
               <div className="flex flex-wrap gap-3 text-xs items-start">
                 <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium shrink-0">確認待ち</span>
-                <span className="text-gray-500">酒蔵側で注文内容を確認しています。</span>
+                <span className="text-gray-500">注文内容を確認しています。</span>
               </div>
               <div className="flex flex-wrap gap-3 text-xs items-start">
                 <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-medium shrink-0">確定</span>
@@ -114,8 +110,8 @@ export default function PortalGuidePage() {
           <Section title="5. プロフィール・パスワード変更">
             <Step n={1}>画面右上の会社名をクリックします。</Step>
             <Step n={2}>会社情報（会社名・住所・電話番号など）を更新できます。</Step>
-            <Step n={3}>パスワードを変更する場合は「現在のパスワード」と「新しいパスワード（6文字以上）」を入力します。</Step>
-            <Step n={4}>「保存する」ボタンで変更が反映されます。</Step>
+            <Step n={3}>パスワードを変更する場合は、現在のパスワードと新しいパスワード（6文字以上）を入力します。</Step>
+            <Step n={4}>「保存する」ボタンをクリックすると、変更内容が反映されます。</Step>
           </Section>
         </div>
 
