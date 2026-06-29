@@ -24,6 +24,11 @@ export async function POST(req: NextRequest) {
     if (invite && (!invite.expiresAt || invite.expiresAt > new Date())) {
       companyId = invite.companyId;
       await prisma.companyInvite.delete({ where: { id: invite.id } });
+      const setting = await prisma.adminSetting.findUnique({ where: { companyId: invite.companyId } });
+      if (setting) {
+        notifyEmail = setting.email;
+        notifyCompanyName = setting.companyName;
+      }
     }
   } else if (breweryInviteToken) {
     const setting = await prisma.adminSetting.findUnique({ where: { inviteToken: breweryInviteToken } });
@@ -95,8 +100,8 @@ export async function POST(req: NextRequest) {
     await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: false } });
   }
 
-  // QRコード経由登録時は酒蔵管理者へ通知
-  if (breweryInviteToken && notifyEmail && notifyCompanyName) {
+  // QR・招待メール経由登録時は酒蔵管理者へ通知
+  if (notifyEmail && notifyCompanyName) {
     sendBreweryNotificationEmail(notifyEmail, name, notifyCompanyName).catch(() => {});
   }
 
