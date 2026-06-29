@@ -218,7 +218,7 @@ export async function sendOrderConfirmationEmail({
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 8px;font-size:16px;color:#222;">${customerName} 様</p>
             <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
-              ${breweryName}よりご注文が確定しました。
+              ご注文内容が確定いたしました。<br>下記ボタンよりアクセスのうえ、ご注文内容をご確認ください。
             </p>
             <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:24px;">
               <thead>
