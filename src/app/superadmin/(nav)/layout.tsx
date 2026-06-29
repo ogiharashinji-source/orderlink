@@ -17,7 +17,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="bg-orange-500 text-white">
+      <nav className="bg-orange-700 text-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center h-16 gap-6">
             <span className="text-lg font-bold tracking-widest text-white whitespace-nowrap">OrderLink</span>
@@ -29,7 +29,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
                     key={item.href}
                     href={item.href}
                     className={`px-3 py-2 rounded text-sm font-medium transition-colors ${
-                      active ? "bg-orange-700 text-white" : "text-orange-100 hover:bg-orange-600 hover:text-white"
+                      active ? "bg-orange-900 text-white" : "text-orange-100 hover:bg-orange-800 hover:text-white"
                     }`}
                   >
                     {item.label}
@@ -39,7 +39,7 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
             </div>
             <button
               onClick={handleLogout}
-              className="text-orange-100 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-orange-600 transition-colors"
+              className="text-orange-100 hover:text-white text-sm font-medium px-3 py-2 rounded hover:bg-orange-800 transition-colors"
             >
               ログアウト
             </button>
