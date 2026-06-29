@@ -32,10 +32,13 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
         <tr>
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.9;">
-              ${company}様より OrderLink ポータルへご招待されました。
+              ${company}様より、OrderLinkポータルへご招待されました。
+            </p>
+            <p style="margin:0 0 16px;font-size:15px;color:#333333;line-height:1.9;">
+              OrderLinkにご登録いただくことで、商品の発注をオンラインで簡単に行っていただけます。
             </p>
             <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
-              OrderLinkにご登録いただくことで、商品をオンラインで簡単にご発注いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。
+              下記のボタンよりアカウントをご登録いただき、ご利用を開始してください。
             </p>
 
             <!-- ボタン -->
@@ -50,18 +53,11 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
               </tr>
             </table>
 
-            <p style="margin:0 0 8px;font-size:13px;color:#666666;line-height:1.7;">
-              ボタンが機能しない場合は、以下のURLをブラウザに貼り付けてください。
-            </p>
-            <p style="margin:0 0 28px;font-size:12px;color:#888888;word-break:break-all;">
-              <a href="${inviteUrl}" style="color:#1e3a5f;">${inviteUrl}</a>
-            </p>
-
             <!-- 注意事項 -->
             <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9fb;border-radius:6px;">
               <tr>
                 <td style="padding:16px 20px;font-size:13px;color:#666666;line-height:1.8;">
-                  なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。
+                  ※本メールにお心当たりがない場合は、お手数ですが本メールを破棄してください。
                 </td>
               </tr>
             </table>
@@ -84,13 +80,15 @@ export async function sendInviteEmail(to: string, inviteUrl: string, senderName 
 </html>`;
 
   const text = [
-    `${company}様より OrderLink ポータルへご招待されました。`,
+    `${company}様より、OrderLinkポータルへご招待されました。`,
     "",
-    "OrderLinkにご登録いただくことで、商品をオンラインで簡単にご発注いただけるようになります。下記のボタンよりアカウントを作成し、ご利用を開始してください。",
+    "OrderLinkにご登録いただくことで、商品の発注をオンラインで簡単に行っていただけます。",
+    "",
+    "下記のボタンよりアカウントをご登録いただき、ご利用を開始してください。",
     "",
     inviteUrl,
     "",
-    "なお、本メールにお心当たりがない場合は、お手数ですが本メールを削除いただきますようお願いいたします。",
+    "※本メールにお心当たりがない場合は、お手数ですが本メールを破棄してください。",
   ].join("\n");
 
   if (DEV) {
