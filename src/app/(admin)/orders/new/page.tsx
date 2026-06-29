@@ -152,9 +152,9 @@ export default function NewOrderPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">備考・納品希望日など</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">メッセージ</label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2}
-              placeholder="備考・納品希望日など"
+              placeholder="メッセージ"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
