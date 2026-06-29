@@ -125,9 +125,6 @@ export default function OrdersPage() {
         <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 shrink-0">
           CSV出力
         </button>
-        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shrink-0">
-          + 新規登録
-        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">

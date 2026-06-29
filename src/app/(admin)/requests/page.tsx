@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type RequestItem = {
   id: number;
@@ -193,13 +194,18 @@ export default function RequestsPage() {
           </div>
         </div>
       )}
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
-        {requests.length > 0 && (
-          <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-            {requests.length}件
-          </span>
-        )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
+          {requests.length > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+              {requests.length}件
+            </span>
+          )}
+        </div>
+        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+          + 新規登録
+        </Link>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
