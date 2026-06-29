@@ -26,7 +26,11 @@ export async function GET(req: NextRequest) {
 
   // 招待経由（CustomerCompany）の会員
   const secondaryLinks = await prisma.customerCompany.findMany({
-    where: unapproved ? { companyId, approved: false } : { companyId },
+    where: unapproved
+      ? { companyId, approved: false }
+      : approvedOnly
+      ? { companyId, approved: true }
+      : { companyId },
     select: { customerId: true, approved: true, joinedAt: true, approvedAt: true },
   });
   const primaryIds = primaryCustomers.map((c) => c.id);
