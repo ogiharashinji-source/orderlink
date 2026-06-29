@@ -240,7 +240,7 @@ export async function sendOrderConfirmationEmail({
                 <td align="center" style="padding:8px 0 16px;">
                   <a href="https://orderlink.jp/portal/orders"
                      style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;">
-                    発注履歴を確認する
+                    確認する
                   </a>
                 </td>
               </tr>
