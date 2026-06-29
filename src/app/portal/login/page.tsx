@@ -129,6 +129,9 @@ function CustomerLoginForm() {
               {loading ? "ログイン中..." : "ログイン"}
             </button>
           </form>
+          <div className="text-center pt-2">
+            <a href="/portal/forgot-password" className="text-xs text-gray-400 hover:text-gray-600 hover:underline">パスワードをお忘れの方</a>
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,71 @@ const DEV = !process.env.RESEND_API_KEY;
 
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
+export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+  const subject = "【OrderLink】パスワード再設定のご案内";
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 16px;font-size:16px;color:#222;">パスワード再設定のご案内</p>
+            <p style="margin:0 0 24px;font-size:14px;color:#444;line-height:1.7;">
+              パスワードの再設定リクエストを受け付けました。<br>
+              下記のボタンよりログインIDとパスワードを再設定してください。<br>
+              このリンクの有効期限は24時間です。
+            </p>
+            <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+              <tr>
+                <td style="border-radius:6px;background:#1e3a5f;">
+                  <a href="${resetUrl}"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    再設定する
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:24px 0 0;font-size:12px;color:#999;text-align:center;">
+              このメールにお心当たりがない場合は、破棄してください。
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999999;">
+              このメールはOrderLinkから自動送信されています。返信はお受けできません。
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `パスワード再設定のご案内\n\nパスワードの再設定リクエストを受け付けました。\n下記のURLより再設定してください（有効期限：24時間）。\n\n${resetUrl}\n\nこのメールにお心当たりがない場合は、破棄してください。`;
+
+  if (DEV) {
+    console.log("========== [パスワード再設定メール] ==========");
+    console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
+    console.log(text);
+    console.log("==============================================");
+    return;
+  }
+
+  await getResend().emails.send({ from: FROM, to, subject, html, text });
+}
+
 export async function sendInviteEmail(to: string, inviteUrl: string, senderName = "") {
   const subject = senderName
     ? `【OrderLink】${senderName}よりポータル登録のご案内`
