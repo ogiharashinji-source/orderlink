@@ -102,7 +102,12 @@ export async function POST(req: NextRequest) {
 
   // QR・招待メール経由登録時は酒蔵管理者へ通知
   if (notifyEmail && notifyCompanyName) {
-    sendBreweryNotificationEmail(notifyEmail, name, notifyCompanyName).catch(() => {});
+    console.log("[登録通知] 送信先:", notifyEmail, "会社:", notifyCompanyName, "会員:", name);
+    sendBreweryNotificationEmail(notifyEmail, name, notifyCompanyName).catch((e) => {
+      console.error("[登録通知] メール送信エラー:", e);
+    });
+  } else {
+    console.log("[登録通知] スキップ - notifyEmail:", notifyEmail, "notifyCompanyName:", notifyCompanyName);
   }
 
   const sessionToken = makeSessionToken(customer.id);
