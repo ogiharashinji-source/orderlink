@@ -27,16 +27,18 @@ export async function PUT(req: NextRequest) {
 
   // 会社情報の保存（明示的に送られたフィールドのみ更新）
   if (companyName !== undefined && address !== undefined) {
+    const newCompanyName = companyName || setting.companyName;
     await prisma.adminSetting.update({
       where: { id: setting.id },
       data: {
-        companyName: companyName || setting.companyName,
+        companyName: newCompanyName,
         address: address ?? null,
         phone: phone ?? null,
         faxNumber: faxNumber ?? null,
         email: email ?? null,
       },
     });
+    await prisma.company.update({ where: { id: companyId }, data: { name: newCompanyName } });
   }
 
   // ID・パスワード変更

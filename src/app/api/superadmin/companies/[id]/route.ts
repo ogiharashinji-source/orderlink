@@ -41,6 +41,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   });
 
+  if (companyName !== undefined) {
+    await prisma.company.update({ where: { id: companyId }, data: { name: companyName } });
+  }
+
   const admin = await prisma.admin.findFirst({ where: { companyId } });
   if (admin) {
     await prisma.admin.update({

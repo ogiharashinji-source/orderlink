@@ -107,7 +107,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       to: customerEmail,
       customerName: request.customer?.name ?? "",
       orderNumber: order.orderNumber,
-      breweryName: request.company?.setting?.companyName ?? request.company?.name ?? "",
+      breweryName: request.company?.setting?.companyName ?? "",
       items: emailItems,
       adminReply: adminReply || null,
     }).catch((e) => console.error("注文確定メール送信エラー:", e));
