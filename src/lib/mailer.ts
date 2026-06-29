@@ -193,11 +193,13 @@ export async function sendOrderConfirmationEmail({
     .map(
       (i) =>
         `<tr>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;">${i.productName}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.category ?? "—"}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.sakaMai ?? "—"}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.volume ?? "—"}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.qty}ケース</td>
+          <td colspan="4" style="padding:10px 12px 2px;font-size:14px;color:#222;font-weight:bold;">${i.productName}</td>
+        </tr>
+        <tr>
+          <td style="padding:2px 12px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">${i.category ?? "—"}</td>
+          <td style="padding:2px 12px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">${i.sakaMai ?? "—"}</td>
+          <td style="padding:2px 12px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">${i.volume ?? "—"}</td>
+          <td style="padding:2px 12px 10px;border-bottom:1px solid #eee;font-size:12px;color:#666;">${i.qty}ケース</td>
         </tr>`
     )
     .join("");
@@ -221,15 +223,6 @@ export async function sendOrderConfirmationEmail({
             </p>
             <p style="margin:0 0 8px;font-size:13px;color:#888;">受注番号：${orderNumber}</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:24px;">
-              <thead>
-                <tr style="background:#f8f9fb;">
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:left;">商品名</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">種別</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">酒米</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">容量</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">数量</th>
-                </tr>
-              </thead>
               <tbody>${itemRows}</tbody>
             </table>
             ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">メッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
