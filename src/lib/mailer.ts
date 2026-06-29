@@ -216,11 +216,10 @@ export async function sendOrderConfirmationEmail({
         </tr>
         <tr>
           <td style="padding:40px 40px 32px;">
-            <p style="margin:0 0 8px;font-size:16px;font-weight:bold;color:#222;">${customerName} 様</p>
+            <p style="margin:0 0 8px;font-size:16px;color:#222;">${customerName} 様</p>
             <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
               ${breweryName}よりご注文が確定しました。
             </p>
-            <p style="margin:0 0 8px;font-size:13px;color:#888;">受注番号：${orderNumber}</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:24px;">
               <thead>
                 <tr style="background:#f8f9fb;">
