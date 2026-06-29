@@ -47,11 +47,11 @@ export default function PortalGuidePage() {
         <div id="register" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="1. アカウント登録">
             <p className="font-medium text-gray-800">招待メールからの登録</p>
-            <Step n={1}>取引先（酒蔵）から届いた招待メールを開きます。</Step>
-            <Step n={2}>メール内の「登録はこちら」リンクをクリックします。</Step>
-            <Step n={3}>登録フォームに会社名・住所・電話番号・メールアドレス・ログインID・パスワードを入力します。</Step>
-            <Step n={4}>「登録する」ボタンを押して登録完了です。</Step>
-            <Step n={5}>酒蔵側で承認が完了するとポータルが利用できるようになります。</Step>
+            <Step n={1}>招待メールまたは招待QRコードを開きます。</Step>
+            <Step n={2}>メール内の「登録はこちら」をクリックします。</Step>
+            <Step n={3}>登録フォームに必要事項（会社名・住所・電話番号・メールアドレス・ログインID・パスワード）を入力します。</Step>
+            <Step n={4}>「登録する」ボタンをクリックすると、登録が完了します。</Step>
+            <Step n={5}>酒蔵による承認が完了すると、OrderLinkポータルをご利用いただけます。</Step>
             <Note>招待リンクの有効期限は24時間です。期限が切れた場合は酒蔵の担当者に再送信を依頼してください。</Note>
             <Note>パスワードは6文字以上で設定してください。</Note>
           </Section>
