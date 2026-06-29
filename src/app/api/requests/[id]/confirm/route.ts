@@ -93,7 +93,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   // 注文確定メールをポータル会員に送信
   const customerEmail = request.customer?.email;
   if (customerEmail) {
-    const emailItems = validItems.map((i) => {
+    const emailItems = confirmedItems.map((i) => {
       const ri = itemMap[i.requestItemId];
       return {
         productName: ri.productName ?? ri.product?.name ?? "—",
