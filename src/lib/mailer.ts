@@ -195,7 +195,7 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
               ${customerName}様がOrderLinkへ登録されました。
             </p>
             <p style="margin:0 0 24px;font-size:15px;color:#333333;line-height:1.9;">
-              管理画面より内容をご確認のうえ、承認をお願いいたします。
+              管理画面より登録内容をご確認のうえ、承認をお願いいたします。
             </p>
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
@@ -222,7 +222,7 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
 </body>
 </html>`;
 
-  const text = `新規登録のお知らせ\n${customerName}様がOrderLinkへ登録されました。\n管理画面より内容をご確認のうえ、承認をお願いいたします。\nhttps://www.orderlink.jp/customers`;
+  const text = `新規登録のお知らせ\n${customerName}様がOrderLinkへ登録されました。\n管理画面より登録内容をご確認のうえ、承認をお願いいたします。\nhttps://www.orderlink.jp/customers`;
 
   if (DEV) {
     console.log("========== [登録通知メール] ==========");
