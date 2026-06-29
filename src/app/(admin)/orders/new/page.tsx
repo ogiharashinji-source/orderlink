@@ -122,7 +122,7 @@ export default function NewOrderPage() {
             <button type="button"
               onClick={() => setQty(p.id, volume, qty + 1)}
               disabled={stock != null && stock > 0 && qty >= stock}
-              className="w-7 h-7 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 text-lg leading-none flex items-center justify-center disabled:opacity-30">+</button>
+              className="w-7 h-7 rounded-full bg-[#1e3a5f] text-white hover:bg-[#2d5a8e] text-lg leading-none flex items-center justify-center disabled:opacity-30">+</button>
           </div>
         </td>
       </tr>
@@ -150,12 +150,6 @@ export default function NewOrderPage() {
                 <option key={c.id} value={c.id}>{c.name}{c.company ? ` (${c.company})` : ""}</option>
               ))}
             </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">メッセージ</label>
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2}
-              placeholder="メッセージ"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
         </div>
 
@@ -197,6 +191,13 @@ export default function NewOrderPage() {
               </tfoot>
             </table>
           )}
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-5">
+          <label className="block text-sm font-medium text-gray-700 mb-1">メッセージ</label>
+          <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2}
+            placeholder="メッセージ"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
 
         <div className="flex gap-3">
