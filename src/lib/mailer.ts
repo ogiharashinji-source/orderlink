@@ -189,11 +189,13 @@ export async function sendOrderConfirmationEmail({
 }) {
   const subject = `【OrderLink】ご注文が確定しました（${orderNumber}）`;
 
+  const truncate = (s: string, n: number) => s.length >= n ? s.slice(0, n - 1) + "…" : s;
+
   const itemRows = items
     .map(
       (i) =>
         `<tr>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;">${i.productName}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;white-space:nowrap;">${truncate(i.productName, 9)}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.category ?? "—"}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.sakaMai ?? "—"}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.volume ?? "—"}</td>
