@@ -184,7 +184,7 @@ export async function sendOrderConfirmationEmail({
   customerName: string;
   orderNumber: string;
   breweryName: string;
-  items: { productName: string; volume: string | null; qty: number; unitPrice: number }[];
+  items: { productName: string; category: string | null; sakaMai: string | null; volume: string | null; qty: number }[];
   adminReply?: string | null;
 }) {
   const subject = `【OrderLink】ご注文が確定しました（${orderNumber}）`;
@@ -194,9 +194,10 @@ export async function sendOrderConfirmationEmail({
       (i) =>
         `<tr>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;">${i.productName}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.category ?? "—"}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.sakaMai ?? "—"}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.volume ?? "—"}</td>
           <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:center;">${i.qty}ケース</td>
-          <td style="padding:8px 12px;border-bottom:1px solid #eee;font-size:14px;color:#333;text-align:right;">¥${i.unitPrice.toLocaleString()}</td>
         </tr>`
     )
     .join("");
@@ -224,9 +225,10 @@ export async function sendOrderConfirmationEmail({
               <thead>
                 <tr style="background:#f8f9fb;">
                   <th style="padding:8px 12px;font-size:12px;color:#666;text-align:left;">商品名</th>
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">種別</th>
+                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">酒米</th>
                   <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">容量</th>
                   <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">数量</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:right;">卸値</th>
                 </tr>
               </thead>
               <tbody>${itemRows}</tbody>
@@ -261,7 +263,7 @@ export async function sendOrderConfirmationEmail({
     `${breweryName}よりご注文が確定しました。`,
     `受注番号：${orderNumber}`,
     "",
-    ...items.map((i) => `・${i.productName} ${i.volume ?? ""} ${i.qty}ケース ¥${i.unitPrice.toLocaleString()}`),
+    ...items.map((i) => `・${i.productName} ${i.category ?? ""} ${i.sakaMai ?? ""} ${i.volume ?? ""} ${i.qty}ケース`),
     ...(adminReply ? ["", "【蔵元からのメッセージ】", adminReply] : []),
     "",
     "https://orderlink.jp/portal/orders",

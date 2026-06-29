@@ -97,9 +97,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       const ri = itemMap[i.requestItemId];
       return {
         productName: ri.productName ?? ri.product?.name ?? "—",
+        category: ri.productCategory ?? ri.product?.category ?? null,
+        sakaMai: ri.productSakaMai ?? ri.product?.sakaMai ?? null,
         volume: ri.volume ?? null,
         qty: i.confirmedQty,
-        unitPrice: i.unitPrice,
       };
     });
     await sendOrderConfirmationEmail({
