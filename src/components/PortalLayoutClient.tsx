@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "@/components/Footer";
 
 const navItems = [
@@ -11,14 +11,22 @@ const navItems = [
 const LS_KEY = "portal_customer_name";
 let _cachedCustomerName = "";
 
+function isPublicPath(p: string) {
+  return p === "/portal/login" ||
+    p.startsWith("/portal/reset-password") ||
+    p.startsWith("/portal/register") ||
+    p.startsWith("/portal/forgot-password");
+}
+
 export default function PortalLayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [customerName, setCustomerName] = useState("");
+  const [authChecked, setAuthChecked] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const authenticated = useRef(false);
 
-  // マウント直後にキャッシュ/localStorageから即座に反映
   useEffect(() => {
-    if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register") || pathname.startsWith("/portal/forgot-password")) {
+    if (isPublicPath(pathname)) {
       _cachedCustomerName = "";
       localStorage.removeItem(LS_KEY);
       setCustomerName("");
@@ -36,9 +44,12 @@ export default function PortalLayoutClient({ children }: { children: React.React
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register") || pathname.startsWith("/portal/forgot-password")) return;
+    if (isPublicPath(pathname)) return;
+    if (!authenticated.current) setAuthChecked(false);
     fetch("/api/customer/me").then((r) => {
       if (!r.ok) { setRedirecting(true); window.location.href = "/portal/login"; return; }
+      authenticated.current = true;
+      setAuthChecked(true);
       fetch("/api/portal/profile").then((r2) => r2.ok ? r2.json() : null).then((d) => {
         if (d?.name) {
           _cachedCustomerName = d.name;
@@ -49,11 +60,8 @@ export default function PortalLayoutClient({ children }: { children: React.React
     });
   }, [pathname]);
 
-  if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register") || pathname.startsWith("/portal/forgot-password")) {
-    return <>{children}</>;
-  }
-
-  if (redirecting) return null;
+  if (isPublicPath(pathname)) return <>{children}</>;
+  if (redirecting || !authChecked) return null;
 
   return (
     <div className="min-h-screen bg-gray-50">

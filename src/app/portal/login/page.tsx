@@ -8,13 +8,16 @@ function CustomerLoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
     fetch("/api/customer/me").then((r) => {
       if (r.ok) router.push("/portal/order");
-    }).catch(() => {});
+      else setAuthChecking(false);
+    }).catch(() => setAuthChecking(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const inviteToken = searchParams.get("token") ?? "";
   const breweryInviteToken = searchParams.get("invite") ?? "";
@@ -68,7 +71,7 @@ function CustomerLoginForm() {
     });
   };
 
-  if (loading || redirecting) return <div className="min-h-screen bg-[#1e3a5f]" />;
+  if (authChecking || loading || redirecting) return <div className="min-h-screen bg-[#1e3a5f]" />;
 
   if (done) return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
