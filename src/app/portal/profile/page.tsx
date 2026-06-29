@@ -34,7 +34,8 @@ export default function PortalProfilePage() {
           address: profile.address ?? "",
         });
       }));
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const set = (key: keyof Profile) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -46,14 +47,19 @@ export default function PortalProfilePage() {
     e.preventDefault();
     if (!confirm("会員情報を更新しますか？")) return;
     setSaving(true);
-    const res = await fetch("/api/portal/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.fromEntries(Object.entries(form).map(([k, v]) => [k, v === "" ? null : v]))),
-    });
-    if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000); }
-    else { const d = await res.json(); alert(d.error ?? "保存に失敗しました"); }
-    setSaving(false);
+    try {
+      const res = await fetch("/api/portal/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(Object.entries(form).map(([k, v]) => [k, v === "" ? null : v]))),
+      });
+      if (res.ok) { setSaved(true); setTimeout(() => setSaved(false), 3000); }
+      else { const d = await res.json().catch(() => ({})); alert(d.error ?? "保存に失敗しました"); }
+    } catch {
+      alert("通信エラーが発生しました");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleChangeCreds = async () => {

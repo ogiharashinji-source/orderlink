@@ -36,7 +36,15 @@ export async function PUT(req: NextRequest) {
       email: email || null,
       address: address || null,
     };
-    await prisma.customer.update({ where: { id: customer.id }, data });
+    try {
+      await prisma.customer.update({ where: { id: customer.id }, data });
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "";
+      if (msg.includes("Unique constraint") || msg.includes("unique")) {
+        return NextResponse.json({ error: "そのメールアドレスはすでに使用されています" }, { status: 400 });
+      }
+      return NextResponse.json({ error: "保存に失敗しました" }, { status: 500 });
+    }
   }
 
   // ID・パスワード変更
