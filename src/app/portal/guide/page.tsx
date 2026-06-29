@@ -61,14 +61,11 @@ export default function PortalGuidePage() {
         <div id="login" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="2. ログイン・ログアウト">
             <p className="font-medium text-gray-800">ログイン</p>
-            <Step n={1}>ポータルのURLにアクセスします。</Step>
-            <Step n={2}>登録時に設定したログインIDとパスワードを入力し「ログイン」を押します。</Step>
-
-            <p className="font-medium text-gray-800 mt-4">ログアウト</p>
-            <p>画面右上の「ログアウト」ボタンを押すとログアウトできます。</p>
+            <Step n={1}>https://www.orderlink.jp/portal にアクセスします。</Step>
+            <Step n={2}>設定したログインIDとパスワードを入力し「ログイン」を押します。</Step>
 
             <p className="font-medium text-gray-800 mt-4">パスワードを忘れた場合</p>
-            <p>ログイン画面の「パスワードをお忘れの方」から再設定できます。または取引先（酒蔵）の担当者にパスワードリセットを依頼してください。</p>
+            <p>ログイン画面の「パスワードをお忘れの方」から再設定できます。</p>
           </Section>
         </div>
 
