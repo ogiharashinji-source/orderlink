@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     include: {
       items: { include: { product: true } },
       customer: { select: { name: true, company: true, address: true, phone: true, faxNumber: true, email: true } },
-      company: { select: { name: true } },
+      company: { select: { name: true, setting: { select: { companyName: true } } } },
     },
   });
   if (!request) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -107,7 +107,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       to: customerEmail,
       customerName: request.customer?.name ?? "",
       orderNumber: order.orderNumber,
-      breweryName: request.company?.name ?? "",
+      breweryName: request.company?.setting?.companyName ?? request.company?.name ?? "",
       items: emailItems,
       adminReply: adminReply || null,
     }).catch((e) => console.error("注文確定メール送信エラー:", e));
