@@ -28,6 +28,13 @@ export async function PUT(req: NextRequest) {
 
   // 会員情報の保存（name と address が両方ある時のみ）
   if (name !== undefined && address !== undefined) {
+    // メールアドレスの重複チェック（他の顧客に同じメールがないか）
+    if (email) {
+      const existing = await prisma.customer.findUnique({ where: { email }, select: { id: true } });
+      if (existing && existing.id !== customer.id) {
+        return NextResponse.json({ error: "そのメールアドレスはすでに使用されています" }, { status: 400 });
+      }
+    }
     const data: Record<string, unknown> = {
       name: name || customer.name,
       company: company || null,
@@ -36,15 +43,7 @@ export async function PUT(req: NextRequest) {
       email: email || null,
       address: address || null,
     };
-    try {
-      await prisma.customer.update({ where: { id: customer.id }, data });
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (msg.includes("Unique constraint") || msg.includes("unique")) {
-        return NextResponse.json({ error: "そのメールアドレスはすでに使用されています" }, { status: 400 });
-      }
-      return NextResponse.json({ error: "保存に失敗しました" }, { status: 500 });
-    }
+    await prisma.customer.update({ where: { id: customer.id }, data });
   }
 
   // ID・パスワード変更
