@@ -152,7 +152,6 @@ export default function NewOrderPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow p-5 overflow-x-auto">
-          <h2 className="font-semibold text-gray-800 mb-3">商品・数量</h2>
           {!hasAny ? (
             <p className="text-sm text-gray-400 py-4 text-center">商品が登録されていません</p>
           ) : (
