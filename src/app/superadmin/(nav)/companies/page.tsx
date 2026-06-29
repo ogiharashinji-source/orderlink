@@ -61,7 +61,7 @@ export default function SuperAdminCompaniesPage() {
       {/* 顧客一覧ポップアップ */}
       {popup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setPopup(null)}>
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <h2 className="text-base font-bold text-gray-900">
                 {popup.company.setting?.companyName || popup.company.name} の顧客一覧

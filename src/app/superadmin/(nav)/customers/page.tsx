@@ -202,7 +202,7 @@ export default function SuperAdminCustomersPage() {
       {/* 登録酒蔵ポップアップ */}
       {breweryPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setBreweryPopup(null)}>
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b">
               <h2 className="text-base font-bold text-gray-900">
                 {breweryPopup.customer.name} の登録酒蔵
