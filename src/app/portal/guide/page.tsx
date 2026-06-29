@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "OrderLink 販売店マニュアル | OrderLink" };
+export const metadata = { title: "OrderLink ご利用ガイド | OrderLink" };
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="space-y-3">
@@ -27,7 +27,7 @@ export default function PortalGuidePage() {
 
         {/* タイトル */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">OrderLink 販売店マニュアル</h1>
+          <h1 className="text-2xl font-bold text-gray-900">OrderLink ご利用ガイド</h1>
         </div>
 
         {/* 目次 */}
