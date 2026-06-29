@@ -2,70 +2,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 
-function QRModal({ onClose }: { onClose: () => void }) {
-  const [qrDataUrl, setQrDataUrl] = useState("");
-  const [inviteUrl, setInviteUrl] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/admin/brewery-invite")
-      .then((r) => r.json())
-      .then((data) => {
-        setQrDataUrl(data.qrDataUrl);
-        setInviteUrl(data.inviteUrl);
-        setLoading(false);
-      });
-  }, []);
-
-  const handleDownload = () => {
-    const a = document.createElement("a");
-    a.href = qrDataUrl;
-    a.download = "orderlink-invite-qr.png";
-    a.click();
-  };
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(inviteUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm text-center space-y-4" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-lg font-bold text-gray-900">販売店招待QRコード</h2>
-        <p className="text-sm text-gray-500">このQRコードを販売店様へ共有してください。<br />販売店様が登録すると自動的に貴社アカウントへ紐付けられます。</p>
-
-        {loading ? (
-          <div className="h-48 flex items-center justify-center text-gray-400 text-sm">生成中...</div>
-        ) : (
-          <img src={qrDataUrl} alt="招待QRコード" className="mx-auto w-48 h-48" />
-        )}
-
-        <div className="flex gap-2 justify-center">
-          <button
-            onClick={handleDownload}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            PNGダウンロード
-          </button>
-          <button
-            onClick={handleCopy}
-            disabled={loading}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-          >
-            {copied ? "コピーしました！" : "URLコピー"}
-          </button>
-        </div>
-
-        <button onClick={onClose} className="text-sm text-gray-400 hover:text-gray-600 mt-2">閉じる</button>
-      </div>
-    </div>
-  );
-}
-
 type Customer = {
   id: number;
   name: string;
@@ -156,7 +92,6 @@ export default function CustomersPage() {
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [showQR, setShowQR] = useState(false);
   const allCheckRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(() => {
@@ -222,7 +157,6 @@ export default function CustomersPage() {
 
   return (
     <div className="space-y-4">
-      {showQR && <QRModal onClose={() => setShowQR(false)} />}
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-900 shrink-0">顧客管理</h1>
         <div className="flex items-center gap-2 flex-1">
@@ -258,14 +192,8 @@ export default function CustomersPage() {
           >
             {bulkDeleting ? "削除中..." : selected.size > 0 ? `${selected.size}件を削除` : "一斉削除"}
           </button>
-          <button
-            onClick={() => setShowQR(true)}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50"
-          >
-            QRコード
-          </button>
           <Link href="/customers/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-+ 招待
+            + 招待
           </Link>
         </div>
       </div>

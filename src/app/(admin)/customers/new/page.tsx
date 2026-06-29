@@ -8,8 +8,59 @@ type BulkInviteRow = {
   errorMsg?: string;
 };
 
+function QRSection() {
+  const [qrDataUrl, setQrDataUrl] = useState("");
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/admin/brewery-invite")
+      .then((r) => r.json())
+      .then((data) => {
+        setQrDataUrl(data.qrDataUrl);
+        setInviteUrl(data.inviteUrl);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleDownload = () => {
+    const a = document.createElement("a");
+    a.href = qrDataUrl;
+    a.download = "orderlink-invite-qr.png";
+    a.click();
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(inviteUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6 max-w-sm text-center space-y-4">
+      <p className="text-sm text-gray-500">このQRコードを販売店様へ共有してください。<br />販売店様が登録すると自動的に貴社アカウントへ紐付けられます。</p>
+      {loading ? (
+        <div className="h-48 flex items-center justify-center text-gray-400 text-sm">生成中...</div>
+      ) : (
+        <img src={qrDataUrl} alt="招待QRコード" className="mx-auto w-48 h-48" />
+      )}
+      <div className="flex gap-2 justify-center">
+        <button onClick={handleDownload} disabled={loading}
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">
+          PNGダウンロード
+        </button>
+        <button onClick={handleCopy} disabled={loading}
+          className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+          {copied ? "コピーしました！" : "URLコピー"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function InviteCustomerPage() {
-  const [mode, setMode] = useState<"single" | "multi">("single");
+  const [mode, setMode] = useState<"single" | "multi" | "qr">("single");
   const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
@@ -191,12 +242,12 @@ export default function InviteCustomerPage() {
       <h1 className="text-2xl font-bold text-gray-900">顧客登録</h1>
 
       <div className="flex gap-2 border-b border-gray-200">
-        {(["single", "multi"] as const).map((m) => (
+        {(["single", "multi", "qr"] as const).map((m) => (
           <button key={m} onClick={() => setMode(m)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               mode === m ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}>
-            {m === "single" ? "招待メールを送信" : "一斉招待"}
+            {m === "single" ? "招待メールを送信" : m === "multi" ? "一斉招待" : "QRコード"}
           </button>
         ))}
       </div>
@@ -244,6 +295,9 @@ export default function InviteCustomerPage() {
           )}
         </div>
       )}
+
+      {/* QR */}
+      {mode === "qr" && <QRSection />}
 
       {/* multi invite */}
       {mode === "multi" && (
