@@ -233,7 +233,7 @@ export async function sendOrderConfirmationEmail({
               </thead>
               <tbody>${itemRows}</tbody>
             </table>
-            ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">蔵元からのメッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
+            ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">メッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" style="padding:8px 0 16px;">
@@ -264,7 +264,7 @@ export async function sendOrderConfirmationEmail({
     `受注番号：${orderNumber}`,
     "",
     ...items.map((i) => `・${i.productName} ${i.category ?? ""} ${i.sakaMai ?? ""} ${i.volume ?? ""} ${i.qty}ケース`),
-    ...(adminReply ? ["", "【蔵元からのメッセージ】", adminReply] : []),
+    ...(adminReply ? ["", "【メッセージ】", adminReply] : []),
     "",
     "https://orderlink.jp/portal/orders",
   ].join("\n");
