@@ -1,6 +1,6 @@
 "use client";
 import { useState, Suspense, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 function CustomerLoginForm() {
   const [loginId, setLoginId] = useState("");
@@ -9,10 +9,11 @@ function CustomerLoginForm() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/customer/me").then((r) => {
-      if (r.ok) window.location.href = "/portal/order";
+      if (r.ok) router.push("/portal/order");
     }).catch(() => {});
   }, []);
   const inviteToken = searchParams.get("token") ?? "";
@@ -45,7 +46,7 @@ function CustomerLoginForm() {
           }
         }
         setRedirecting(true);
-        setTimeout(() => { window.location.href = "/portal/order"; }, 50);
+        router.push("/portal/order");
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error ?? "ログインに失敗しました");
