@@ -88,22 +88,22 @@ export default function PortalGuidePage() {
         <div id="history" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="4. 発注履歴の確認">
             <Step n={1}>上部メニューの「発注管理」をクリックします。</Step>
-            <Step n={2}>過去の発注履歴が一覧で表示されます。月ごとに絞り込みもできます。</Step>
-            <Step n={3}>各注文の「詳細」ボタンをクリックすると、注文内容・金額の詳細が確認できます。</Step>
+            <Step n={2}>過去の発注履歴が一覧で表示されます。発注先や日付で絞り込んで検索することもできます。</Step>
+            <Step n={3}>各注文の「詳細」ボタンをクリックすると、注文内容や金額などの詳細をご確認いただけます。</Step>
 
             <div className="mt-2 space-y-1">
-              <p className="font-medium text-gray-800">ステータスの見方</p>
-              <div className="flex flex-wrap gap-3 text-xs">
-                <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium">確認待ち</span>
-                <span className="text-gray-500">→ 酒蔵側で確認中</span>
+              <p className="font-medium text-gray-800">ステータスについて</p>
+              <div className="flex flex-wrap gap-3 text-xs items-start">
+                <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium shrink-0">確認待ち</span>
+                <span className="text-gray-500">酒蔵側で注文内容を確認しています。</span>
               </div>
-              <div className="flex flex-wrap gap-3 text-xs">
-                <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-medium">確定</span>
-                <span className="text-gray-500">→ 注文が確定しました</span>
+              <div className="flex flex-wrap gap-3 text-xs items-start">
+                <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-medium shrink-0">確定</span>
+                <span className="text-gray-500">ご注文が確定しています。</span>
               </div>
-              <div className="flex flex-wrap gap-3 text-xs">
-                <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium">在庫なし</span>
-                <span className="text-gray-500">→ 在庫が確保できませんでした</span>
+              <div className="flex flex-wrap gap-3 text-xs items-start">
+                <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full font-medium shrink-0">在庫なし</span>
+                <span className="text-gray-500">ご希望の商品をご用意できなかったため、注文を確定できませんでした。</span>
               </div>
             </div>
           </Section>
