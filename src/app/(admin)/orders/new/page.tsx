@@ -195,7 +195,7 @@ export default function NewOrderPage() {
         <div className="flex gap-3">
           <button type="submit" disabled={saving || lineItems.length === 0}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-            {saving ? "登録中..." : "販売登録する"}
+            {saving ? "登録中..." : "受注する"}
           </button>
           <button type="button" onClick={() => router.push("/orders")}
             className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
