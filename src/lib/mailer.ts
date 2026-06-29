@@ -286,18 +286,6 @@ export async function sendOrderConfirmationEmail({
             <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
               ${breweryName}様より、ご注文内容が確定されました。<br>下記ボタンよりアクセスのうえ、ご注文内容をご確認ください。
             </p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:24px;">
-              <thead>
-                <tr style="background:#f8f9fb;">
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:left;">商品名</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">種別</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">酒米</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">容量</th>
-                  <th style="padding:8px 12px;font-size:12px;color:#666;text-align:center;">数量</th>
-                </tr>
-              </thead>
-              <tbody>${itemRows}</tbody>
-            </table>
             ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">メッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
@@ -325,8 +313,6 @@ export async function sendOrderConfirmationEmail({
   const text = [
     `${breweryName}よりご注文が確定しました。`,
     `受注番号：${orderNumber}`,
-    "",
-    ...items.map((i) => `・${i.productName} ${i.category ?? ""} ${i.sakaMai ?? ""} ${i.volume ?? ""} ${i.qty}ケース`),
     ...(adminReply ? ["", "【メッセージ】", adminReply] : []),
     "",
     "https://orderlink.jp/portal/orders",
