@@ -44,6 +44,7 @@ function CustomerLoginForm() {
             return;
           }
         }
+        setRedirecting(true);
         window.location.href = "/portal/order";
       } else {
         const data = await res.json().catch(() => ({}));
@@ -56,6 +57,7 @@ function CustomerLoginForm() {
     }
   };
 
+  const [redirecting, setRedirecting] = useState(false);
   const [copied, setCopied] = useState(false);
   const PORTAL_URL = "https://www.orderlink.jp/portal/login";
   const handleCopy = () => {
@@ -64,6 +66,8 @@ function CustomerLoginForm() {
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  if (redirecting) return <div className="min-h-screen bg-[#1e3a5f]" />;
 
   if (done) return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden flex items-center justify-center p-4">
