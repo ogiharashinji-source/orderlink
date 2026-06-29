@@ -60,7 +60,7 @@ function QRSection() {
 }
 
 export default function InviteCustomerPage() {
-  const [mode, setMode] = useState<"single" | "multi" | "qr">("single");
+  const [mode, setMode] = useState<"single" | "multi" | "qr">("qr");
   const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
@@ -242,12 +242,12 @@ export default function InviteCustomerPage() {
       <h1 className="text-2xl font-bold text-gray-900">顧客登録</h1>
 
       <div className="flex gap-2 border-b border-gray-200">
-        {(["single", "multi", "qr"] as const).map((m) => (
+        {(["qr", "single", "multi"] as const).map((m) => (
           <button key={m} onClick={() => setMode(m)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               mode === m ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-700"
             }`}>
-            {m === "single" ? "招待メールを送信" : m === "multi" ? "一斉招待" : "QRコード"}
+            {m === "qr" ? "QRコード" : m === "single" ? "招待メールを送信" : "一斉招待"}
           </button>
         ))}
       </div>
