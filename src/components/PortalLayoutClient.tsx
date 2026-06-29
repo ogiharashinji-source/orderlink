@@ -20,6 +20,7 @@ export default function PortalLayoutClient({ children }: { children: React.React
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) {
       _cachedCustomerName = "";
       localStorage.removeItem(LS_KEY);
+      setCustomerName("");
       return;
     }
     if (_cachedCustomerName) {
