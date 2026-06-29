@@ -75,7 +75,9 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  return NextResponse.json([...primaryWithDates, ...secondaryWithFlag]);
+  const combined = [...primaryWithDates, ...secondaryWithFlag];
+  combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  return NextResponse.json(combined);
 }
 
 export async function POST() {
