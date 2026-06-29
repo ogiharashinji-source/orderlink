@@ -13,6 +13,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
   const [saving, setSaving] = useState(false);
   const [confirmTargets, setConfirmTargets] = useState<Customer[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
 
   useEffect(() => {
     fetch("/api/customers?approved=1").then((r) => r.json()).then(setCustomers);
@@ -157,20 +158,33 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">データ添付</label>
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                ファイルを選択
-              </button>
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) setAttachmentFile(file);
+              }}
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-lg px-4 py-5 flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+                dragOver ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+              }`}
+            >
               {attachmentFile ? (
-                <div className="flex items-center gap-2 text-sm text-gray-700">
+                <div className="flex items-center gap-2 text-sm text-gray-700" onClick={(e) => e.stopPropagation()}>
                   <span className="truncate max-w-xs">{attachmentFile.name}</span>
                   <button type="button"
                     onClick={() => { setAttachmentFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                    className="text-red-400 hover:text-red-600 text-xs">✕</button>
+                    className="text-red-400 hover:text-red-600 text-xs ml-1">✕</button>
                 </div>
               ) : (
-                <span className="text-sm text-gray-400">PDF・画像・Excelなど</span>
+                <>
+                  <span className="text-sm text-gray-500">ここにファイルをドラッグ、または</span>
+                  <span className="text-sm text-blue-600 font-medium underline">ファイルを選択</span>
+                  <span className="text-xs text-gray-400">PDF・画像・Excelなど</span>
+                </>
               )}
             </div>
             <input ref={fileInputRef} type="file" accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv"
