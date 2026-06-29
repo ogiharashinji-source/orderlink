@@ -73,19 +73,14 @@ export default function PortalGuidePage() {
         <div id="order" className="bg-white rounded-xl shadow p-6 space-y-4">
           <Section title="3. 発注依頼の方法">
             <p className="font-medium text-gray-800">メールのURLから発注する場合</p>
-            <Step n={1}>酒蔵から届いた発注書メールを開きます。</Step>
-            <Step n={2}>メール内のURLをクリックすると発注画面が開きます。</Step>
-            <Step n={3}>商品一覧から注文したい商品の数量（ケース数）を入力します。</Step>
-            <Step n={4}>備考・納品希望日などがあれば備考欄に入力します。</Step>
-            <Step n={5}>「発注依頼を送信する」ボタンを押して完了です。</Step>
-            <Note>有効期限が設定されている場合、期限を過ぎると発注できなくなります。</Note>
-
-            <p className="font-medium text-gray-800 mt-4">ポータルから直接発注する場合</p>
-            <Step n={1}>ログイン後、上部メニューの「発注依頼」をクリックします。</Step>
-            <Step n={2}>商品一覧から数量を入力します。「+」「−」ボタンまたは直接数字を入力できます。</Step>
-            <Step n={3}>「発注依頼を送信する」ボタンで送信完了です。</Step>
-            <Note>在庫数が設定されている商品は、在庫数以上の数量は入力できません。</Note>
-            <Note>「?」ボタンをクリックすると商品の詳細説明が表示されます。</Note>
+            <Step n={1}>メール内のURLをクリックし、発注画面を開きます。</Step>
+            <Step n={2}>「発注依頼」画面で発注先を選択します。</Step>
+            <Step n={3}>商品一覧からご希望商品の数量を入力します。</Step>
+            <Step n={4}>納品希望日やご要望がある場合は、備考欄へ入力します。</Step>
+            <Step n={5}>「この内容で発注依頼する」ボタンをクリックすると、発注依頼が完了します。</Step>
+            <p className="font-medium text-gray-800 mt-4">ご注意</p>
+            <Note>「？」ボタンをクリックすると、商品の詳細説明をご確認いただけます。</Note>
+            <Note>在庫数が設定されている商品は、在庫数を超える数量は入力できません。</Note>
           </Section>
         </div>
 
