@@ -310,24 +310,15 @@ export async function sendOrderConfirmationEmail({
 </body>
 </html>`;
 
-  const text = [
-    `${breweryName}よりご注文が確定しました。`,
-    `受注番号：${orderNumber}`,
-    ...(adminReply ? ["", "【メッセージ】", adminReply] : []),
-    "",
-    "https://orderlink.jp/portal/orders",
-  ].join("\n");
-
   if (DEV) {
     console.log("========== [注文確定メール] ==========");
     console.log(`宛先: ${to}`);
     console.log(`件名: ${subject}`);
-    console.log(text);
     console.log("======================================");
     return;
   }
 
-  await getResend().emails.send({ from: FROM, to, subject, html, text });
+  await getResend().emails.send({ from: FROM, to, subject, html });
 }
 
 export async function sendOrderLinkEmail({
