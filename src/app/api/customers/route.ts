@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
-import { nextCustomerNumber } from "@/lib/customerNumber";
 
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
@@ -75,22 +74,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json([...primaryWithDates, ...secondaryWithFlag]);
 }
 
-function generateReferralCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
-}
-
-export async function POST(req: NextRequest) {
-  const companyId = await getAdminCompanyId(req);
-  if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const body = await req.json();
-  let referralCode: string;
-  do {
-    referralCode = generateReferralCode();
-  } while (await prisma.customer.findUnique({ where: { referralCode } }));
-  const customerNumber = await nextCustomerNumber();
-  const customer = await prisma.customer.create({ data: { ...body, companyId, referralCode, customerNumber } });
-  await prisma.customerCompany.create({ data: { customerId: customer.id, companyId, approved: true, approvedAt: new Date() } });
-  return NextResponse.json(customer, { status: 201 });
+export async function POST() {
+  return NextResponse.json({ error: "顧客の新規登録は招待から行ってください" }, { status: 405 });
 }
