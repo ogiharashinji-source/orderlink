@@ -79,7 +79,6 @@ export default function PortalOrdersPage() {
   };
 
   useEffect(() => {
-    fetch("/api/customer/me").then((r) => { if (!r.ok) router.push("/portal/login"); });
     fetch("/api/customer/orders").then((r) => r.ok ? r.json() : []).then((data) => {
       const sorted = [...data].sort((a: OrderRequest, b: OrderRequest) => {
         const ta = new Date(a.confirmedAt ?? a.requestedAt).getTime();
@@ -88,7 +87,7 @@ export default function PortalOrdersPage() {
       });
       setOrders(sorted);
     });
-  }, [router]);
+  }, []);
 
   const filtered = orders
     .filter((o) => {

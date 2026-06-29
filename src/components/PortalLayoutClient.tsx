@@ -46,17 +46,17 @@ export default function PortalLayoutClient({ children }: { children: React.React
   useEffect(() => {
     if (isPublicPath(pathname)) return;
     if (!authenticated.current) setAuthChecked(false);
-    fetch("/api/customer/me").then((r) => {
+    fetch("/api/portal/profile").then((r) => {
       if (!r.ok) { setRedirecting(true); window.location.href = "/portal/login"; return; }
       authenticated.current = true;
       setAuthChecked(true);
-      fetch("/api/portal/profile").then((r2) => r2.ok ? r2.json() : null).then((d) => {
-        if (d?.name) {
-          _cachedCustomerName = d.name;
-          localStorage.setItem(LS_KEY, d.name);
-          setCustomerName(d.name);
-        }
-      });
+      return r.json();
+    }).then((d) => {
+      if (d?.name) {
+        _cachedCustomerName = d.name;
+        localStorage.setItem(LS_KEY, d.name);
+        setCustomerName(d.name);
+      }
     });
   }, [pathname]);
 

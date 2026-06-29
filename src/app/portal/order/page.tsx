@@ -53,26 +53,24 @@ function PortalOrderContent() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/customer/me").then((r) => {
-      if (!r.ok) { router.push("/portal/login"); return; }
-      fetch("/api/portal/companies").then((r2) => r2.ok ? r2.json() : null).then((d) => {
-        if (d?.companies?.length) {
-          setCompanies(d.companies);
-          setApproved(d.approved);
-          setPendingApprovals(d.pendingApprovals ?? 0);
-          const urlCompanyId = searchParams.get("companyId");
-          const target = urlCompanyId ? d.companies.find((c: { companyId: number }) => c.companyId === Number(urlCompanyId)) : null;
-          if (target) {
-            setSelectedCompanyId(target.companyId);
-          } else if (d.approved && d.companies.length === 1) {
-            setSelectedCompanyId(d.companies[0].companyId);
-          } else {
-            setSelectedCompanyId(null);
-          }
+    fetch("/api/portal/companies").then((r) => r.ok ? r.json() : null).then((d) => {
+      if (d?.companies?.length) {
+        setCompanies(d.companies);
+        setApproved(d.approved);
+        setPendingApprovals(d.pendingApprovals ?? 0);
+        const urlCompanyId = searchParams.get("companyId");
+        const target = urlCompanyId ? d.companies.find((c: { companyId: number }) => c.companyId === Number(urlCompanyId)) : null;
+        if (target) {
+          setSelectedCompanyId(target.companyId);
+        } else if (d.approved && d.companies.length === 1) {
+          setSelectedCompanyId(d.companies[0].companyId);
+        } else {
+          setSelectedCompanyId(null);
         }
-      });
+      }
     });
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const id = setInterval(fetchCompanies, 15000);

@@ -69,9 +69,8 @@ export default function PortalOrderDetailPage() {
   };
 
   useEffect(() => {
-    fetch("/api/customer/me").then((r) => { if (!r.ok) router.push("/portal/login"); });
     loadOrder();
-  }, [id, router]);
+  }, [id]);
 
   if (!order) return <div className="text-center py-20 text-gray-400">読み込み中...</div>;
 

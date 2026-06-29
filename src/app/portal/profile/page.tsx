@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 type Profile = {
   name: string;
@@ -20,21 +19,19 @@ export default function PortalProfilePage() {
   const [saved, setSaved] = useState(false);
   const [changingCreds, setChangingCreds] = useState(false);
   const [credsChanged, setCredsChanged] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/customer/me").then((r) => { if (!r.ok) { router.push("/portal/login"); return null; } return r.json(); })
-      .then((d) => d && fetch("/api/portal/profile").then((r) => r.json()).then((profile) => {
-        setForm({
-          name: profile.name ?? "",
-          company: profile.company ?? "",
-          phone: profile.phone ?? "",
-          faxNumber: profile.faxNumber ?? "",
-          email: profile.email ?? "",
-          address: profile.address ?? "",
-        });
-      }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetch("/api/portal/profile").then((r) => r.ok ? r.json() : null).then((profile) => {
+      if (!profile) return;
+      setForm({
+        name: profile.name ?? "",
+        company: profile.company ?? "",
+        phone: profile.phone ?? "",
+        faxNumber: profile.faxNumber ?? "",
+        email: profile.email ?? "",
+        address: profile.address ?? "",
+      });
+    });
   }, []);
 
   const set = (key: keyof Profile) => (e: React.ChangeEvent<HTMLInputElement>) =>
