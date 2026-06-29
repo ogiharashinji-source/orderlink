@@ -17,6 +17,11 @@ export default function PortalLayoutClient({ children }: { children: React.React
 
   // マウント直後にキャッシュ/localStorageから即座に反映
   useEffect(() => {
+    if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) {
+      _cachedCustomerName = "";
+      localStorage.removeItem(LS_KEY);
+      return;
+    }
     if (_cachedCustomerName) {
       setCustomerName(_cachedCustomerName);
     } else {
@@ -26,7 +31,7 @@ export default function PortalLayoutClient({ children }: { children: React.React
         setCustomerName(stored);
       }
     }
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (pathname === "/portal/login" || pathname.startsWith("/portal/reset-password") || pathname.startsWith("/portal/register")) return;
