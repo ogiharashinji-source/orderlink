@@ -204,7 +204,7 @@ export default function RequestsPage() {
           )}
         </div>
         <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-          + 新規登録
+          + 受注登録
         </Link>
       </div>
 

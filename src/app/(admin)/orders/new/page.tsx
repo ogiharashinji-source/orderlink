@@ -134,9 +134,9 @@ export default function NewOrderPage() {
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/orders" className="hover:text-blue-600">受注管理</Link>
         <span>›</span>
-        <span>新規販売登録</span>
+        <span>受注登録</span>
       </div>
-      <h1 className="text-2xl font-bold text-gray-900">新規販売登録</h1>
+      <h1 className="text-2xl font-bold text-gray-900">受注登録</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="bg-white rounded-lg shadow p-5 space-y-4">
