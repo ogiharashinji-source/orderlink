@@ -17,7 +17,7 @@ const Step = ({ n, children }: { n: number; children: React.ReactNode }) => (
 );
 
 const Note = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm text-blue-800">{children}</div>
+  <p className="text-sm text-gray-600">{children}</p>
 );
 
 export default function PortalGuidePage() {
