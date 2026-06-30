@@ -5,6 +5,7 @@ import LandingCTAButton from "@/components/LandingCTAButton";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAdminToken } from "@/lib/adminToken";
+import { prisma } from "@/lib/prisma";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
