@@ -5,8 +5,6 @@ import LandingCTAButton from "@/components/LandingCTAButton";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAdminToken } from "@/lib/adminToken";
-import { verifyCustomerToken } from "@/lib/customerAuth";
-import { prisma } from "@/lib/prisma";
 
 export const metadata = { title: "OrderLink - 酒蔵向け受発注システム" };
 
@@ -20,9 +18,6 @@ export default async function RootPage() {
       if (admin) redirect("/requests");
     }
   }
-
-  const customerId = await verifyCustomerToken();
-  if (customerId) redirect("/portal/order");
 
   return (
     <div className="min-h-screen bg-white font-sans">
