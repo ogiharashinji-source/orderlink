@@ -73,21 +73,9 @@ Neon コンソール → プロジェクト → Connection Details → "Direct c
 
 ### データベースの復元方法
 
-```bash
-# 復元先の接続情報を設定
-export PGPASSWORD="パスワード"
-HOST="ep-xxxx.neon.tech"
-USER="neondb_owner"
-DB="neondb"
+復元手順の詳細は **[RESTORE.md](RESTORE.md)** を参照してください。
 
-# 既存データを削除して復元（注意: 全データが上書きされます）
-psql \
-  --host="$HOST" \
-  --port=5432 \
-  --username="$USER" \
-  --dbname="$DB" \
-  -f orderlink_backup_YYYYMMDD_HHMMSS.sql
-```
-
-> **注意:** 復元を実行すると現在のデータが上書きされます。
-> 本番環境への適用前に必ず内容を確認してください。
+- 新しい Neon データベースへの復元
+- 既存データベースへの上書き復元
+- ローカル PostgreSQL への復元
+- コマンド例・トラブルシューティング
