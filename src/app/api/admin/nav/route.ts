@@ -4,7 +4,11 @@ import { getAdminCompanyId } from "@/lib/adminAuth";
 
 export async function GET(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
-  if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!companyId) {
+    const res = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    res.cookies.delete("auth_token");
+    return res;
+  }
 
   const [setting, pendingRequests, unapprovedPrimary, unapprovedSecondaryLinks] = await Promise.all([
     prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true } }),

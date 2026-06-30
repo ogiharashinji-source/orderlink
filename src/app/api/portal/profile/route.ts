@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const customer = await getCustomerSession();
-  if (!customer) return NextResponse.json({ error: "未ログイン" }, { status: 401 });
+  if (!customer) {
+    const res = NextResponse.json({ error: "未ログイン" }, { status: 401 });
+    res.cookies.delete("customer_auth");
+    return res;
+  }
 
   const customerData = await prisma.customer.findUnique({
     where: { id: customer.id },
