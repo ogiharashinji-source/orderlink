@@ -8,14 +8,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/admin/nav").then((r) => {
       if (r.ok) router.replace("/requests");
-    });
+      else setAuthChecking(false);
+    }).catch(() => setAuthChecking(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,8 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (authChecking) return <div className="min-h-screen bg-[#1e3a5f]" />;
 
   return (
     <div className="min-h-screen bg-[#1e3a5f] flex flex-col">
