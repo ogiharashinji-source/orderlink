@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -8,6 +8,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/admin/nav").then((r) => {
+      if (r.ok) router.replace("/requests");
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
