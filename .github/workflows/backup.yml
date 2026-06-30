@@ -1,0 +1,52 @@
+name: Daily Database Backup
+
+on:
+  schedule:
+    # 毎日 03:00 JST (= 18:00 UTC)
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    name: Backup Neon PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Install postgresql-client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-client
+
+      - name: Run pg_dump
+        env:
+          PGPASSWORD: ${{ secrets.NEON_DB_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          TIMESTAMP=$(TZ=Asia/Tokyo date +%Y%m%d_%H%M%S)
+          FILENAME="orderlink_backup_${TIMESTAMP}.sql"
+
+          pg_dump \
+            --host="${{ secrets.NEON_DB_HOST }}" \
+            --port=5432 \
+            --username="${{ secrets.NEON_DB_USER }}" \
+            --dbname="${{ secrets.NEON_DB_NAME }}" \
+            --no-password \
+            --schema=public \
+            --format=plain \
+            --no-owner \
+            --no-acl \
+            --quote-all-identifiers \
+            --file="${FILENAME}"
+
+          echo "BACKUP_FILE=${FILENAME}" >> $GITHUB_ENV
+          echo "Backup completed: ${FILENAME} ($(du -sh ${FILENAME} | cut -f1))"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_number }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 30
+          if-no-files-found: error
