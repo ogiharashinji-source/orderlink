@@ -71,14 +71,6 @@ export default function LandingHeaderActions() {
     );
   }
 
-  if (state.type === "portal") {
-    return (
-      <a href="/portal/order" className="whitespace-nowrap text-white text-base font-semibold px-3 py-2 rounded hover:bg-white/10 transition truncate max-w-[200px] sm:max-w-none">
-        {state.name || "発注ページへ"}
-      </a>
-    );
-  }
-
   return (
     <div className="flex gap-2 flex-shrink-0">
       <Link href="/admin/login"
