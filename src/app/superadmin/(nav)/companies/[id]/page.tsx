@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function CompanyEditPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const adminPath = pathname.split("/")[1];
   const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState({
     companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", password: "",
@@ -48,7 +50,7 @@ export default function CompanyEditPage() {
     });
     setSaving(false);
     if (res.ok) {
-      router.push("/superadmin/companies");
+      router.push(`/${adminPath}/companies`);
     } else {
       setError("保存に失敗しました");
     }
@@ -59,7 +61,7 @@ export default function CompanyEditPage() {
   return (
     <div className="space-y-4 max-w-lg">
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/superadmin/companies" className="hover:text-blue-600">管理者一覧</Link>
+        <Link href={`/${adminPath}/companies`} className="hover:text-blue-600">管理者一覧</Link>
         <span>›</span>
         <span>編集</span>
       </div>
@@ -105,7 +107,7 @@ export default function CompanyEditPage() {
             style={{ background: "#1e3a8a" }}>
             {saving ? "保存中..." : "保存する"}
           </button>
-          <Link href="/superadmin/companies"
+          <Link href={`/${adminPath}/companies`}
             className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 text-gray-700 hover:bg-gray-50">
             キャンセル
           </Link>

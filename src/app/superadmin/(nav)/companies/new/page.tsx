@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function CompanyNewPage() {
   const router = useRouter();
+  const pathname = usePathname();
+  const adminPath = pathname.split("/")[1];
   const [form, setForm] = useState({
     companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", password: "",
   });
@@ -32,7 +34,7 @@ export default function CompanyNewPage() {
     });
     setSaving(false);
     if (res.ok) {
-      router.push("/superadmin/companies");
+      router.push(`/${adminPath}/companies`);
     } else {
       const data = await res.json().catch(() => ({}));
       setError(data.error || "登録に失敗しました");
@@ -42,7 +44,7 @@ export default function CompanyNewPage() {
   return (
     <div className="space-y-4 max-w-2xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/superadmin/companies" className="hover:text-blue-600">管理者一覧</Link>
+        <Link href={`/${adminPath}/companies`} className="hover:text-blue-600">管理者一覧</Link>
         <span>›</span>
         <span>新規登録</span>
       </div>
@@ -91,7 +93,7 @@ export default function CompanyNewPage() {
             style={{ background: "#1e3a8a" }}>
             {saving ? "登録中..." : "登録する"}
           </button>
-          <Link href="/superadmin/companies"
+          <Link href={`/${adminPath}/companies`}
             className="text-sm text-gray-500 hover:text-gray-700">
             キャンセル
           </Link>

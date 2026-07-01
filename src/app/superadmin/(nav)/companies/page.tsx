@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type Company = {
   id: number;
@@ -24,6 +25,8 @@ type Member = {
 };
 
 export default function SuperAdminCompaniesPage() {
+  const pathname = usePathname();
+  const adminPath = pathname.split("/")[1];
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -111,7 +114,7 @@ export default function SuperAdminCompaniesPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">管理者一覧</h1>
-        <Link href="/superadmin/companies/new"
+        <Link href={`/${adminPath}/companies/new`}
           className="px-4 py-2 rounded-lg text-sm font-bold text-white"
           style={{ background: "#1e3a8a" }}>
           + 新規会員登録
@@ -164,7 +167,7 @@ export default function SuperAdminCompaniesPage() {
                     <td className="px-4 py-3 text-center text-gray-700">{c._count.orders}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-4">
-                        <Link href={`/superadmin/companies/${c.id}`} className="text-blue-600 hover:underline text-xs">編集</Link>
+                        <Link href={`/${adminPath}/companies/${c.id}`} className="text-blue-600 hover:underline text-xs">編集</Link>
                         <button onClick={() => handleDelete(c.id, c.setting?.companyName || c.name)} className="text-red-500 hover:underline text-xs">削除</button>
                       </div>
                     </td>

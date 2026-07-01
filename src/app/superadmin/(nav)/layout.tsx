@@ -3,16 +3,17 @@ import { usePathname } from "next/navigation";
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const adminPath = pathname.split("/")[1]; // ADMIN_PATH を URL から自動取得
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;
     await fetch("/api/superadmin/auth", { method: "DELETE" });
-    window.location.href = "/superadmin/login";
+    window.location.href = `/${adminPath}/login`;
   };
 
   const navItems = [
-    { href: "/superadmin/companies", label: "管理者一覧" },
-    { href: "/superadmin/customers", label: "ポータル会員一覧" },
+    { href: `/${adminPath}/companies`, label: "管理者一覧" },
+    { href: `/${adminPath}/customers`, label: "ポータル会員一覧" },
   ];
 
   return (

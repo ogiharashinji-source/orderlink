@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function SuperAdminLogin() {
   const router = useRouter();
+  const pathname = usePathname();
+  const adminPath = pathname.split("/")[1];
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export default function SuperAdminLogin() {
     });
     setLoading(false);
     if (res.ok) {
-      router.push("/superadmin/companies");
+      router.push(`/${adminPath}/companies`);
     } else {
       const data = await res.json();
       setError(data.error ?? "ログインに失敗しました");
