@@ -1,9 +1,10 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { useAdminPath } from "@/components/AdminPathProvider";
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const adminPath = pathname.split("/")[1]; // ADMIN_PATH を URL から自動取得
+  const adminPath = useAdminPath();
 
   const handleLogout = async () => {
     if (!confirm("ログアウトしますか？")) return;

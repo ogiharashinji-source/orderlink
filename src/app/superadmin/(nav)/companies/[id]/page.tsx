@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter, useParams, usePathname } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+import { useAdminPath } from "@/components/AdminPathProvider";
 import Link from "next/link";
 
 const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
 
 export default function CompanyEditPage() {
   const router = useRouter();
-  const pathname = usePathname();
-  const adminPath = pathname.split("/")[1];
+  const adminPath = useAdminPath();
   const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState({
     companyName: "", address: "", phone: "", faxNumber: "", email: "", loginId: "", password: "",

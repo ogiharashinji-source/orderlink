@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useAdminPath } from "@/components/AdminPathProvider";
 
 export default function SuperAdminLogin() {
   const router = useRouter();
-  const pathname = usePathname();
-  const adminPath = pathname.split("/")[1];
+  const adminPath = useAdminPath();
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

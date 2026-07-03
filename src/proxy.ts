@@ -99,18 +99,26 @@ export async function proxy(req: NextRequest) {
     // pathname から /superadmin/* に対応する内部パスを算出
     const rest = pathname.slice(SA_PATH.length + 1); // e.g. "/login", "/companies", "/companies/5"
 
+    // リライト時に SA_PATH をリクエストヘッダーとして付与（サーバーコンポーネントで読み取る）
+    const reqHeaders = new Headers(req.headers);
+    reqHeaders.set("x-admin-path", SA_PATH);
+
     if (rest === "/login" || rest === "" || rest === "/") {
       if (await isValidSuperAdmin(superToken)) {
         return NextResponse.redirect(new URL(`/${SA_PATH}/companies`, req.url));
       }
-      return NextResponse.rewrite(new URL("/superadmin/login", req.url));
+      return NextResponse.rewrite(new URL("/superadmin/login", req.url), {
+        request: { headers: reqHeaders },
+      });
     }
 
     if (/^\/(companies|customers)(\/|$)/.test(rest)) {
       if (!(await isValidSuperAdmin(superToken))) {
         return NextResponse.redirect(new URL(`/${SA_PATH}/login`, req.url));
       }
-      return NextResponse.rewrite(new URL(`/superadmin${rest}`, req.url));
+      return NextResponse.rewrite(new URL(`/superadmin${rest}`, req.url), {
+        request: { headers: reqHeaders },
+      });
     }
   }
 
