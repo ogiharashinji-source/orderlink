@@ -26,6 +26,7 @@ type Batch = {
 export default function FaxLinkList() {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [openBatch, setOpenBatch] = useState<string | null>(null);
+  const [previewBatch, setPreviewBatch] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
@@ -236,19 +237,94 @@ export default function FaxLinkList() {
                   )}
                 </td>
                 <td className="px-4 py-3 text-right">
-                  <button
-                    onClick={() => handleDelete(batch.batchId)}
-                    disabled={deleting === batch.batchId}
-                    className="text-xs text-red-400 hover:text-red-600 disabled:opacity-40"
-                  >
-                    削除
-                  </button>
+                  <div className="flex items-center justify-end gap-3">
+                    <button
+                      onClick={() => setPreviewBatch(batch.batchId)}
+                      className="text-xs text-blue-500 hover:text-blue-700"
+                    >
+                      確認
+                    </button>
+                    <button
+                      onClick={() => handleDelete(batch.batchId)}
+                      disabled={deleting === batch.batchId}
+                      className="text-xs text-red-400 hover:text-red-600 disabled:opacity-40"
+                    >
+                      削除
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {/* メッセージ確認モーダル */}
+      {previewBatch &&
+        (() => {
+          const batch = batchMap.get(previewBatch);
+          if (!batch) return null;
+          return (
+            <div
+              className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+              onClick={() => setPreviewBatch(null)}
+            >
+              <div
+                className="bg-white rounded-xl shadow-2xl w-full max-w-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="px-5 py-4 border-b flex items-center justify-between">
+                  <h2 className="font-bold text-gray-900 text-sm">送信内容の確認</h2>
+                  <button
+                    onClick={() => setPreviewBatch(null)}
+                    className="text-gray-400 hover:text-gray-600 text-xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="px-5 py-4 space-y-4">
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">送信日時</p>
+                    <p className="text-sm text-gray-700">
+                      {new Date(batch.createdAt).toLocaleString("ja-JP")}
+                    </p>
+                  </div>
+                  {batch.title && (
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">タイトル</p>
+                      <p className="text-sm font-medium text-gray-900">{batch.title}</p>
+                    </div>
+                  )}
+                  {batch.message && (
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">メッセージ</p>
+                      <p className="text-sm text-gray-700 whitespace-pre-wrap bg-gray-50 rounded-lg p-3">
+                        {batch.message}
+                      </p>
+                    </div>
+                  )}
+                  {batch.attachmentPath && (
+                    <div>
+                      <p className="text-xs text-gray-400 mb-1">添付ファイル</p>
+                      {batch.attachmentPath.startsWith("http") ? (
+                        <a
+                          href={batch.attachmentPath}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded hover:bg-blue-100"
+                        >
+                          📎 {decodeURIComponent(batch.attachmentPath.split("/").pop() ?? "開く")}
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-500">📎 {batch.attachmentPath}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
       {/* 宛先ポップアップ */}
       {openBatch &&
