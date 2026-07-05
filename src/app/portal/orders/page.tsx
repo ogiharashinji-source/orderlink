@@ -52,12 +52,15 @@ const oneMonthAgo = () => {
   return d.toISOString().slice(0, 10);
 };
 
+const PAGE_SIZE = 12;
+
 export default function PortalOrdersPage() {
   const [orders, setOrders] = useState<OrderRequest[]>([]);
   const [dateFrom, setDateFrom] = useState(oneMonthAgo());
   const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const router = useRouter();
 
   const handleDelete = async (id: number) => {
@@ -105,6 +108,13 @@ export default function PortalOrdersPage() {
       )
     );
 
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const applySearch = () => { setQuery(search); setPage(1); };
+  const applyDateFrom = (v: string) => { setDateFrom(v); setPage(1); };
+  const applyDateTo = (v: string) => { setDateTo(v); setPage(1); };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -112,26 +122,26 @@ export default function PortalOrdersPage() {
         <input
           type="date"
           value={dateFrom}
-          onChange={(e) => setDateFrom(e.target.value)}
+          onChange={(e) => applyDateFrom(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <span className="text-gray-500 text-sm">〜</span>
         <input
           type="date"
           value={dateTo}
-          onChange={(e) => setDateTo(e.target.value)}
+          onChange={(e) => applyDateTo(e.target.value)}
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && setQuery(search)}
+          onKeyDown={(e) => e.key === "Enter" && applySearch()}
           placeholder="受注番号・商品名・種別・酒米で検索..."
           className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-56"
         />
-        <button onClick={() => setQuery(search)} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
-        {query && <button onClick={() => { setSearch(""); setQuery(""); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
+        <button onClick={applySearch} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
+        {query && <button onClick={() => { setSearch(""); setQuery(""); setPage(1); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
       </div>
 
       <div className="bg-white rounded-xl shadow overflow-x-auto">
@@ -153,10 +163,10 @@ export default function PortalOrdersPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {paged.length === 0 ? (
               <tr><td colSpan={12} className="text-center py-12 text-gray-400">注文履歴がありません</td></tr>
             ) : (
-              filtered.flatMap((o) => {
+              paged.flatMap((o) => {
                 const st = STATUS_LABEL[o.status] ?? { label: o.status, cls: "bg-gray-100 text-gray-500" };
                 const dateStr = new Date(o.confirmedAt ?? o.requestedAt).toLocaleDateString("ja-JP");
                 const timeStr = new Date(o.confirmedAt ?? o.requestedAt).toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" });
@@ -219,6 +229,39 @@ export default function PortalOrdersPage() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ‹ 前
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              className={`px-3 py-1.5 rounded-lg text-sm border ${
+                p === page
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "border-gray-300 text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            次 ›
+          </button>
+          <span className="text-xs text-gray-400 ml-2">{filtered.length}件中 {(page - 1) * PAGE_SIZE + 1}〜{Math.min(page * PAGE_SIZE, filtered.length)}件</span>
+        </div>
+      )}
     </div>
   );
 }
