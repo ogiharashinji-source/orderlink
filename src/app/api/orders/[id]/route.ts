@@ -36,9 +36,17 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
   const orderId = Number(id);
 
-  await prisma.order.update({
-    where: { id: orderId },
-    data: { status: "CANCELLED" },
-  });
+  const order = await prisma.order.findUnique({ where: { id: orderId }, select: { status: true } });
+  if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  if (order.status === "CANCELLED") {
+    // キャンセル済みの場合は物理削除
+    await prisma.orderItem.deleteMany({ where: { orderId } });
+    await prisma.order.delete({ where: { id: orderId } });
+  } else {
+    // 未キャンセルの場合はCANCELLEDに更新
+    await prisma.order.update({ where: { id: orderId }, data: { status: "CANCELLED" } });
+  }
+
   return NextResponse.json({ ok: true });
 }

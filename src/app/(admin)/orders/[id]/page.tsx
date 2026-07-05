@@ -66,7 +66,7 @@ export default function OrderDetailPage() {
             <button onClick={() => { if (confirm("この取引をキャンセルしますか？")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">取引キャンセル</button>
           )}
           {order.status === "CANCELLED" && (
-            <span className="text-sm text-red-500 font-medium">キャンセル済み</span>
+            <button onClick={() => { if (confirm("この注文を削除しますか？削除すると元に戻せません。")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">削除</button>
           )}
         </div>
       </div>
