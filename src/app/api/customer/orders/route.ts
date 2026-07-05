@@ -17,10 +17,9 @@ export async function GET() {
     orderBy: { requestedAt: "desc" },
   });
 
-  // Order が CANCELLED の場合はそちらのステータスを優先して返す
   const data = requests.map((r) => ({
     ...r,
-    status: r.order?.status === "CANCELLED" ? "CANCELLED" : r.status,
+    cancelled: r.order?.status === "CANCELLED",
   }));
 
   return NextResponse.json(data);
