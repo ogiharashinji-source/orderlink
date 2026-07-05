@@ -44,9 +44,10 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const order = await prisma.orderRequest.findUnique({ where: { id: orderId } });
   if (!order || order.customerId !== customer.id)
     return NextResponse.json({ error: "注文が見つかりません" }, { status: 404 });
-  if (order.status !== "PENDING")
-    return NextResponse.json({ error: "確認待ち以外の注文は削除できません" }, { status: 400 });
+  if (order.status !== "PENDING" && !order.cancelled)
+    return NextResponse.json({ error: "この注文は削除できません" }, { status: 400 });
 
+  await prisma.orderLink.updateMany({ where: { requestId: orderId }, data: { requestId: null } });
   await prisma.requestItem.deleteMany({ where: { requestId: orderId } });
   await prisma.orderRequest.delete({ where: { id: orderId } });
 
