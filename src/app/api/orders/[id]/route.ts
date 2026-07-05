@@ -40,12 +40,13 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!order) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   if (order.status === "CANCELLED") {
-    // キャンセル済みの場合は物理削除
+    // キャンセル済みの場合は物理削除（OrderRequest.cancelled は true のまま残る）
     await prisma.orderItem.deleteMany({ where: { orderId } });
     await prisma.order.delete({ where: { id: orderId } });
   } else {
-    // 未キャンセルの場合はCANCELLEDに更新
+    // 未キャンセルの場合はCANCELLEDに更新 + OrderRequest.cancelled = true
     await prisma.order.update({ where: { id: orderId }, data: { status: "CANCELLED" } });
+    await prisma.orderRequest.updateMany({ where: { orderId }, data: { cancelled: true } });
   }
 
   return NextResponse.json({ ok: true });
