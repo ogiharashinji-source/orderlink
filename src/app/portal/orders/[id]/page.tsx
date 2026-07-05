@@ -92,7 +92,7 @@ export default function PortalOrderDetailPage() {
     : order.status === "REJECTED"
     ? Object.fromEntries(order.items.map((i) => [i.id, 0]))
     : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
-  const total = order.items.reduce((sum, item) => {
+  const total = order.cancelled ? 0 : order.items.reduce((sum, item) => {
     const wp = getWholesalePrice(item);
     if (wp == null) return sum;
     return sum + (currentQtys[item.id] ?? item.requestedQty) * getLot(item) * wp;
