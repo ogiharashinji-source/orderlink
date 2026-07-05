@@ -52,7 +52,7 @@ const oneMonthAgo = () => {
   return d.toISOString().slice(0, 10);
 };
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 10;
 
 export default function PortalOrdersPage() {
   const [orders, setOrders] = useState<OrderRequest[]>([]);
