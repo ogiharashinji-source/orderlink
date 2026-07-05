@@ -41,10 +41,14 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params;
   const orderId = Number(id);
 
-  const order = await prisma.orderRequest.findUnique({ where: { id: orderId } });
+  const order = await prisma.orderRequest.findUnique({
+    where: { id: orderId },
+    include: { order: { select: { status: true } } },
+  });
   if (!order || order.customerId !== customer.id)
     return NextResponse.json({ error: "注文が見つかりません" }, { status: 404 });
-  if (order.status !== "PENDING" && !order.cancelled)
+  const effectivelyCancelled = order.cancelled || order.order?.status === "CANCELLED";
+  if (order.status !== "PENDING" && !effectivelyCancelled)
     return NextResponse.json({ error: "この注文は削除できません" }, { status: 400 });
 
   await prisma.orderLink.updateMany({ where: { requestId: orderId }, data: { requestId: null } });
