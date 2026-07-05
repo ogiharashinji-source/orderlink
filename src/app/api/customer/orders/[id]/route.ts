@@ -27,7 +27,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     ),
     prisma.orderRequest.update({
       where: { id: orderId },
-      data: { notes: notes ?? null },
+      data: { notes: notes ?? null, requestedAt: new Date() },
     }),
   ]);
 
