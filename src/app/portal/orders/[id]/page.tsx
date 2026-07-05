@@ -159,7 +159,7 @@ export default function PortalOrderDetailPage() {
             <>
               <button onClick={handleDelete} disabled={deleting}
                 className="text-sm text-red-500 border border-red-300 px-4 py-1.5 rounded-lg hover:bg-red-50 disabled:opacity-50">
-                {deleting ? "削除中..." : "削除"}
+                {deleting ? "削除中..." : "取引キャンセル"}
               </button>
               <button onClick={handleSave} disabled={saving}
                 className="text-sm bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 disabled:opacity-50">
