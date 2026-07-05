@@ -31,7 +31,7 @@ type RequestItem = {
 type OrderRequest = {
   id: number;
   requestNumber: string;
-  status: "PENDING" | "CONFIRMED" | "REJECTED";
+  status: "PENDING" | "CONFIRMED" | "REJECTED" | "CANCELLED";
   requestedAt: string;
   confirmedAt: string | null;
   notes: string | null;
@@ -44,6 +44,7 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   PENDING:   { label: "確認待ち", cls: "text-orange-500 font-medium !bg-transparent !px-0 !py-0 !rounded-none" },
   CONFIRMED: { label: "確定", cls: "bg-gray-100 text-gray-500" },
   REJECTED:  { label: "在庫なし", cls: "bg-red-100 text-red-600" },
+  CANCELLED: { label: "キャンセル", cls: "bg-red-100 text-red-600" },
 };
 
 const oneMonthAgo = () => {
@@ -206,7 +207,10 @@ export default function PortalOrdersPage() {
                     </td>
                     <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
                     <td className="px-4 py-3 text-center font-semibold">
-                      {o.status === "REJECTED" ? "" : (item.confirmedQty ?? item.requestedQty) === 0
+                      {o.status === "CANCELLED"
+                        ? <span className="text-red-500 text-xs font-bold">キャンセル</span>
+                        : o.status === "REJECTED" ? ""
+                        : (item.confirmedQty ?? item.requestedQty) === 0
                         ? <span className="text-red-500 text-xs font-bold">在庫なし</span>
                         : (item.confirmedQty ?? item.requestedQty)}
                     </td>

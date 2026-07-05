@@ -20,7 +20,7 @@ type RequestItem = {
 type OrderRequest = {
   id: number;
   requestNumber: string;
-  status: "PENDING" | "CONFIRMED" | "REJECTED";
+  status: "PENDING" | "CONFIRMED" | "REJECTED" | "CANCELLED";
   requestedAt: string;
   confirmedAt: string | null;
   notes: string | null;
@@ -38,7 +38,8 @@ type OrderRequest = {
 const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
   PENDING:   { label: "確認待ち", cls: "bg-yellow-100 text-yellow-700" },
   CONFIRMED: { label: "受注確定", cls: "bg-green-100 text-green-700" },
-  REJECTED:  { label: "キャンセル", cls: "bg-red-100 text-red-600" },
+  REJECTED:  { label: "在庫なし", cls: "bg-red-100 text-red-600" },
+  CANCELLED: { label: "キャンセル", cls: "bg-red-100 text-red-600" },
 };
 
 export default function PortalOrderDetailPage() {
@@ -252,12 +253,14 @@ export default function PortalOrderDetailPage() {
                         }}
                         className="w-16 text-right border border-blue-300 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
+                    ) : order.status === "CANCELLED" ? (
+                      <span className="text-red-500 text-xs font-bold">キャンセル</span>
                     ) : (
                       qty
                     )}
                   </td>
                   <td className="px-3 py-2 text-right font-medium">
-                    {(() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
+                    {order.status === "CANCELLED" ? "—" : (() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
                   </td>
                 </tr>
               );

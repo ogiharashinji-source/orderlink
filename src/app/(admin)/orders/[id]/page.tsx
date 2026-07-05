@@ -62,7 +62,12 @@ export default function OrderDetailPage() {
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
-          <button onClick={() => { if (confirm("販売先のデータも削除されます。削除しますか？")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">取引キャンセル</button>
+          {order.status !== "CANCELLED" && (
+            <button onClick={() => { if (confirm("この取引をキャンセルしますか？")) fetch(`/api/orders/${id}`, { method: "DELETE" }).then(() => router.push("/orders")); }} className="text-sm text-red-500 hover:underline">取引キャンセル</button>
+          )}
+          {order.status === "CANCELLED" && (
+            <span className="text-sm text-red-500 font-medium">キャンセル済み</span>
+          )}
         </div>
       </div>
 
@@ -121,9 +126,13 @@ export default function OrderDetailPage() {
                     {wp != null ? `¥${wp.toLocaleString()}` : "—"}
                   </td>
                   <td className="px-3 py-2 text-right">{lot}</td>
-                  <td className="px-3 py-2 text-right">{item.quantity}</td>
+                  <td className="px-3 py-2 text-right">
+                    {order.status === "CANCELLED"
+                      ? <span className="text-xs font-bold text-gray-500">キャンセル</span>
+                      : item.quantity}
+                  </td>
                   <td className="px-3 py-2 text-right font-medium">
-                    {subtotal != null ? `¥${subtotal.toLocaleString()}` : "—"}
+                    {order.status === "CANCELLED" ? "—" : subtotal != null ? `¥${subtotal.toLocaleString()}` : "—"}
                   </td>
                 </tr>
               );
@@ -131,7 +140,7 @@ export default function OrderDetailPage() {
           </tbody>
           <tfoot className="bg-gray-50">
             {(() => {
-              const total = order.items.reduce((sum, item) => {
+              const total = order.status === "CANCELLED" ? 0 : order.items.reduce((sum, item) => {
                 const lotNum = parseInt(item.volume === "1800ml" ? (item.product?.unit1800 ?? "1") : item.volume === "720ml" ? (item.product?.unit720 ?? "1") : (item.product?.unitOther ?? "1")) || 1;
                 const wp = item.volume === "1800ml" ? (item.product?.wholesalePrice1800 ?? null) : item.volume === "720ml" ? (item.product?.wholesalePrice720 ?? null) : (item.product?.wholesalePriceOther ?? null);
                 if (wp == null) return sum;

@@ -36,23 +36,9 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params;
   const orderId = Number(id);
 
-  // この受注に紐づくOrderRequestを探す
-  const orderRequest = await prisma.orderRequest.findFirst({
-    where: { orderId },
-    select: { id: true },
+  await prisma.order.update({
+    where: { id: orderId },
+    data: { status: "CANCELLED" },
   });
-
-  if (orderRequest) {
-    // OrderLinkがあればrequestIdをnullにしてから削除
-    await prisma.orderLink.updateMany({
-      where: { requestId: orderRequest.id },
-      data: { requestId: null },
-    });
-    // OrderRequestを削除（RequestItemはCascadeで自動削除）
-    await prisma.orderRequest.delete({ where: { id: orderRequest.id } });
-  }
-
-  // Orderを削除（OrderItemはCascadeで自動削除）
-  await prisma.order.delete({ where: { id: orderId } });
   return NextResponse.json({ ok: true });
 }
