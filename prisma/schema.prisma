@@ -149,6 +149,7 @@ model OrderRequest {
   sellerEmail     String?
   requestedAt   DateTime      @default(now())
   confirmedAt   DateTime?
+  cancelled     Boolean       @default(false)
   orderId       Int?          @unique
   order         Order?        @relation(fields: [orderId], references: [id])
   orderLink     OrderLink?
