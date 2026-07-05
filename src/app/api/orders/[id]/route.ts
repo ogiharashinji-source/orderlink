@@ -44,9 +44,10 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.orderItem.deleteMany({ where: { orderId } });
     await prisma.order.delete({ where: { id: orderId } });
   } else {
-    // 未キャンセルの場合はCANCELLEDに更新 + OrderRequest.cancelled = true
-    await prisma.order.update({ where: { id: orderId }, data: { status: "CANCELLED" } });
-    await prisma.orderRequest.updateMany({ where: { orderId }, data: { cancelled: true } });
+    // 未キャンセルの場合はCANCELLEDに更新 + キャンセル日時を記録
+    const cancelledAt = new Date();
+    await prisma.order.update({ where: { id: orderId }, data: { status: "CANCELLED", orderDate: cancelledAt } });
+    await prisma.orderRequest.updateMany({ where: { orderId }, data: { cancelled: true, confirmedAt: cancelledAt } });
   }
 
   return NextResponse.json({ ok: true });
