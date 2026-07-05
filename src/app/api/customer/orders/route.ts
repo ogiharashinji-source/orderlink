@@ -12,9 +12,15 @@ export async function GET() {
       customer: { select: { name: true, address: true, phone: true, faxNumber: true, email: true } },
       company: { select: { setting: { select: { companyName: true, address: true, phone: true, faxNumber: true, email: true } } } },
       items: { include: { product: true } },
+      order: { select: { status: true } },
     },
     orderBy: { requestedAt: "desc" },
   });
 
-  return NextResponse.json(requests);
+  const data = requests.map((r) => ({
+    ...r,
+    cancelled: r.cancelled || r.order?.status === "CANCELLED",
+  }));
+
+  return NextResponse.json(data);
 }
