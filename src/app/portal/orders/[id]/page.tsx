@@ -171,12 +171,6 @@ export default function PortalOrderDetailPage() {
           {order.status === "CONFIRMED" && !order.cancelled && (
             <span className="text-sm text-red-600 font-medium">＊発注確定後のキャンセルは、発注先に依頼して削除してください。</span>
           )}
-          {order.cancelled && (
-            <button onClick={handleDelete} disabled={deleting}
-              className="text-sm text-red-600 font-medium hover:underline disabled:opacity-50">
-              {deleting ? "削除中..." : "削除"}
-            </button>
-          )}
           <button onClick={() => router.push("/portal/orders")} className="text-sm text-blue-600 hover:underline">戻る</button>
         </div>
       </div>
