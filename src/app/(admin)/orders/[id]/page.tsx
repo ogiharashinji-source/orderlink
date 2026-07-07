@@ -95,8 +95,8 @@ export default function OrderDetailPage() {
               <th className="px-3 py-2 text-center">容量</th>
               <th className="px-3 py-2 text-right">小売値</th>
               <th className="px-3 py-2 text-right">卸売値</th>
-              <th className="px-3 py-2 text-right">ロット</th>
-              <th className="px-3 py-2 text-right">ケース数</th>
+              <th className="px-3 py-2 text-center">ロット</th>
+              <th className="px-3 py-2 text-center">ケース数</th>
               <th className="px-3 py-2 text-right">小計</th>
             </tr>
           </thead>
@@ -122,8 +122,8 @@ export default function OrderDetailPage() {
                   <td className="px-3 py-2 text-right text-gray-600">
                     {wp != null ? `¥${wp.toLocaleString()}` : "—"}
                   </td>
-                  <td className="px-3 py-2 text-right">{lot}</td>
-                  <td className="px-3 py-2 text-right">
+                  <td className="px-3 py-2 text-center">{lot}</td>
+                  <td className="px-3 py-2 text-center">
                     {order.status === "CANCELLED"
                       ? <span className="text-xs font-bold text-gray-500">キャンセル</span>
                       : item.quantity}
