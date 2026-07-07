@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { nextOrderSequence, datePrefix } from "@/lib/orderSequence";
+import { nextOrderSequence, datePrefix, seqFromRequestNumber } from "@/lib/orderSequence";
 import { sendOrderConfirmationEmail } from "@/lib/mailer";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -40,12 +40,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   // 商品ごとに 1 Order を作成（Order.requestId で OrderRequest と紐づける）
   const createdOrders: { orderNumber: string; orderId: number }[] = [];
 
-  for (const i of validItems) {
+  for (let idx = 0; idx < validItems.length; idx++) {
+    const i = validItems[idx];
     const ri = itemMap[i.requestItemId];
     const lotStr = ri.volume === "1800ml" ? ri.product?.unit1800 : ri.product?.unit720;
     const lot = parseInt(lotStr ?? "1") || 1;
     const totalAmount = i.confirmedQty * lot * i.unitPrice;
-    const orderNumber = `ORD-${datePrefix()}-${await nextOrderSequence()}`;
+    // 1商品目は REQ の連番をそのまま流用（REQ-0025 → ORD-0025）
+    // 2商品目以降は新しい連番を発行
+    const seq = idx === 0 ? seqFromRequestNumber(request.requestNumber) : await nextOrderSequence();
+    const orderNumber = `ORD-${datePrefix()}-${seq}`;
 
     const order = await prisma.order.create({
       data: {
