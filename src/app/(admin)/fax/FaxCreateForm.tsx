@@ -214,7 +214,6 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
                 {confirmTargets.map((c) => (
                   <div key={c.id} className="px-3 py-2.5">
                     <div className="font-medium text-sm text-gray-900">{c.name}</div>
-                    <div className="text-xs text-gray-400">{c.email}</div>
                   </div>
                 ))}
               </div>
