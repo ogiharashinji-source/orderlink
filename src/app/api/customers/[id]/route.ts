@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
+import { sendApprovalEmail } from "@/lib/mailer";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -67,6 +68,20 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         where: { customerId_companyId: { customerId, companyId: adminCompanyId } },
         data: { approved: body.approved, ...(body.approved ? { approvedAt: new Date() } : {}) },
       });
+
+      // 承認時にポータル会員へメール送信
+      if (body.approved) {
+        const [customer, setting] = await Promise.all([
+          prisma.customer.findUnique({ where: { id: customerId }, select: { name: true, email: true } }),
+          prisma.adminSetting.findUnique({ where: { companyId: adminCompanyId }, select: { companyName: true } }),
+        ]);
+        if (customer?.email && setting?.companyName) {
+          sendApprovalEmail(customer.email, customer.name, setting.companyName).catch((e) =>
+            console.error("承認メール送信エラー:", e)
+          );
+        }
+      }
+
       // プライマリ会員でない場合はCustomer本体は更新しない
       const customer = await prisma.customer.findUnique({ where: { id: customerId } });
       if (customer?.companyId !== adminCompanyId) {

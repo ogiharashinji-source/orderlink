@@ -236,6 +236,67 @@ export async function sendBreweryNotificationEmail(to: string, customerName: str
   await getResend().emails.send({ from: FROM, to, subject, html, text });
 }
 
+export async function sendApprovalEmail(to: string, customerName: string, companyName: string) {
+  const subject = `【OrderLink】${companyName}への登録が完了しました`;
+  const loginUrl = "https://www.orderlink.jp/portal/login";
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 8px;font-size:16px;color:#222;">${customerName} 様</p>
+            <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
+              ${companyName}への登録が承認されました。<br>
+              下記よりログインして発注をご利用いただけます。
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:8px 0 32px;">
+                  <a href="${loginUrl}"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    ログインする
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0;font-size:13px;color:#888;">ログインURL: <a href="${loginUrl}" style="color:#1e3a5f;">${loginUrl}</a></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999;">このメールはOrderLinkから自動送信されています。返信はお受けできません。</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `${customerName} 様\n\n${companyName}への登録が承認されました。\n下記よりログインして発注をご利用いただけます。\n\n${loginUrl}`;
+
+  if (DEV) {
+    console.log("========== [承認メール] ==========");
+    console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
+    console.log(text);
+    console.log("==================================");
+    return;
+  }
+
+  await getResend().emails.send({ from: FROM, to, subject, html, text });
+}
+
 export async function sendOrderConfirmationEmail({
   to,
   customerName,
