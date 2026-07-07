@@ -77,7 +77,12 @@ export default function PortalOrderDetailPage() {
 
   if (!order) return <div className="text-center py-20 text-gray-400">読み込み中...</div>;
 
-  // ?item= で指定された1商品だけ表示（未指定の場合は全件）
+  // ?item= が未指定の場合は最初の商品へリダイレクト
+  if (!itemId && order.items.length > 0) {
+    router.replace(`/portal/orders/${id}?item=${order.items[0].id}`);
+    return <div className="text-center py-20 text-gray-400">読み込み中...</div>;
+  }
+
   const displayItems = itemId
     ? order.items.filter((i) => i.id === itemId)
     : order.items;
@@ -154,7 +159,7 @@ export default function PortalOrderDetailPage() {
         <Link href="/portal/orders" className="hover:text-blue-600">発注管理</Link>
         <span>›</span>
         <span>{order.requestNumber}</span>
-        {displayItems[0] && (
+        {itemId > 0 && displayItems[0] && (
           <>
             <span>›</span>
             <span>{displayItems[0].productName ?? displayItems[0].product?.name ?? "—"}</span>
