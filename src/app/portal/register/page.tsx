@@ -172,7 +172,7 @@ function RegisterForm() {
       <div className="w-full max-w-lg mx-auto px-4 py-4 space-y-3">
         <div className="text-center mb-1">
           <h1 className="text-xl font-bold text-gray-900">OrderLink</h1>
-          <p className="text-gray-500 text-sm">販売店アカウント登録</p>
+          <p className="text-gray-500 text-sm">紹介者名アカウント登録</p>
           <button
             onClick={() => { setMode(mode === "register" ? "login" : "register"); setError(""); setLoginError(""); }}
             className="text-sm text-blue-600 hover:underline mt-1"
