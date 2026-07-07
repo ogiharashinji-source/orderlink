@@ -46,6 +46,7 @@ const STATUS_LABEL: Record<string, { label: string; cls: string }> = {
 export default function PortalOrderDetailPage() {
   const { id } = useParams<{ id: string }>();
   const searchParams = useSearchParams();
+  const itemId = Number(searchParams.get("item") ?? "0");
   const [order, setOrder] = useState<OrderRequest | null>(null);
   const [editing, setEditing] = useState(searchParams.get("edit") === "1");
   const [editQtys, setEditQtys] = useState<Record<number, number>>({});
@@ -76,6 +77,11 @@ export default function PortalOrderDetailPage() {
 
   if (!order) return <div className="text-center py-20 text-gray-400">読み込み中...</div>;
 
+  // ?item= で指定された1商品だけ表示（未指定の場合は全件）
+  const displayItems = itemId
+    ? order.items.filter((i) => i.id === itemId)
+    : order.items;
+
   const getLot = (item: RequestItem) =>
     parseInt(
       item.volume === "1800ml" ? (item.product?.unit1800 ?? "1")
@@ -93,7 +99,9 @@ export default function PortalOrderDetailPage() {
     : order.status === "REJECTED"
     ? Object.fromEntries(order.items.map((i) => [i.id, 0]))
     : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
-  const total = order.items.reduce((sum, item) => {
+
+  // 表示中の商品だけで合計を計算
+  const total = displayItems.reduce((sum, item) => {
     if (order.cancelled || item.order?.status === "CANCELLED") return sum;
     const wp = getWholesalePrice(item);
     if (wp == null) return sum;
@@ -123,7 +131,7 @@ export default function PortalOrderDetailPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        items: order.items.map((item) => ({ id: item.id, requestedQty: editQtys[item.id] ?? item.requestedQty })),
+        items: displayItems.map((item) => ({ id: item.id, requestedQty: editQtys[item.id] ?? item.requestedQty })),
         notes: editNotes,
       }),
     });
@@ -146,6 +154,12 @@ export default function PortalOrderDetailPage() {
         <Link href="/portal/orders" className="hover:text-blue-600">発注管理</Link>
         <span>›</span>
         <span>{order.requestNumber}</span>
+        {displayItems[0] && (
+          <>
+            <span>›</span>
+            <span>{displayItems[0].productName ?? displayItems[0].product?.name ?? "—"}</span>
+          </>
+        )}
       </div>
 
       {/* ヘッダー */}
@@ -212,7 +226,7 @@ export default function PortalOrderDetailPage() {
             </tr>
           </thead>
           <tbody>
-            {order.items.map((item) => {
+            {displayItems.map((item) => {
               const lot = getLot(item);
               const qty = currentQtys[item.id] ?? item.requestedQty;
               return (
