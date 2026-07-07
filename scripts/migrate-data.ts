@@ -285,7 +285,7 @@ async function main() {
         sellerEmail: r.sellerEmail,
         requestedAt: new Date(r.requestedAt),
         confirmedAt: toDate(r.confirmedAt),
-        orderId: r.orderId,
+
       },
       update: {},
     });

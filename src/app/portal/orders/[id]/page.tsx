@@ -14,6 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
+  order: { status: string } | null;
   product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
 };
 
@@ -92,7 +93,8 @@ export default function PortalOrderDetailPage() {
     : order.status === "REJECTED"
     ? Object.fromEntries(order.items.map((i) => [i.id, 0]))
     : Object.fromEntries(order.items.map((i) => [i.id, i.confirmedQty ?? i.requestedQty]));
-  const total = order.cancelled ? 0 : order.items.reduce((sum, item) => {
+  const total = order.items.reduce((sum, item) => {
+    if (order.cancelled || item.order?.status === "CANCELLED") return sum;
     const wp = getWholesalePrice(item);
     if (wp == null) return sum;
     return sum + (currentQtys[item.id] ?? item.requestedQty) * getLot(item) * wp;
@@ -253,14 +255,14 @@ export default function PortalOrderDetailPage() {
                         }}
                         className="w-16 text-right border border-blue-300 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
-                    ) : order.cancelled ? (
+                    ) : (order.cancelled || item.order?.status === "CANCELLED") ? (
                       <span className="text-red-500 text-xs font-bold">キャンセル</span>
                     ) : (
                       qty
                     )}
                   </td>
                   <td className="px-3 py-2 text-right font-medium">
-                    {order.cancelled ? "—" : (() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
+                    {(order.cancelled || item.order?.status === "CANCELLED") ? "—" : (() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
                   </td>
                 </tr>
               );

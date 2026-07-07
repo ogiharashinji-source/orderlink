@@ -150,9 +150,8 @@ model OrderRequest {
   requestedAt   DateTime      @default(now())
   confirmedAt   DateTime?
   cancelled     Boolean       @default(false)
-  orderId       Int?          @unique
-  order         Order?        @relation(fields: [orderId], references: [id])
   orderLink     OrderLink?
+  orders        Order[]
   items         RequestItem[]
 }
 
@@ -171,6 +170,8 @@ model RequestItem {
   requestedQty    Int
   confirmedQty    Int?
   unitPrice       Float
+  orderId         Int?         @unique
+  order           Order?       @relation(fields: [orderId], references: [id])
   createdAt       DateTime     @default(now())
 }
 
@@ -227,10 +228,12 @@ model Order {
   customerEmail   String?
   orderDate    DateTime      @default(now())
   deliveryDate DateTime?
+  requestId    Int?
+  request      OrderRequest? @relation(fields: [requestId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   items        OrderItem[]
-  orderRequest OrderRequest?
+  requestItem  RequestItem?
 }
 
 model OrderItem {

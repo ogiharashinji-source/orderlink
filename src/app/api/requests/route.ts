@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     include: {
       customer: true,
       items: { include: { product: true } },
-      order: { select: { orderNumber: true, status: true } },
+      orders: { select: { orderNumber: true, status: true }, orderBy: { id: "asc" as const }, take: 1 },
     },
   });
   return NextResponse.json(requests);

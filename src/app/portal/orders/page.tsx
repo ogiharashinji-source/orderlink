@@ -13,6 +13,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
+  order: { status: string } | null;
   product: {
     name: string;
     category: string | null;
@@ -207,7 +208,7 @@ export default function PortalOrdersPage() {
                     </td>
                     <td className="px-4 py-3 text-right text-gray-500">{lot}</td>
                     <td className="px-4 py-3 text-center font-semibold">
-                      {o.cancelled
+                      {(o.cancelled || item.order?.status === "CANCELLED")
                         ? <span className="text-red-500 text-xs font-bold">キャンセル</span>
                         : o.status === "REJECTED" ? ""
                         : (item.confirmedQty ?? item.requestedQty) === 0

@@ -8,10 +8,10 @@ export async function GET(req: NextRequest) {
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q") ?? "";
+  const q      = searchParams.get("q")      ?? "";
   const status = searchParams.get("status") ?? "";
-  const from = searchParams.get("from") ?? "";
-  const to = searchParams.get("to") ?? "";
+  const from   = searchParams.get("from")   ?? "";
+  const to     = searchParams.get("to")     ?? "";
 
   let dateFilter = {};
   if (from || to) {
@@ -59,13 +59,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { customerId, items, notes, deliveryDate } = body;
 
-  const totalAmount = items.reduce(
-    (sum: number, item: { quantity: number; unitPrice: number }) =>
-      sum + item.quantity * item.unitPrice,
-    0
-  );
+  type ItemInput = { productId: number; quantity: number; unitPrice: number; volume?: string };
 
-  const productIds = items.map((i: { productId: number }) => Number(i.productId));
+  const productIds = (items as ItemInput[]).map((i) => Number(i.productId));
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } },
     select: { id: true, name: true, category: true, sakaMai: true, seimaiWari: true, alcohol: true },
@@ -77,67 +73,90 @@ export async function POST(req: NextRequest) {
     select: { companyName: true, address: true, phone: true, faxNumber: true, email: true },
   });
 
-  type ItemInput = { productId: number; quantity: number; unitPrice: number; volume?: string };
+  const prefix   = datePrefix();
+  const firstSeq = await nextOrderSequence();
 
-  const seq = await nextOrderSequence();
-  const prefix = datePrefix();
+  // ポータル会員向け OrderRequest を先に作成（customerId がある場合のみ）
+  let requestId: number | null = null;
+  let requestItemIds: number[] = [];
 
-  const order = await prisma.order.create({
-    data: {
-      orderNumber: `ORD-${prefix}-${seq}`,
-      companyId,
-      customerId: Number(customerId),
-      notes,
-      deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
-      totalAmount,
-      items: {
-        create: items.map((item: ItemInput) => ({
-          product: { connect: { id: Number(item.productId) } },
-          productName: productMap[Number(item.productId)]?.name ?? null,
-          productCategory: productMap[Number(item.productId)]?.category ?? null,
-          productSakaMai: productMap[Number(item.productId)]?.sakaMai ?? null,
-          quantity: Number(item.quantity),
-          unitPrice: Number(item.unitPrice),
-          volume: item.volume ?? null,
-        })),
-      },
-    },
-    include: { customer: true, items: { include: { product: true } } },
-  });
-
-  // ポータル会員向けにCONFIRMED状態のOrderRequestを同時作成
   if (customerId) {
-    await prisma.orderRequest.create({
+    const orderRequest = await prisma.orderRequest.create({
       data: {
-        requestNumber: `REQ-${prefix}-${seq}`,
+        requestNumber: `REQ-${prefix}-${firstSeq}`,
         companyId,
-        customerId: Number(customerId),
-        status: "CONFIRMED",
+        customerId:    Number(customerId),
+        status:        "CONFIRMED",
         notes,
-        orderId: order.id,
-        confirmedAt: new Date(),
-        sellerName: setting?.companyName ?? null,
-        sellerAddress: setting?.address ?? null,
-        sellerPhone: setting?.phone ?? null,
-        sellerFax: setting?.faxNumber ?? null,
-        sellerEmail: setting?.email ?? null,
+        confirmedAt:   new Date(),
+        sellerName:    setting?.companyName ?? null,
+        sellerAddress: setting?.address     ?? null,
+        sellerPhone:   setting?.phone       ?? null,
+        sellerFax:     setting?.faxNumber   ?? null,
+        sellerEmail:   setting?.email       ?? null,
         items: {
-          create: items.map((item: ItemInput) => ({
-            product: { connect: { id: Number(item.productId) } },
-            productName: productMap[Number(item.productId)]?.name ?? null,
-            productCategory: productMap[Number(item.productId)]?.category ?? null,
-            productSakaMai: productMap[Number(item.productId)]?.sakaMai ?? null,
+          create: (items as ItemInput[]).map((item) => ({
+            product:           { connect: { id: Number(item.productId) } },
+            productName:       productMap[Number(item.productId)]?.name       ?? null,
+            productCategory:   productMap[Number(item.productId)]?.category   ?? null,
+            productSakaMai:    productMap[Number(item.productId)]?.sakaMai    ?? null,
             productSeimaiWari: productMap[Number(item.productId)]?.seimaiWari ?? null,
-            productAlcohol: productMap[Number(item.productId)]?.alcohol ?? null,
+            productAlcohol:    productMap[Number(item.productId)]?.alcohol    ?? null,
             requestedQty: Number(item.quantity),
             confirmedQty: Number(item.quantity),
-            unitPrice: Number(item.unitPrice),
-            volume: item.volume ?? null,
+            unitPrice:    Number(item.unitPrice),
+            volume:       item.volume ?? null,
           })),
         },
       },
+      include: { items: { select: { id: true } } },
     });
+    requestId      = orderRequest.id;
+    requestItemIds = orderRequest.items.map((i) => i.id);
   }
 
-  return NextResponse.json(order, { status: 201 });
+  // 商品ごとに 1 Order 作成
+  const createdOrders = [];
+  for (let idx = 0; idx < (items as ItemInput[]).length; idx++) {
+    const item    = (items as ItemInput[])[idx];
+    const product = productMap[Number(item.productId)];
+    const totalAmount = Number(item.quantity) * Number(item.unitPrice);
+    const orderSeq = idx === 0 ? firstSeq : await nextOrderSequence();
+
+    const order = await prisma.order.create({
+      data: {
+        orderNumber:  `ORD-${prefix}-${orderSeq}`,
+        companyId,
+        customerId:   customerId ? Number(customerId) : undefined,
+        requestId,
+        notes,
+        deliveryDate: deliveryDate ? new Date(deliveryDate) : null,
+        totalAmount,
+        items: {
+          create: [{
+            product:         { connect: { id: Number(item.productId) } },
+            productName:     product?.name     ?? null,
+            productCategory: product?.category ?? null,
+            productSakaMai:  product?.sakaMai  ?? null,
+            quantity:  Number(item.quantity),
+            unitPrice: Number(item.unitPrice),
+            volume:    item.volume ?? null,
+          }],
+        },
+      },
+      include: { customer: true, items: { include: { product: true } } },
+    });
+
+    // RequestItem に orderId をセット
+    if (requestItemIds[idx] != null) {
+      await prisma.requestItem.update({
+        where: { id: requestItemIds[idx] },
+        data:  { orderId: order.id },
+      });
+    }
+
+    createdOrders.push(order);
+  }
+
+  return NextResponse.json(createdOrders[0], { status: 201 });
 }

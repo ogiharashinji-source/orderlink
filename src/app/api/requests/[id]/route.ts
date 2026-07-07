@@ -8,11 +8,17 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     include: {
       customer: true,
       items: { include: { product: true } },
-      order: true,
+      orders: {
+        select: { id: true, orderNumber: true, status: true },
+        orderBy: { id: "asc" },
+      },
     },
   });
   if (!request) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json(request);
+
+  // admin 画面の既存型（order: { id, orderNumber, status } | null）と互換を保つ
+  const { orders, ...rest } = request;
+  return NextResponse.json({ ...rest, order: orders[0] ?? null });
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

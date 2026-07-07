@@ -22,12 +22,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     ...items.map((item) =>
       prisma.requestItem.update({
         where: { id: item.id },
-        data: { requestedQty: item.requestedQty },
+        data:  { requestedQty: item.requestedQty },
       })
     ),
     prisma.orderRequest.update({
       where: { id: orderId },
-      data: { notes: notes ?? null, requestedAt: new Date() },
+      data:  { notes: notes ?? null, requestedAt: new Date() },
     }),
   ]);
 
@@ -41,14 +41,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params;
   const orderId = Number(id);
 
-  const order = await prisma.orderRequest.findUnique({
-    where: { id: orderId },
-    include: { order: { select: { status: true } } },
-  });
+  const order = await prisma.orderRequest.findUnique({ where: { id: orderId } });
   if (!order || order.customerId !== customer.id)
     return NextResponse.json({ error: "注文が見つかりません" }, { status: 404 });
-  const effectivelyCancelled = order.cancelled || order.order?.status === "CANCELLED";
-  if (order.status !== "PENDING" && !effectivelyCancelled)
+
+  // 削除可能条件: PENDING（未確定）または全商品キャンセル済み
+  if (order.status !== "PENDING" && !order.cancelled)
     return NextResponse.json({ error: "この注文は削除できません" }, { status: 400 });
 
   await prisma.orderLink.updateMany({ where: { requestId: orderId }, data: { requestId: null } });
