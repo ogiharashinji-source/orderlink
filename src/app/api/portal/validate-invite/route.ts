@@ -9,21 +9,22 @@ export async function GET(req: NextRequest) {
   if (breweryInviteToken) {
     const setting = await prisma.adminSetting.findUnique({
       where: { inviteToken: breweryInviteToken },
-      include: { company: true },
+      select: { companyName: true },
     });
     if (!setting) return NextResponse.json({ valid: false }, { status: 404 });
-    return NextResponse.json({ valid: true });
+    return NextResponse.json({ valid: true, companyName: setting.companyName });
   }
 
   if (inviteToken) {
     const invite = await prisma.companyInvite.findUnique({
       where: { token: inviteToken },
-      include: { company: true },
+      include: { company: { include: { setting: { select: { companyName: true } } } } },
     });
     if (!invite) return NextResponse.json({ valid: false }, { status: 404 });
     if (invite.expiresAt && invite.expiresAt < new Date())
       return NextResponse.json({ valid: false }, { status: 404 });
-    return NextResponse.json({ valid: true });
+    const companyName = invite.company?.setting?.companyName ?? invite.company?.name ?? null;
+    return NextResponse.json({ valid: true, companyName });
   }
 
   return NextResponse.json({ valid: false }, { status: 400 });

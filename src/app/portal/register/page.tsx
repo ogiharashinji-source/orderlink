@@ -46,6 +46,7 @@ function RegisterForm() {
   const breweryInviteToken = searchParams.get("invite") ?? "";
 
   const [tokenValid, setTokenValid] = useState<boolean | null>(null);
+  const [companyName, setCompanyName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!inviteToken && !breweryInviteToken) { setTokenValid(false); return; }
@@ -53,7 +54,12 @@ function RegisterForm() {
     if (breweryInviteToken) params.set("invite", breweryInviteToken);
     else params.set("token", inviteToken);
     fetch(`/api/portal/validate-invite?${params}`)
-      .then((r) => setTokenValid(r.ok))
+      .then(async (r) => {
+        if (!r.ok) { setTokenValid(false); return; }
+        const data = await r.json();
+        setTokenValid(true);
+        setCompanyName(data.companyName ?? null);
+      })
       .catch(() => setTokenValid(false));
   }, [inviteToken, breweryInviteToken]);
 
@@ -172,7 +178,8 @@ function RegisterForm() {
       <div className="w-full max-w-lg mx-auto px-4 py-4 space-y-3">
         <div className="text-center mb-1">
           <h1 className="text-xl font-bold text-gray-900">OrderLink</h1>
-          <p className="text-gray-500 text-sm">紹介者名アカウント登録</p>
+          {companyName && <p className="text-gray-600 text-sm font-medium">{companyName}</p>}
+          <p className="text-gray-500 text-sm">アカウント登録</p>
           <button
             onClick={() => { setMode(mode === "register" ? "login" : "register"); setError(""); setLoginError(""); }}
             className="text-sm text-blue-600 hover:underline mt-1"
