@@ -102,11 +102,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     },
   });
 
-  // 確定メールをポータル会員に送信
+  // 確定メールをポータル会員に送信（在庫なし含む）
   let emailError: string | null = null;
   const customerEmail = request.customer?.email;
-  if (customerEmail && createdOrders.length > 0) {
-    const emailItems = validItems.map((i) => {
+  if (customerEmail) {
+    // 在庫なしの場合は全商品をqty=0で送信、通常確定は確定済み商品のみ
+    const emailItems = (createdOrders.length > 0 ? validItems : confirmedItems).map((i) => {
       const ri = itemMap[i.requestItemId];
       return {
         productName: ri.productName ?? ri.product?.name ?? "—",
@@ -116,12 +117,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         qty:         i.confirmedQty,
       };
     });
+    const orderNumberStr = createdOrders.length > 0
+      ? createdOrders.map((o) => o.orderNumber).join(", ")
+      : request.requestNumber;
     console.log(`[注文確定] メール送信開始 to=${customerEmail} at=${new Date().toISOString()}`);
     try {
       await sendOrderConfirmationEmail({
         to:           customerEmail,
         customerName: request.customer?.name ?? "",
-        orderNumber:  createdOrders.map((o) => o.orderNumber).join(", "),
+        orderNumber:  orderNumberStr,
         breweryName:  request.company?.setting?.companyName ?? "",
         items:        emailItems,
         adminReply:   adminReply || null,
