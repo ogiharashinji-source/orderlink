@@ -55,7 +55,14 @@ export default function RequestsPage() {
       body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
     if (res.ok) {
-      window.location.href = "/orders";
+      const remaining: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
+      const pendingCount = remaining.filter((r) => r.status === "PENDING").length;
+      if (pendingCount === 0) {
+        router.push("/orders");
+      } else {
+        load();
+        setConfirming(null);
+      }
     } else {
       const result = await res.json();
       alert(result.error ?? "エラーが発生しました");
@@ -108,7 +115,14 @@ export default function RequestsPage() {
       body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
     if (res.ok) {
-      window.location.href = "/orders";
+      const remaining: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
+      const pendingCount = remaining.filter((r) => r.status === "PENDING").length;
+      if (pendingCount === 0) {
+        router.push("/orders");
+      } else {
+        load();
+        setConfirming(null);
+      }
     } else {
       const result = await res.json();
       alert(result.error ?? "エラーが発生しました");
