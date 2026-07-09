@@ -207,16 +207,16 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
           <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required error={errors.price1800}>
-              <input type="number" min="0" step="1" value={form.price1800} onChange={set("price1800")} className={nc(errors.price1800)} />
+              <input type="text" inputMode="numeric" value={form.price1800} onChange={set("price1800")} onBlur={blur("price1800")} className={nc(errors.price1800)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePrice1800}>
-              <input type="number" min="0" step="1" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} className={nc(errors.wholesalePrice1800)} />
+              <input type="text" inputMode="numeric" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} onBlur={blur("wholesalePrice1800")} className={nc(errors.wholesalePrice1800)} />
             </Field>
             <Field label="単位（ロット）" required error={errors.unit1800}>
-              <input value={form.unit1800} onChange={set("unit1800")} placeholder="例: 6" className={ic(errors.unit1800)} />
+              <input value={form.unit1800} onChange={set("unit1800")} onBlur={blur("unit1800")} placeholder="例: 6" className={ic(errors.unit1800)} />
             </Field>
             <Field label="限定">
-              <input type="number" min="0" value={form.stock1800} onChange={set("stock1800")} className={inputCls} />
+              <input type="text" inputMode="numeric" value={form.stock1800} onChange={set("stock1800")} onBlur={blur("stock1800")} className={inputCls} />
             </Field>
           </div>
         </div>
@@ -228,16 +228,16 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
           <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required error={errors.price720}>
-              <input type="number" min="0" step="1" value={form.price720} onChange={set("price720")} className={nc(errors.price720)} />
+              <input type="text" inputMode="numeric" value={form.price720} onChange={set("price720")} onBlur={blur("price720")} className={nc(errors.price720)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePrice720}>
-              <input type="number" min="0" step="1" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} className={nc(errors.wholesalePrice720)} />
+              <input type="text" inputMode="numeric" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} onBlur={blur("wholesalePrice720")} className={nc(errors.wholesalePrice720)} />
             </Field>
             <Field label="単位（ロット）" required error={errors.unit720}>
-              <input value={form.unit720} onChange={set("unit720")} placeholder="例: 12" className={ic(errors.unit720)} />
+              <input value={form.unit720} onChange={set("unit720")} onBlur={blur("unit720")} placeholder="例: 12" className={ic(errors.unit720)} />
             </Field>
             <Field label="限定">
-              <input type="number" min="0" value={form.stock720} onChange={set("stock720")} className={inputCls} />
+              <input type="text" inputMode="numeric" value={form.stock720} onChange={set("stock720")} onBlur={blur("stock720")} className={inputCls} />
             </Field>
           </div>
         </div>
@@ -255,13 +255,13 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
               <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
             </Field>
             <Field label="小売値 (円)" required error={errors.priceOther}>
-              <input type="number" min="0" step="1" value={form.priceOther} onChange={set("priceOther")} className={nc(errors.priceOther)} />
+              <input type="text" inputMode="numeric" value={form.priceOther} onChange={set("priceOther")} onBlur={blur("priceOther")} className={nc(errors.priceOther)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePriceOther}>
-              <input type="number" min="0" step="1" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} className={nc(errors.wholesalePriceOther)} />
+              <input type="text" inputMode="numeric" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} onBlur={blur("wholesalePriceOther")} className={nc(errors.wholesalePriceOther)} />
             </Field>
             <Field label="単位（ロット）" required error={errors.unitOther}>
-              <input value={form.unitOther} onChange={set("unitOther")} placeholder="例: 12" className={ic(errors.unitOther)} />
+              <input value={form.unitOther} onChange={set("unitOther")} onBlur={blur("unitOther")} placeholder="例: 12" className={ic(errors.unitOther)} />
             </Field>
           </div>
         </div>
