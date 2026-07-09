@@ -55,6 +55,8 @@ export default function RequestsPage() {
       body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
     if (res.ok) {
+      const result = await res.json();
+      if (result.emailError) alert(`⚠️ ${result.emailError}`);
       const remaining: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
       const pendingCount = remaining.filter((r) => r.status === "PENDING").length;
       if (pendingCount === 0) {
@@ -115,6 +117,8 @@ export default function RequestsPage() {
       body: JSON.stringify({ confirmedItems, adminReply: adminReply || undefined }),
     });
     if (res.ok) {
+      const result = await res.json();
+      if (result.emailError) alert(`⚠️ ${result.emailError}`);
       const remaining: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
       const pendingCount = remaining.filter((r) => r.status === "PENDING").length;
       if (pendingCount === 0) {

@@ -371,6 +371,16 @@ export async function sendOrderConfirmationEmail({
 </body>
 </html>`;
 
+  const text = [
+    `${customerName} 様`,
+    "",
+    `${breweryName}様より、ご注文内容が確定されました。`,
+    "下記URLよりご注文内容をご確認ください。",
+    "",
+    "https://www.orderlink.jp/portal/orders",
+    ...(adminReply ? ["", "【メッセージ】", adminReply] : []),
+  ].join("\n");
+
   if (DEV) {
     console.log("========== [注文確定メール] ==========");
     console.log(`宛先: ${to}`);
@@ -379,7 +389,18 @@ export async function sendOrderConfirmationEmail({
     return;
   }
 
-  await getResend().emails.send({ from: FROM, to, subject, html });
+  const tag = `[注文確定メール][${orderNumber}]`;
+  console.log(`${tag} 送信開始 from=${FROM} to=${to} subject=${subject} at=${new Date().toISOString()}`);
+
+  const t0 = Date.now();
+  const { data, error } = await getResend().emails.send({ from: FROM, to, subject, html, text });
+  const elapsed = Date.now() - t0;
+
+  console.log(`${tag} Resend応答 elapsed=${elapsed}ms data.id=${data?.id ?? "none"} error=${error ? JSON.stringify(error) : "none"} at=${new Date().toISOString()}`);
+
+  if (error) {
+    throw new Error(`Resend error: ${JSON.stringify(error)}`);
+  }
 }
 
 export async function sendOrderLinkEmail({

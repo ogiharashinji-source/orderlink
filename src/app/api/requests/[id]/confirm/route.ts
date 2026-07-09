@@ -103,6 +103,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   });
 
   // 確定メールをポータル会員に送信
+  let emailError: string | null = null;
   const customerEmail = request.customer?.email;
   if (customerEmail && createdOrders.length > 0) {
     const emailItems = validItems.map((i) => {
@@ -115,18 +116,29 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         qty:         i.confirmedQty,
       };
     });
-    await sendOrderConfirmationEmail({
-      to:           customerEmail,
-      customerName: request.customer?.name ?? "",
-      orderNumber:  createdOrders.map((o) => o.orderNumber).join(", "),
-      breweryName:  request.company?.setting?.companyName ?? "",
-      items:        emailItems,
-      adminReply:   adminReply || null,
-    }).catch((e) => console.error("注文確定メール送信エラー:", e));
+    console.log(`[注文確定] メール送信開始 to=${customerEmail} at=${new Date().toISOString()}`);
+    try {
+      await sendOrderConfirmationEmail({
+        to:           customerEmail,
+        customerName: request.customer?.name ?? "",
+        orderNumber:  createdOrders.map((o) => o.orderNumber).join(", "),
+        breweryName:  request.company?.setting?.companyName ?? "",
+        items:        emailItems,
+        adminReply:   adminReply || null,
+      });
+      console.log(`[注文確定] メール送信完了 at=${new Date().toISOString()}`);
+    } catch (e) {
+      emailError = e instanceof Error ? e.message : String(e);
+      console.error(`[注文確定] メール送信失敗 error=${emailError} at=${new Date().toISOString()}`);
+    }
   }
 
   return NextResponse.json(
-    { orderNumbers: createdOrders.map((o) => o.orderNumber), orderId: createdOrders[0]?.orderId ?? null },
+    {
+      orderNumbers: createdOrders.map((o) => o.orderNumber),
+      orderId: createdOrders[0]?.orderId ?? null,
+      ...(emailError ? { emailError: "注文は確定しましたが、確認メールの送信に失敗しました" } : {}),
+    },
     { status: 201 }
   );
 }
