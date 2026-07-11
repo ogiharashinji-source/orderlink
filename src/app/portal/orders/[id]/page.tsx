@@ -263,12 +263,12 @@ export default function PortalOrderDetailPage() {
                   <td className="px-3 py-2 text-right">
                     {editing ? (
                       <input
-                        type="number" min="0"
+                        type="number" min="1"
                         max={(() => { const s = item.volume === "1800ml" ? item.product?.stock1800 : item.product?.stock720; return s != null && s > 0 ? s : undefined; })()}
                         value={editQtys[item.id] ?? item.requestedQty}
                         onChange={(e) => {
                           const s = item.volume === "1800ml" ? item.product?.stock1800 : item.product?.stock720;
-                          let v = parseInt(e.target.value) || 0;
+                          let v = Math.max(1, parseInt(e.target.value) || 1);
                           if (s != null && s > 0) v = Math.min(v, s);
                           setEditQtys((p) => ({ ...p, [item.id]: v }));
                         }}
