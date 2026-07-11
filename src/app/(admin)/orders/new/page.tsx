@@ -61,6 +61,7 @@ export default function NewOrderPage() {
     e.preventDefault();
     if (!customerId) return alert("顧客を選択してください");
     if (lineItems.length === 0) return alert("数量を1件以上入力してください");
+    if (!confirm("受注登録してよろしいですか？")) return;
     setSaving(true);
     const items = lineItems.map((li) => {
       const p = products.find((p) => p.id === li.productId)!;
