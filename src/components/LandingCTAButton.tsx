@@ -13,25 +13,20 @@ export default function LandingCTAButton({
   const [href, setHref] = useState("/register");
 
   useEffect(() => {
-    // キャッシュから即座に反映
+    // キャッシュから即座に反映（管理者のみダッシュボードへ。ポータル会員は /register のまま）
     try {
       const stored = localStorage.getItem(LS_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.type === "admin") { setHref("/requests"); return; }
-        if (parsed.type === "portal") { setHref("/portal/order"); return; }
       }
     } catch {}
 
-    // バックグラウンドでフェッチ（LandingHeaderActionsと共有キャッシュ）
+    // バックグラウンドでフェッチ（管理者のみ）
     (async () => {
       try {
         const r = await fetch("/api/admin/nav", { redirect: "manual" });
         if (r.ok) { setHref("/requests"); return; }
-      } catch {}
-      try {
-        const r2 = await fetch("/api/portal/profile", { redirect: "manual" });
-        if (r2.ok) { setHref("/portal/order"); return; }
       } catch {}
     })();
   }, []);
