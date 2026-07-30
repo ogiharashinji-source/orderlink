@@ -21,7 +21,7 @@ type OrderRequest = {
   status: "PENDING" | "CONFIRMED" | "REJECTED";
   requestedAt: string;
   notes: string | null;
-  customer: { name: string; company: string | null };
+  customer: { name: string; company: string | null; memberNumber: string | null };
   items: RequestItem[];
 };
 
@@ -32,7 +32,7 @@ type ModalState = {
 } | null;
 
 function downloadCsv(requests: OrderRequest[]) {
-  const headers = ["リクエスト日", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
+  const headers = ["リクエスト日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
   const rows = requests.flatMap((req) =>
     req.items.map((item) => {
       const wp = item.volume === "1800ml"
@@ -47,6 +47,7 @@ function downloadCsv(requests: OrderRequest[]) {
         : (item.product?.unitOther ?? "");
       return [
         new Date(req.requestedAt).toLocaleString("ja-JP"),
+        req.customer.memberNumber ?? "",
         req.customer.name,
         item.productName ?? item.product?.name ?? "",
         item.productCategory ?? item.product?.category ?? "",
