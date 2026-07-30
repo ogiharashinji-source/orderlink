@@ -152,7 +152,7 @@ export default function PortalOrderDetailPage() {
 
   return (
     <>
-    <div className="space-y-4 max-w-5xl">
+    <div className="space-y-4">
 
       {/* パンくず */}
       <div className="flex items-center gap-2 text-sm text-gray-500">
