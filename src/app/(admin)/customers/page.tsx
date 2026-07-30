@@ -92,6 +92,7 @@ export default function CustomersPage() {
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [totalApproved, setTotalApproved] = useState<number | null>(null);
   const allCheckRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(() => {
@@ -104,6 +105,12 @@ export default function CustomersPage() {
   }, [query]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    fetch("/api/customers?approved=1")
+      .then((r) => r.json())
+      .then((data: { id: number }[]) => setTotalApproved(data.length));
+  }, []);
 
   useEffect(() => {
     if (!allCheckRef.current) return;
@@ -185,6 +192,11 @@ export default function CustomersPage() {
           )}
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          {totalApproved !== null && (
+            <span className="text-sm text-gray-500">
+              登録顧客数：<span className="font-bold text-gray-800">{totalApproved}社</span>
+            </span>
+          )}
           <button
             onClick={handleBulkDelete}
             disabled={selected.size === 0 || bulkDeleting}

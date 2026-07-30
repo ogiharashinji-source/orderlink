@@ -30,7 +30,6 @@ export default function FaxLinkList() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
-  const [customerCount, setCustomerCount] = useState<number | null>(null);
   const allCheckRef = useRef<HTMLInputElement>(null);
 
   const load = () =>
@@ -41,12 +40,7 @@ export default function FaxLinkList() {
         setSelected(new Set());
       });
 
-  useEffect(() => {
-    load();
-    fetch("/api/customers?approved=1")
-      .then((r) => r.json())
-      .then((data: { id: number }[]) => setCustomerCount(data.length));
-  }, []);
+  useEffect(() => { load(); }, []);
 
   // batchId でグループ化（null の場合は id を仮キーに）
   const batchMap = new Map<string, Batch>();
@@ -138,12 +132,7 @@ export default function FaxLinkList() {
   return (
     <>
       {/* 一括削除ボタン */}
-      <div className="flex items-center justify-end gap-4 mb-2">
-        {customerCount !== null && (
-          <span className="text-sm text-gray-500">
-            登録顧客数：<span className="font-bold text-gray-800">{customerCount}社</span>
-          </span>
-        )}
+      <div className="flex justify-end mb-2">
         <button
           onClick={handleBulkDelete}
           disabled={selected.size === 0 || bulkDeleting}
