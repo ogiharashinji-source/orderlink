@@ -220,11 +220,11 @@ export default function PortalOrdersPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       {o.status === "PENDING" && (
-                        <button onClick={() => router.push(`/portal/orders/${o.id}?edit=1`)}
+                        <button onClick={() => router.push(`/portal/orders/${o.id}?item=${item.id}&edit=1`)}
                           className="text-xs text-blue-600 hover:underline">編集</button>
                       )}
                       {o.status === "CONFIRMED" && (
-                        <button onClick={() => router.push(`/portal/orders/${o.id}`)}
+                        <button onClick={() => router.push(`/portal/orders/${o.id}?item=${item.id}`)}
                           className="text-xs font-medium text-gray-500 hover:underline">確認</button>
                       )}
                     </td>

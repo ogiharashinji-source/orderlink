@@ -11,6 +11,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
   const [message, setMessage] = useState("");
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
+  const [sendProgress, setSendProgress] = useState<{ current: number; total: number } | null>(null);
   const [confirmTargets, setConfirmTargets] = useState<Customer[] | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -77,8 +78,13 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
       ...(attachmentBlobUrl ? { attachmentBlobUrl, attachmentBlobName } : {}),
     };
 
-    const results = await Promise.allSettled(
-      confirmTargets.map(async (c) => {
+    // 1件ずつ順番に送信（Resendレート制限対策）
+    const failures: string[] = [];
+    const total = confirmTargets.length;
+    for (let i = 0; i < total; i++) {
+      const c = confirmTargets[i];
+      setSendProgress({ current: i + 1, total });
+      try {
         const res = await fetch("/api/order-links", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -86,14 +92,18 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
-          throw new Error(`${c.name}: ${data.error ?? res.status}`);
+          failures.push(`${c.name}: ${data.error ?? res.status}`);
         }
-      })
-    );
+      } catch {
+        failures.push(`${c.name}: ネットワークエラー`);
+      }
+      // Resendのレート制限対策: 1件ごとに300ms待機
+      if (i < total - 1) await new Promise((r) => setTimeout(r, 300));
+    }
+    setSendProgress(null);
 
-    const failures = results.filter((r) => r.status === "rejected") as PromiseRejectedResult[];
     if (failures.length > 0) {
-      alert("送信に失敗しました:\n" + failures.map((f) => f.reason?.message ?? "不明なエラー").join("\n"));
+      alert(`${failures.length}件の送信に失敗しました:\n` + failures.join("\n"));
     } else {
       onCreated();
     }
@@ -194,7 +204,13 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
 
         <button type="submit" disabled={saving}
           className="bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-          {saving ? "送信中..." : sendMode === "全体" ? `送信（${customers.length}件）` : `送信（${selectedIds.size}件）`}
+          {saving
+            ? sendProgress
+              ? `送信中... ${sendProgress.current}/${sendProgress.total}件`
+              : "準備中..."
+            : sendMode === "全体"
+              ? `送信（${customers.length}件）`
+              : `送信（${selectedIds.size}件）`}
         </button>
       </form>
 

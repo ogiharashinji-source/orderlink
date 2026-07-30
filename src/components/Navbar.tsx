@@ -86,13 +86,13 @@ export default function Navbar() {
                 >
                   {item.label}
                   {item.badge && pendingCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                      {pendingCount > 9 ? "9+" : pendingCount}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center">
+                      {pendingCount}
                     </span>
                   )}
                   {item.customerBadge && approvalCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                      {approvalCount > 9 ? "9+" : approvalCount}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center">
+                      {approvalCount}
                     </span>
                   )}
                 </a>

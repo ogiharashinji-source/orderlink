@@ -70,18 +70,23 @@ export async function POST(req: NextRequest) {
     const attachment = fileData && fileName
       ? { filename: fileName, content: Buffer.from(fileData as string, "base64"), contentType: (fileType as string) ?? "application/octet-stream" }
       : null;
-    sendOrderLinkEmail({
-      to: link.customer.email,
-      customerName: link.customer?.name ?? "",
-      senderName,
-      title: link.title,
-      message: link.message,
-      orderUrl,
-      expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
-      attachment,
-      attachmentUrl: storedUrl,
-      attachmentName: storedName,
-    }).catch((err) => console.error("[sendOrderLinkEmail]", err));
+    try {
+      await sendOrderLinkEmail({
+        to: link.customer.email,
+        customerName: link.customer?.name ?? "",
+        senderName,
+        title: link.title,
+        message: link.message,
+        orderUrl,
+        expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
+        attachment,
+        attachmentUrl: storedUrl,
+        attachmentName: storedName,
+      });
+    } catch (err) {
+      console.error("[sendOrderLinkEmail]", err);
+      return NextResponse.json({ error: "メール送信に失敗しました" }, { status: 500 });
+    }
   }
 
   return NextResponse.json(link, { status: 201 });
