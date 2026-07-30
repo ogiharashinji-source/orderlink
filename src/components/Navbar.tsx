@@ -86,12 +86,12 @@ export default function Navbar() {
                 >
                   {item.label}
                   {item.badge && pendingCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center">
+                    <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                       {pendingCount}
                     </span>
                   )}
                   {item.customerBadge && approvalCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-4 h-4 px-0.5 rounded-full flex items-center justify-center">
+                    <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                       {approvalCount}
                     </span>
                   )}

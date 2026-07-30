@@ -31,6 +31,45 @@ type ModalState = {
   modalQtys: Record<number, string>;
 } | null;
 
+function downloadCsv(requests: OrderRequest[]) {
+  const headers = ["リクエスト日", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
+  const rows = requests.flatMap((req) =>
+    req.items.map((item) => {
+      const wp = item.volume === "1800ml"
+        ? item.product?.wholesalePrice1800
+        : item.volume === "720ml"
+        ? item.product?.wholesalePrice720
+        : item.product?.wholesalePriceOther;
+      const lot = item.volume === "1800ml"
+        ? (item.product?.unit1800 ?? "")
+        : item.volume === "720ml"
+        ? (item.product?.unit720 ?? "")
+        : (item.product?.unitOther ?? "");
+      return [
+        new Date(req.requestedAt).toLocaleString("ja-JP"),
+        req.customer.name,
+        item.productName ?? item.product?.name ?? "",
+        item.productCategory ?? item.product?.category ?? "",
+        item.productSakaMai ?? item.product?.sakaMai ?? "",
+        item.volume ?? "",
+        item.unitPrice,
+        wp ?? "",
+        lot,
+        item.requestedQty,
+      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",");
+    })
+  );
+  const bom = "﻿";
+  const csv = bom + [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `リクエスト一覧_${new Date().toLocaleDateString("ja-JP").replace(/\//g, "")}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
   const [editedQtys, setEditedQtys] = useState<Record<number, string>>({});
@@ -221,9 +260,18 @@ export default function RequestsPage() {
             </span>
           )}
         </div>
-        <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-          + 受注登録
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => downloadCsv(requests)}
+            disabled={requests.length === 0}
+            className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
+          >
+            CSV
+          </button>
+          <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+            + 受注登録
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
