@@ -38,6 +38,7 @@ export default function SuperAdminCustomersPage() {
   const [error, setError] = useState("");
   const [breweryPopup, setBreweryPopup] = useState<{ customer: Customer; breweries: BreweryLink[] } | null>(null);
   const [breweryPopupLoading, setBreweryPopupLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
   const openBreweryPopup = async (customer: Customer) => {
     setBreweryPopupLoading(true);
@@ -133,6 +134,14 @@ export default function SuperAdminCustomersPage() {
   };
 
   const inputCls = "w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  const filteredCustomers = customers.filter((c) => {
+    if (!search.trim()) return true;
+    const q = search.trim().toLowerCase();
+    const memberNumber = c.customerNumber != null ? "p" + String(c.customerNumber).padStart(3, "0") : "";
+    return [c.name, c.address, c.phone, c.email, memberNumber]
+      .some((v) => (v ?? "").toLowerCase().includes(q));
+  });
 
   if (showForm) {
     return (
@@ -248,8 +257,16 @@ export default function SuperAdminCustomersPage() {
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">ポータル会員一覧</h1>
-        <span className="text-sm text-gray-500">{customers.length}件</span>
+        <span className="text-sm text-gray-500">{filteredCustomers.length}件{search.trim() && ` / 全${customers.length}件`}</span>
       </div>
+
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="会員番号・会社名・住所・電話番号・メールアドレスで検索"
+        className="w-full max-w-md border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         {loading ? (
@@ -272,10 +289,10 @@ export default function SuperAdminCustomersPage() {
               </tr>
             </thead>
             <tbody>
-              {customers.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-8 text-gray-400">データがありません</td></tr>
+              {filteredCustomers.length === 0 ? (
+                <tr><td colSpan={9} className="text-center py-8 text-gray-400">{search.trim() ? "該当する会員がいません" : "データがありません"}</td></tr>
               ) : (
-                customers.map((c, idx) => (
+                filteredCustomers.map((c, idx) => (
                   <tr key={c.id} className={`border-t border-gray-100 ${idx % 2 === 1 ? "bg-gray-50" : "bg-white"}`}>
                     <td className="px-4 py-3 text-sm text-center text-gray-700 font-mono font-medium">
                       {c.customerNumber != null ? "P" + String(c.customerNumber).padStart(3, "0") : "—"}
