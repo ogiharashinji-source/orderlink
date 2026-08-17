@@ -5,6 +5,14 @@ const DEV = !process.env.RESEND_API_KEY;
 
 const getResend = () => new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function nl2br(s: string) {
+  return escapeHtml(s).replace(/\n/g, "<br>");
+}
+
 export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   const subject = "【OrderLink】パスワード再設定のご案内";
 
@@ -347,7 +355,7 @@ export async function sendOrderConfirmationEmail({
             <p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.9;">
               ${breweryName}様より、ご注文内容が確定されました。<br>下記ボタンよりアクセスのうえ、ご注文内容をご確認ください。
             </p>
-            ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">メッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;white-space:pre-wrap;">${adminReply}</p></div>` : ""}
+            ${adminReply ? `<div style="background:#f8f9fb;border-radius:6px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 4px;font-size:12px;color:#888;">メッセージ</p><p style="margin:0;font-size:14px;color:#333;line-height:1.8;">${nl2br(adminReply)}</p></div>` : ""}
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td align="center" style="padding:8px 0 16px;">
@@ -449,7 +457,7 @@ export async function sendOrderLinkEmail({
           <td style="padding:40px 40px 32px;">
             <p style="margin:0 0 16px;font-size:16px;font-weight:bold;color:#222222;">${customerName} 様</p>
             ${title ? `<p style="margin:0 0 12px;font-size:16px;font-weight:bold;color:#1e3a5f;">${title}</p>` : ""}
-            ${bodyMessage ? `<p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;white-space:pre-wrap;">${bodyMessage}</p>` : ""}
+            ${bodyMessage ? `<p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;">${nl2br(bodyMessage)}</p>` : ""}
 
             ${attachmentUrl ? `
             <!-- 添付ファイル -->

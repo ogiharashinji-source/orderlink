@@ -85,7 +85,10 @@ export async function proxy(req: NextRequest) {
     if (!(await isValidCustomer(customerToken))) {
       return NextResponse.redirect(new URL("/portal/login", req.url));
     }
-    return NextResponse.next();
+    // アクセスのたびに有効期限を30日延長（スライディングセッション）
+    const res = NextResponse.next();
+    res.cookies.set("customer_auth", customerToken!, { httpOnly: true, path: "/", maxAge: 60 * 60 * 24 * 30 });
+    return res;
   }
 
   // ── 旧 /superadmin/* を 404 でブロック ──
