@@ -13,9 +13,18 @@ function CustomerLoginForm() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/customer/me").then((r) => {
-      if (r.ok) router.push("/portal/order");
-      else setAuthChecking(false);
+    const cid = searchParams.get("cid");
+    fetch("/api/customer/me").then(async (r) => {
+      if (!r.ok) { setAuthChecking(false); return; }
+      const data = await r.json().catch(() => null);
+      // cid指定がある場合、現在のセッションがその顧客と一致する時だけ自動遷移する。
+      // 一致しない（＝別顧客のメールリンクを開いた）場合はセッションを破棄しログイン画面を表示する。
+      if (cid === null || String(data?.id) === cid) {
+        router.push("/portal/order");
+      } else {
+        await fetch("/api/customer/logout", { method: "POST" }).catch(() => {});
+        setAuthChecking(false);
+      }
     }).catch(() => setAuthChecking(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

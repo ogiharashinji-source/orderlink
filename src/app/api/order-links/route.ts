@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   if (link.customer?.email) {
     const origin = req.nextUrl.origin;
-    const orderUrl = `${origin}/portal/login`;
+    const orderUrl = `${origin}/portal/login?cid=${link.customer.id}`;
     const setting = await prisma.adminSetting.findUnique({ where: { companyId } });
     const senderName = setting?.companyName ?? "";
     const attachment = fileData && fileName

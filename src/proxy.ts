@@ -29,14 +29,21 @@ async function isValidAdmin(token: string | undefined): Promise<boolean> {
 }
 
 // customer token: "${customerId}.${hmac(customerId)}"
-async function isValidCustomer(token: string | undefined): Promise<boolean> {
-  if (!token) return false;
+// トークンが有効なら customerId を、無効なら null を返す
+async function getValidCustomerId(token: string | undefined): Promise<number | null> {
+  if (!token) return null;
   const sep = token.indexOf(".");
-  if (sep < 1) return false;
+  if (sep < 1) return null;
   const idStr = token.slice(0, sep);
   const sig = token.slice(sep + 1);
-  if (isNaN(parseInt(idStr))) return false;
-  return (await hmacHex(idStr)) === sig;
+  const id = parseInt(idStr);
+  if (isNaN(id)) return null;
+  if ((await hmacHex(idStr)) !== sig) return null;
+  return id;
+}
+
+async function isValidCustomer(token: string | undefined): Promise<boolean> {
+  return (await getValidCustomerId(token)) !== null;
 }
 
 // superadmin token: "superadmin:${hmac("superadmin")}"
@@ -73,9 +80,20 @@ export async function proxy(req: NextRequest) {
   }
 
   // ── ポータルログイン: ログイン済みなら /portal/order へ ──
+  // メールのリンクに ?cid=顧客ID が付いている場合は、現在のセッションがその顧客と
+  // 一致するときだけ自動ログイン扱いにし、一致しなければログイン画面を表示する
   if (pathname === "/portal/login") {
-    if (await isValidCustomer(customerToken)) {
-      return NextResponse.redirect(new URL("/portal/order", req.url));
+    const sessionCustomerId = await getValidCustomerId(customerToken);
+    const cidParam = req.nextUrl.searchParams.get("cid");
+
+    if (sessionCustomerId !== null) {
+      if (cidParam === null || Number(cidParam) === sessionCustomerId) {
+        return NextResponse.redirect(new URL("/portal/order", req.url));
+      }
+      // 別の顧客宛のリンク → 古いセッションを破棄してログイン画面を表示
+      const res = NextResponse.next();
+      res.cookies.delete("customer_auth");
+      return res;
     }
     return NextResponse.next();
   }
