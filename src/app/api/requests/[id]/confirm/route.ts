@@ -34,7 +34,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     )
   );
 
-  const validItems = confirmedItems.filter((i) => i.confirmedQty > 0);
+  // 販売数0（在庫なし）の商品も Order として残す（受注管理から消えないようにするため）
+  const validItems = confirmedItems;
   const itemMap = Object.fromEntries(request.items.map((i) => [i.id, i]));
 
   // 商品ごとに 1 Order を作成（Order.requestId で OrderRequest と紐づける）
