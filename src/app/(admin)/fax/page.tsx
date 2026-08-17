@@ -20,7 +20,7 @@ export default function FaxPage() {
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
-          発注書を作成
+          メールを作成
         </button>
         <button
           onClick={() => setActiveTab("list")}
