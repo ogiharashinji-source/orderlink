@@ -3,10 +3,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Room = { customerId: number; customerName: string; lastMessage: string; lastMessageAt: string; unreadCount: number };
+type Customer = { id: number; name: string };
 
 export default function AdminChatListPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [newCustomerId, setNewCustomerId] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -18,9 +21,35 @@ export default function AdminChatListPage() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    fetch("/api/customers?approved=1").then((r) => (r.ok ? r.json() : [])).then(setCustomers);
+  }, []);
+
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-gray-900">チャット</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-gray-900">チャット</h1>
+        <div className="flex items-center gap-2">
+          <select
+            value={newCustomerId}
+            onChange={(e) => setNewCustomerId(e.target.value)}
+            className="w-56 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">会員を選択...</option>
+            {customers.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => newCustomerId && router.push(`/chat/${newCustomerId}`)}
+            disabled={!newCustomerId}
+            className="px-4 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-40 whitespace-nowrap"
+            style={{ background: "#1e3a8a" }}
+          >
+            新規チャット
+          </button>
+        </div>
+      </div>
       <div className="bg-white rounded-lg shadow divide-y divide-gray-100">
         {loading ? (
           <p className="text-center py-8 text-gray-400">読み込み中...</p>
