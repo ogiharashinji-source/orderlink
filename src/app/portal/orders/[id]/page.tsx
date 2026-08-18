@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -15,7 +15,7 @@ type RequestItem = {
   productSeimaiWari: string | null;
   productAlcohol: string | null;
   order: { status: string } | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; jan1800: string | null; jan720: string | null; janOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
 };
 
 type OrderRequest = {
@@ -234,8 +234,10 @@ export default function PortalOrderDetailPage() {
             {displayItems.map((item) => {
               const lot = getLot(item);
               const qty = currentQtys[item.id] ?? item.requestedQty;
+              const jan = item.volume === "1800ml" ? item.product?.jan1800 : item.volume === "720ml" ? item.product?.jan720 : item.product?.janOther;
               return (
-                <tr key={item.id} className="border-t border-gray-100">
+                <Fragment key={item.id}>
+                <tr className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
@@ -284,6 +286,12 @@ export default function PortalOrderDetailPage() {
                     {(order.cancelled || item.order?.status === "CANCELLED") ? "—" : (() => { const wp = getWholesalePrice(item); return wp != null ? `¥${(qty * lot * wp).toLocaleString()}` : "—"; })()}
                   </td>
                 </tr>
+                {jan && (
+                  <tr>
+                    <td colSpan={12} className="px-3 pb-2 text-xs text-gray-400">JANコード：{jan}</td>
+                  </tr>
+                )}
+                </Fragment>
               );
             })}
           </tbody>
