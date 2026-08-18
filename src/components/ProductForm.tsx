@@ -17,15 +17,18 @@ type ProductData = {
   price1800: string;
   wholesalePrice1800: string;
   unit1800: string;
+  jan1800: string;
   stock1800: string;
   price720: string;
   wholesalePrice720: string;
   unit720: string;
+  jan720: string;
   stock720: string;
   volumeOther: string;
   priceOther: string;
   wholesalePriceOther: string;
   unitOther: string;
+  janOther: string;
   stockOther: string;
 };
 
@@ -41,9 +44,9 @@ type Props = {
 const empty: ProductData = {
   name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "",
   description: "",
-  price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "",
-  price720: "",  wholesalePrice720: "", unit720: "12", stock720: "",
-  volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "",
+  price1800: "", wholesalePrice1800: "", unit1800: "6", jan1800: "", stock1800: "",
+  price720: "",  wholesalePrice720: "", unit720: "12", jan720: "", stock720: "",
+  volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", janOther: "", stockOther: "",
 };
 
 export default function ProductForm({ initialData, productId, onBack, onDelete }: Props) {
@@ -109,15 +112,18 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       price1800: has1800 && form.price1800 ? parseFloat(form.price1800) : null,
       wholesalePrice1800: has1800 && form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
       unit1800: has1800 ? (form.unit1800 || "本") : null,
+      jan1800: has1800 ? (form.jan1800 || null) : null,
       stock1800: has1800 ? (parseInt(form.stock1800) || 0) : 0,
       price720: has720 && form.price720 ? parseFloat(form.price720) : null,
       wholesalePrice720: has720 && form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
       unit720: has720 ? (form.unit720 || "本") : null,
+      jan720: has720 ? (form.jan720 || null) : null,
       stock720: has720 ? (parseInt(form.stock720) || 0) : 0,
       volumeOther: hasOther && form.volumeOther ? (form.volumeOther.endsWith("ml") ? form.volumeOther : `${form.volumeOther}ml`) : null,
       priceOther: hasOther && form.priceOther ? parseFloat(form.priceOther) : null,
       wholesalePriceOther: hasOther && form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
       unitOther: hasOther ? (form.unitOther || null) : null,
+      janOther: hasOther ? (form.janOther || null) : null,
       stockOther: hasOther ? (parseInt(form.stockOther) || 0) : 0,
       price: parseFloat((has1800 ? form.price1800 : "") || (has720 ? form.price720 : "") || (hasOther ? form.priceOther : "") || "0") || 0,
       unit: (has1800 ? form.unit1800 : "") || "本",
@@ -177,7 +183,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             <input type="checkbox" checked={has1800} onChange={(e) => {
               setHas1800(e.target.checked);
               setErrors((err) => ({ ...err, size: undefined, price1800: undefined, wholesalePrice1800: undefined, unit1800: undefined }));
-              if (!e.target.checked) setForm((f) => ({ ...f, price1800: "", wholesalePrice1800: "", unit1800: "6", stock1800: "" }));
+              if (!e.target.checked) setForm((f) => ({ ...f, price1800: "", wholesalePrice1800: "", unit1800: "6", jan1800: "", stock1800: "" }));
             }} className="w-4 h-4 accent-blue-600" />
             <span className="text-sm font-medium text-gray-700">1800ml</span>
           </label>
@@ -185,7 +191,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             <input type="checkbox" checked={has720} onChange={(e) => {
               setHas720(e.target.checked);
               setErrors((err) => ({ ...err, size: undefined, price720: undefined, wholesalePrice720: undefined, unit720: undefined }));
-              if (!e.target.checked) setForm((f) => ({ ...f, price720: "", wholesalePrice720: "", unit720: "12", stock720: "" }));
+              if (!e.target.checked) setForm((f) => ({ ...f, price720: "", wholesalePrice720: "", unit720: "12", jan720: "", stock720: "" }));
             }} className="w-4 h-4 accent-blue-600" />
             <span className="text-sm font-medium text-gray-700">720ml</span>
           </label>
@@ -193,7 +199,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             <input type="checkbox" checked={hasOther} onChange={(e) => {
               setHasOther(e.target.checked);
               setErrors((err) => ({ ...err, size: undefined, volumeOther: undefined, priceOther: undefined, wholesalePriceOther: undefined, unitOther: undefined }));
-              if (!e.target.checked) setForm((f) => ({ ...f, volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", stockOther: "" }));
+              if (!e.target.checked) setForm((f) => ({ ...f, volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", janOther: "", stockOther: "" }));
             }} className="w-4 h-4 accent-blue-600" />
             <span className="text-sm font-medium text-gray-700">その他</span>
           </label>
@@ -218,6 +224,9 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             <Field label="限定">
               <input type="text" inputMode="numeric" value={form.stock1800} onChange={set("stock1800")} onBlur={blur("stock1800")} className={inputCls} />
             </Field>
+            <Field label="JANコード">
+              <input value={form.jan1800} onChange={set("jan1800")} onBlur={blur("jan1800")} placeholder="例: 4901234567890" className={inputCls} />
+            </Field>
           </div>
         </div>
       )}
@@ -238,6 +247,9 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             </Field>
             <Field label="限定">
               <input type="text" inputMode="numeric" value={form.stock720} onChange={set("stock720")} onBlur={blur("stock720")} className={inputCls} />
+            </Field>
+            <Field label="JANコード">
+              <input value={form.jan720} onChange={set("jan720")} onBlur={blur("jan720")} placeholder="例: 4901234567890" className={inputCls} />
             </Field>
           </div>
         </div>
@@ -262,6 +274,9 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
             </Field>
             <Field label="単位（ロット）" required error={errors.unitOther}>
               <input value={form.unitOther} onChange={set("unitOther")} onBlur={blur("unitOther")} placeholder="例: 12" className={ic(errors.unitOther)} />
+            </Field>
+            <Field label="JANコード">
+              <input value={form.janOther} onChange={set("janOther")} onBlur={blur("janOther")} placeholder="例: 4901234567890" className={inputCls} />
             </Field>
           </div>
         </div>

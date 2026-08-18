@@ -43,15 +43,18 @@ export default function EditProductPage() {
           price1800: product.price1800 != null ? String(product.price1800) : "",
           wholesalePrice1800: product.wholesalePrice1800 != null ? String(product.wholesalePrice1800) : "",
           unit1800: product.unit1800 != null ? String(product.unit1800) : "6",
+          jan1800: product.jan1800 != null ? String(product.jan1800) : "",
           stock1800: String(product.stock1800 ?? "0"),
           price720: product.price720 != null ? String(product.price720) : "",
           wholesalePrice720: product.wholesalePrice720 != null ? String(product.wholesalePrice720) : "",
           unit720: product.unit720 != null ? String(product.unit720) : "12",
+          jan720: product.jan720 != null ? String(product.jan720) : "",
           stock720: String(product.stock720 ?? "0"),
           volumeOther: product.volumeOther != null ? String(product.volumeOther) : "",
           priceOther: product.priceOther != null ? String(product.priceOther) : "",
           wholesalePriceOther: product.wholesalePriceOther != null ? String(product.wholesalePriceOther) : "",
           unitOther: product.unitOther != null ? String(product.unitOther) : "",
+          janOther: product.janOther != null ? String(product.janOther) : "",
           stockOther: String(product.stockOther ?? "0"),
         }}
       />
