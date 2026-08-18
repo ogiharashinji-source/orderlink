@@ -74,7 +74,7 @@ export default function PortalChatRoomPage() {
           ← チャット一覧
         </button>
       </div>
-      <div className="bg-white rounded-xl shadow flex flex-col h-[calc(100vh-220px)] min-h-[420px] max-w-md">
+      <div className="bg-white rounded-xl shadow flex flex-col h-[calc(100vh-220px)] min-h-[420px] max-w-2xl mx-auto">
         <div className="px-4 py-3 border-b border-gray-100 shrink-0">
           <h2 className="text-sm font-bold text-gray-900">{companyName}</h2>
         </div>
