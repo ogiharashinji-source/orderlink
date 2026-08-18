@@ -112,7 +112,7 @@ export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) 
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-5 max-w-2xl">
         <div className="bg-white rounded-lg shadow p-5 space-y-4">
           <h2 className="font-semibold text-gray-800">基本設定</h2>
 
