@@ -27,7 +27,7 @@ export default function AdminChatListPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-4">
         <h1 className="text-2xl font-bold text-gray-900">チャット</h1>
         <div className="flex items-center gap-2">
           <select
