@@ -13,6 +13,7 @@ function PortalChatContent() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const compositionEndAtRef = useRef(0);
   const searchParams = useSearchParams();
 
   // data が selectedCompanyId のものと一致する間だけ「読み込み済み」とみなす。
@@ -129,7 +130,15 @@ function PortalChatContent() {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+              onCompositionEnd={() => { compositionEndAtRef.current = Date.now(); }}
+              onKeyDown={(e) => {
+                if (e.key !== "Enter" || e.shiftKey) return;
+                if (e.nativeEvent.isComposing) return;
+                // Safariはcomposition確定Enterでcompositionendがkeydownより先に発火しisComposingが既にfalseになるため、直後は無視する
+                if (Date.now() - compositionEndAtRef.current < 100) return;
+                e.preventDefault();
+                handleSend();
+              }}
               rows={1}
               placeholder="メッセージを入力..."
               className="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
