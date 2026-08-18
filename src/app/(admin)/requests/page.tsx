@@ -182,7 +182,7 @@ export default function RequestsPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl mx-4 p-6 space-y-4">
             <div>
               <h2 className="text-base font-bold text-gray-900">以下の内容で受注を確定しますか？</h2>
-              <p className="text-sm text-gray-600 mt-1">{modal.req.customer.name}</p>
+              <p className="text-base text-gray-600 mt-3">{modal.req.customer.name}</p>
             </div>
             <table className="w-full text-sm whitespace-nowrap border border-gray-200 rounded-lg overflow-hidden">
               <thead className="bg-gray-50 text-gray-500 text-xs">
