@@ -55,6 +55,15 @@ export default function OrdersPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  const hasActiveFilter = filterSale || filterUnsold;
+  const matchesFilter = (o: Order, item: OrderItem) => {
+    if (!hasActiveFilter) return true;
+    const cancelled = o.status === "CANCELLED";
+    if (filterSale && !cancelled && item.quantity >= 1) return true;
+    if (filterUnsold && (cancelled || item.quantity === 0)) return true;
+    return false;
+  };
+
   const handleCsvExport = () => {
     const header = ["受注日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "販売数", "税込合計", "備考"];
     const rows: (string | number | null)[][] = [];
@@ -63,7 +72,7 @@ export default function OrdersPage() {
       const memberCodeRaw = o.customer?.memberNumber ?? "";
       const memberCode = memberCodeRaw ? `="${memberCodeRaw}"` : "";
       const seller = o.customerName ?? o.customer?.name ?? "";
-      o.items.forEach((item) => {
+      o.items.filter((item) => matchesFilter(o, item)).forEach((item) => {
         const productName = item.productName ?? item.product?.name ?? "";
         const category = item.productCategory ?? item.product?.category ?? "";
         const sakaMai = item.productSakaMai ?? item.product?.sakaMai ?? "";
@@ -81,7 +90,8 @@ export default function OrdersPage() {
         ) || 1;
         const wp = typeof wholesalePrice === "number" ? wholesalePrice : 0;
         const taxIncTotal = wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
-        rows.push([date, memberCode, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, item.quantity, taxIncTotal, o.notes ?? ""]);
+        const salesQty = o.status === "CANCELLED" ? "キャンセル" : item.quantity;
+        rows.push([date, memberCode, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, salesQty, taxIncTotal, o.notes ?? ""]);
       });
     });
     const date = new Date().toISOString().slice(0, 10);
@@ -150,14 +160,6 @@ export default function OrdersPage() {
           </thead>
           <tbody>
             {(() => {
-              const hasActiveFilter = filterSale || filterUnsold;
-              const matchesFilter = (o: Order, item: OrderItem) => {
-                if (!hasActiveFilter) return true;
-                const cancelled = o.status === "CANCELLED";
-                if (filterSale && !cancelled && item.quantity >= 1) return true;
-                if (filterUnsold && (cancelled || item.quantity === 0)) return true;
-                return false;
-              };
               const rowCount = orders.reduce((sum, o) => sum + o.items.filter((item) => matchesFilter(o, item)).length, 0);
               if (rowCount === 0) {
                 return (
