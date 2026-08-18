@@ -73,6 +73,7 @@ function downloadCsv(requests: OrderRequest[]) {
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
   const [editedQtys, setEditedQtys] = useState<Record<number, string>>({});
   const [confirming, setConfirming] = useState<number | null>(null);
   const [modal, setModal] = useState<ModalState>(null);
@@ -255,28 +256,43 @@ export default function RequestsPage() {
           </div>
         </div>
       )}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
-          {requests.length > 0 && (
-            <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-              {requests.length}件
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => downloadCsv(requests)}
-            disabled={requests.length === 0}
-            className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
-          >
-            CSV
-          </button>
-          <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
-            + 受注登録
-          </Link>
-        </div>
-      </div>
+      {(() => {
+        const customerNames = Array.from(new Set(requests.map((r) => r.customer.name))).sort((a, b) => a.localeCompare(b, "ja"));
+        const filteredRequests = selectedCustomer ? requests.filter((r) => r.customer.name === selectedCustomer) : requests;
+        return (
+          <>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold text-gray-900">リクエスト一覧</h1>
+                {requests.length > 0 && (
+                  <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                    {requests.length}件
+                  </span>
+                )}
+                <select
+                  value={selectedCustomer}
+                  onChange={(e) => setSelectedCustomer(e.target.value)}
+                  className="w-56 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">すべての会員</option>
+                  {customerNames.map((name) => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => downloadCsv(filteredRequests)}
+                  disabled={filteredRequests.length === 0}
+                  className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
+                >
+                  CSV
+                </button>
+                <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
+                  + 受注登録
+                </Link>
+              </div>
+            </div>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="w-full text-sm whitespace-nowrap">
@@ -296,14 +312,14 @@ export default function RequestsPage() {
             </tr>
           </thead>
           <tbody>
-            {requests.length === 0 ? (
+            {filteredRequests.length === 0 ? (
               <tr>
                 <td colSpan={11} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
             ) : (
-              requests.flatMap((req) =>
+              filteredRequests.flatMap((req) =>
                 req.items.map((item) => (
                   <tr key={`${req.id}-${item.id}`} className="border-t border-gray-100 hover:bg-gray-50 border-b-2 border-b-gray-200">
                     <td className="px-4 py-3 text-gray-500 text-center whitespace-nowrap">
@@ -350,6 +366,9 @@ export default function RequestsPage() {
           </tbody>
         </table>
       </div>
+          </>
+        );
+      })()}
     </div>
   );
 }
