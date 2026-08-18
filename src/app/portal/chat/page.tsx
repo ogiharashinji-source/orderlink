@@ -31,7 +31,7 @@ export default function PortalChatListPage() {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-2xl mx-auto">
       <div className="flex items-center gap-4">
         <h1 className="text-lg font-bold text-gray-900">チャット</h1>
         <div className="flex items-center gap-2">
