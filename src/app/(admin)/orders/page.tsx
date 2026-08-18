@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { downloadCsv } from "@/lib/csv";
 
 type OrderItem = {
@@ -42,6 +41,8 @@ export default function OrdersPage() {
   const [dateTo, setDateTo] = useState("");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [filterSale, setFilterSale] = useState(false);
+  const [filterUnsold, setFilterUnsold] = useState(false);
   const router = useRouter();
 
   const load = useCallback(() => {
@@ -53,12 +54,6 @@ export default function OrdersPage() {
   }, [dateFrom, dateTo, query]);
 
   useEffect(() => { load(); }, [load]);
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("この受注を削除しますか？")) return;
-    await fetch(`/api/orders/${id}`, { method: "DELETE" });
-    load();
-  };
 
   const handleCsvExport = () => {
     const header = ["受注日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "販売数", "税込合計", "備考"];
@@ -121,6 +116,14 @@ export default function OrdersPage() {
         />
         <button onClick={() => setQuery(search)} className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-700">検索</button>
         {query && <button onClick={() => { setSearch(""); setQuery(""); }} className="text-sm text-gray-500 hover:text-gray-700 px-2">クリア</button>}
+        <label className="flex items-center gap-1.5 text-sm text-gray-700 ml-2 cursor-pointer">
+          <input type="checkbox" checked={filterSale} onChange={(e) => setFilterSale(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+          販売
+        </label>
+        <label className="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+          <input type="checkbox" checked={filterUnsold} onChange={(e) => setFilterUnsold(e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+          未販売
+        </label>
         <div className="flex-1" />
         <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 shrink-0">
           CSV出力
@@ -146,14 +149,26 @@ export default function OrdersPage() {
             </tr>
           </thead>
           <tbody>
-            {orders.length === 0 ? (
-              <tr>
-                <td colSpan={12} className="text-center py-12 text-gray-400">受注データがありません</td>
-              </tr>
-            ) : (
-              orders.map((o, orderIdx) => (
+            {(() => {
+              const hasActiveFilter = filterSale || filterUnsold;
+              const matchesFilter = (o: Order, item: OrderItem) => {
+                if (!hasActiveFilter) return true;
+                const cancelled = o.status === "CANCELLED";
+                if (filterSale && !cancelled && item.quantity >= 1) return true;
+                if (filterUnsold && (cancelled || item.quantity === 0)) return true;
+                return false;
+              };
+              const rowCount = orders.reduce((sum, o) => sum + o.items.filter((item) => matchesFilter(o, item)).length, 0);
+              if (rowCount === 0) {
+                return (
+                  <tr>
+                    <td colSpan={12} className="text-center py-12 text-gray-400">受注データがありません</td>
+                  </tr>
+                );
+              }
+              return orders.map((o, orderIdx) => (
                 <React.Fragment key={o.id}>
-                  {o.items.map((item, idx) => {
+                  {o.items.filter((item) => matchesFilter(o, item)).map((item) => {
                     const rowBg = orderIdx % 2 === 1 ? "bg-gray-50" : "bg-white";
                     return (
                     <tr
@@ -233,8 +248,8 @@ export default function OrdersPage() {
                     </tr>
                   );})}
                 </React.Fragment>
-              ))
-            )}
+              ));
+            })()}
           </tbody>
         </table>
       </div>
