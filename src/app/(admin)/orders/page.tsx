@@ -232,7 +232,7 @@ export default function OrdersPage() {
                       {/* 販売数 */}
                       <td className="px-4 py-3 text-center font-semibold text-gray-700">
                         {o.status === "CANCELLED"
-                          ? <span className="text-xs font-bold text-gray-500">キャンセル</span>
+                          ? <span className="text-xs font-bold text-red-500">キャンセル</span>
                           : item.quantity === 0
                           ? <span className="text-red-500 font-bold">0</span>
                           : item.quantity}

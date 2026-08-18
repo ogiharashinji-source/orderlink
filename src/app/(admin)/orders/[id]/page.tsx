@@ -125,7 +125,7 @@ export default function OrderDetailPage() {
                   <td className="px-3 py-2 text-center">{lot}</td>
                   <td className="px-3 py-2 text-center">
                     {order.status === "CANCELLED"
-                      ? <span className="text-xs font-bold text-gray-500">キャンセル</span>
+                      ? <span className="text-xs font-bold text-red-500">キャンセル</span>
                       : item.quantity === 0
                       ? <span className="text-red-500 font-bold">0</span>
                       : item.quantity}
