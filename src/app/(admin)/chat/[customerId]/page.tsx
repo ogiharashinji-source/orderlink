@@ -69,7 +69,7 @@ export default function AdminChatRoomPage() {
 
   return (
     <div className="space-y-4">
-      <div>
+      <div className="max-w-2xl mx-auto">
         <button onClick={() => router.push("/chat")} className="text-sm text-gray-500 hover:text-blue-600">
           ← チャット一覧
         </button>
