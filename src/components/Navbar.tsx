@@ -9,8 +9,8 @@ const navItems = [
   { href: "/orders", label: "受注" },
   { href: "/products", label: "商品" },
   { href: "/customers", label: "顧客", customerBadge: true },
-  { href: "/chat", label: "チャット", chatBadge: true },
   { href: "/fax", label: "メール" },
+  { href: "/chat", label: "チャット", chatBadge: true },
 ];
 
 let _cachedCompanyName = "";
