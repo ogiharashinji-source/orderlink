@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import FaxCreateForm from "./FaxCreateForm";
 import FaxLinkList from "./FaxLinkList";
 
@@ -35,7 +35,9 @@ export default function FaxPage() {
       </div>
 
       {activeTab === "create" && (
-        <FaxCreateForm onCreated={() => { setRefreshKey((k) => k + 1); setActiveTab("list"); }} />
+        <Suspense>
+          <FaxCreateForm onCreated={() => { setRefreshKey((k) => k + 1); setActiveTab("list"); }} />
+        </Suspense>
       )}
       {activeTab === "list" && <FaxLinkList key={refreshKey} />}
     </div>

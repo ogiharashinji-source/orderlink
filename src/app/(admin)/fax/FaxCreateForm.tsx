@@ -1,12 +1,20 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Customer = { id: number; name: string; company: string | null; email: string | null };
 
 export default function FaxCreateForm({ onCreated }: { onCreated: () => void }) {
+  const searchParams = useSearchParams();
+  const initialIds = (() => {
+    const idsParam = searchParams.get("ids");
+    if (!idsParam) return new Set<number>();
+    return new Set(idsParam.split(",").map(Number).filter((n) => !isNaN(n)));
+  })();
+
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [sendMode, setSendMode] = useState<"全体" | "個別">("全体");
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [sendMode, setSendMode] = useState<"全体" | "個別">(initialIds.size > 0 ? "個別" : "全体");
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(initialIds);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
   const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
