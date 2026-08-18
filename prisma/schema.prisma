@@ -110,6 +110,8 @@ model Customer {
   orderLinks           OrderLink[]
   orderRequests        OrderRequest[]
   chatRooms            ChatRoom[]
+
+  @@index([companyId])
 }
 
 // 酒蔵(Company) × 酒販店(Customer) の1対1チャットルーム
@@ -135,6 +137,8 @@ model ChatMessage {
   senderType SenderType
   body       String
   createdAt  DateTime   @default(now())
+
+  @@index([roomId])
 }
 
 enum SenderType {
@@ -185,6 +189,8 @@ model OrderRequest {
   orderLink     OrderLink?
   orders        Order[]
   items         RequestItem[]
+
+  @@index([companyId])
 }
 
 model RequestItem {
@@ -242,6 +248,8 @@ model Product {
   updatedAt    DateTime      @updatedAt
   orderItems   OrderItem[]
   requestItems RequestItem[]
+
+  @@index([companyId])
 }
 
 // 受注（確定済み）
@@ -269,6 +277,8 @@ model Order {
   updatedAt    DateTime      @updatedAt
   items        OrderItem[]
   requestItem  RequestItem?
+
+  @@index([companyId])
 }
 
 model OrderItem {
@@ -287,6 +297,8 @@ model OrderItem {
   volume          String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([orderId])
 }
 
 enum RequestStatus {
