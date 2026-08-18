@@ -89,8 +89,9 @@ export default function OrdersPage() {
           : (item.product?.unitOther ?? "1")
         ) || 1;
         const wp = typeof wholesalePrice === "number" ? wholesalePrice : 0;
-        const taxIncTotal = o.status === "CANCELLED" ? "" : wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
-        const salesQty = o.status === "CANCELLED" ? "キャンセル" : item.quantity;
+        const unsold = o.status === "CANCELLED" || item.quantity === 0;
+        const taxIncTotal = unsold ? "" : wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
+        const salesQty = unsold ? "キャンセル" : item.quantity;
         rows.push([date, memberCode, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, salesQty, taxIncTotal, o.notes ?? ""]);
       });
     });
