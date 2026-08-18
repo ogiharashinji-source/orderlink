@@ -74,6 +74,9 @@ function downloadCsv(requests: OrderRequest[]) {
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [unansweredOpen, setUnansweredOpen] = useState(false);
+  const [unansweredLoading, setUnansweredLoading] = useState(false);
+  const [unanswered, setUnanswered] = useState<{ id: number; name: string; email: string | null; phone: string | null }[]>([]);
   const [editedQtys, setEditedQtys] = useState<Record<number, string>>({});
   const [confirming, setConfirming] = useState<number | null>(null);
   const [modal, setModal] = useState<ModalState>(null);
@@ -131,6 +134,14 @@ export default function RequestsPage() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const openUnanswered = async () => {
+    setUnansweredOpen(true);
+    setUnansweredLoading(true);
+    const data = await fetch("/api/requests/unanswered").then((r) => (r.ok ? r.json() : []));
+    setUnanswered(data);
+    setUnansweredLoading(false);
+  };
 
   const handleConfirm = async (req: OrderRequest) => {
     const freshData: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
@@ -256,6 +267,32 @@ export default function RequestsPage() {
           </div>
         </div>
       )}
+      {unansweredOpen && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setUnansweredOpen(false)}>
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-gray-900">未返答の会員</h2>
+              <button onClick={() => setUnansweredOpen(false)} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+            </div>
+            <p className="text-xs text-gray-500">承認済みの会員のうち、現在リクエスト一覧に出ていない会員です。</p>
+            <div className="max-h-96 overflow-y-auto divide-y divide-gray-100 border border-gray-100 rounded-lg">
+              {unansweredLoading ? (
+                <p className="text-center py-8 text-gray-400 text-sm">読み込み中...</p>
+              ) : unanswered.length === 0 ? (
+                <p className="text-center py-8 text-gray-400 text-sm">該当する会員はいません</p>
+              ) : (
+                unanswered.map((c) => (
+                  <div key={c.id} className="px-4 py-2.5">
+                    <div className="text-sm font-medium text-gray-900">{c.name}</div>
+                    <div className="text-xs text-gray-500">{c.email ?? "—"}{c.phone ? ` / ${c.phone}` : ""}</div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="text-right text-xs text-gray-400">{unanswered.length}件</div>
+          </div>
+        </div>
+      )}
       {(() => {
         const customerNames = Array.from(new Set(requests.map((r) => r.customer.name))).sort((a, b) => a.localeCompare(b, "ja"));
         const filteredRequests = selectedCustomer ? requests.filter((r) => r.customer.name === selectedCustomer) : requests;
@@ -279,6 +316,9 @@ export default function RequestsPage() {
                     <option key={name} value={name}>{name}</option>
                   ))}
                 </select>
+                <button onClick={openUnanswered} className="text-sm text-blue-600 hover:underline">
+                  未返答
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <button
