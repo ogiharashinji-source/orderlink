@@ -90,7 +90,7 @@ export default function OrdersPage() {
         ) || 1;
         const wp = typeof wholesalePrice === "number" ? wholesalePrice : 0;
         const cancelled = o.status === "CANCELLED";
-        const taxIncTotal = cancelled ? "" : wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
+        const taxIncTotal = (cancelled || item.quantity === 0) ? "" : wp > 0 ? Math.floor(item.quantity * lot * wp * 1.1) : "";
         const salesQty = cancelled ? "キャンセル" : item.quantity;
         rows.push([date, memberCode, seller, productName, category, sakaMai, volume, retailPrice, wholesalePrice, lot, salesQty, taxIncTotal, o.notes ?? ""]);
       });
