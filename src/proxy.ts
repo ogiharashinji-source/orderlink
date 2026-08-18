@@ -72,7 +72,7 @@ export async function proxy(req: NextRequest) {
   }
 
   // ── 管理者保護ページ: 未ログインなら /admin/login へ ──
-  if (/^\/(requests|orders|products|customers|fax|settings)(\/|$)/.test(pathname)) {
+  if (/^\/(requests|orders|products|customers|fax|settings|chat)(\/|$)/.test(pathname)) {
     if (!(await isValidAdmin(adminToken))) {
       return NextResponse.redirect(new URL("/admin/login", req.url));
     }
@@ -99,7 +99,7 @@ export async function proxy(req: NextRequest) {
   }
 
   // ── ポータル保護ページ: 未ログインなら /portal/login へ ──
-  if (/^\/portal\/(order|orders|profile|guide)(\/|$)/.test(pathname)) {
+  if (/^\/portal\/(order|orders|profile|guide|chat)(\/|$)/.test(pathname)) {
     if (!(await isValidCustomer(customerToken))) {
       return NextResponse.redirect(new URL("/portal/login", req.url));
     }

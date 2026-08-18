@@ -10,12 +10,22 @@ export async function GET(req: NextRequest) {
     return res;
   }
 
-  const [setting, pendingRequests, unapprovedPrimary, unapprovedSecondaryLinks] = await Promise.all([
+  const [setting, pendingRequests, unapprovedPrimary, unapprovedSecondaryLinks, chatRooms] = await Promise.all([
     prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true } }),
     prisma.orderRequest.findMany({ where: { companyId, status: "PENDING" }, select: { id: true } }),
     prisma.customer.findMany({ where: { companyId, approved: false, deleted: false }, select: { id: true } }),
     prisma.customerCompany.findMany({ where: { companyId, approved: false }, select: { customerId: true } }),
+    prisma.chatRoom.findMany({ where: { companyId }, select: { id: true, adminLastReadAt: true } }),
   ]);
+
+  const chatUnreadCounts = await Promise.all(
+    chatRooms.map((r) =>
+      prisma.chatMessage.count({
+        where: { roomId: r.id, senderType: "CUSTOMER", createdAt: { gt: r.adminLastReadAt ?? new Date(0) } },
+      })
+    )
+  );
+  const chatUnreadCount = chatUnreadCounts.reduce((a, b) => a + b, 0);
 
   // 重複・削除済みを除外してカウント
   const primaryIds = new Set(unapprovedPrimary.map((c) => c.id));
@@ -28,5 +38,6 @@ export async function GET(req: NextRequest) {
     companyName: setting?.companyName ?? "",
     pendingCount: pendingRequests.length,
     approvalCount: unapprovedPrimary.length + validSecondary,
+    chatUnreadCount,
   });
 }

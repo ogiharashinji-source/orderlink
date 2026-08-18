@@ -266,7 +266,10 @@ export default function CustomersPage() {
                         : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600">未承認</button>}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
+                      <div className="flex items-center justify-end gap-3">
+                        <Link href={`/chat/${c.id}`} className="text-blue-600 hover:underline text-xs">チャット</Link>
+                        <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
+                      </div>
                     </td>
                   </tr>
                 );

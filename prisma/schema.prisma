@@ -52,6 +52,7 @@ model Company {
   orders        Order[]
   orderRequests OrderRequest[]
   orderLinks    OrderLink[]
+  chatRooms     ChatRoom[]
 }
 
 // 会社ごとの招待トークン
@@ -108,6 +109,37 @@ model Customer {
   orders               Order[]
   orderLinks           OrderLink[]
   orderRequests        OrderRequest[]
+  chatRooms            ChatRoom[]
+}
+
+// 酒蔵(Company) × 酒販店(Customer) の1対1チャットルーム
+model ChatRoom {
+  id                 Int           @id @default(autoincrement())
+  companyId          Int
+  company            Company       @relation(fields: [companyId], references: [id])
+  customerId         Int
+  customer           Customer      @relation(fields: [customerId], references: [id])
+  adminLastReadAt    DateTime?
+  customerLastReadAt DateTime?
+  lastMessageAt      DateTime      @default(now())
+  createdAt          DateTime      @default(now())
+  messages           ChatMessage[]
+
+  @@unique([companyId, customerId])
+}
+
+model ChatMessage {
+  id         Int        @id @default(autoincrement())
+  roomId     Int
+  room       ChatRoom   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  senderType SenderType
+  body       String
+  createdAt  DateTime   @default(now())
+}
+
+enum SenderType {
+  ADMIN
+  CUSTOMER
 }
 
 // QRコード付き発注書リンク

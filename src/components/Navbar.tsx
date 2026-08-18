@@ -9,6 +9,7 @@ const navItems = [
   { href: "/orders", label: "受注" },
   { href: "/products", label: "商品" },
   { href: "/customers", label: "顧客", customerBadge: true },
+  { href: "/chat", label: "チャット", chatBadge: true },
   { href: "/fax", label: "メール" },
 ];
 
@@ -18,6 +19,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [pendingCount, setPendingCount] = useState(0);
   const [approvalCount, setApprovalCount] = useState(0);
+  const [chatUnreadCount, setChatUnreadCount] = useState(0);
   const [companyName, setCompanyName] = useState("");
 
   // マウント後にキャッシュ or localStorage から即座に反映
@@ -53,6 +55,7 @@ export default function Navbar() {
         }
         setPendingCount(d.pendingCount ?? 0);
         setApprovalCount(d.approvalCount ?? 0);
+        setChatUnreadCount(d.chatUnreadCount ?? 0);
       })
       .catch(() => {});
   }, []);
@@ -93,6 +96,11 @@ export default function Navbar() {
                   {item.customerBadge && approvalCount > 0 && (
                     <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                       {approvalCount}
+                    </span>
+                  )}
+                  {item.chatBadge && chatUnreadCount > 0 && (
+                    <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                      {chatUnreadCount}
                     </span>
                   )}
                 </a>
