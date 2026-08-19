@@ -74,6 +74,7 @@ function downloadCsv(requests: OrderRequest[]) {
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [unansweredOpen, setUnansweredOpen] = useState(false);
   const [unansweredLoading, setUnansweredLoading] = useState(false);
   const [unanswered, setUnanswered] = useState<{ id: number; name: string; email: string | null; phone: string | null }[]>([]);
@@ -322,7 +323,16 @@ export default function RequestsPage() {
       )}
       {(() => {
         const customerNames = Array.from(new Set(requests.map((r) => r.customer.name))).sort((a, b) => a.localeCompare(b, "ja"));
-        const filteredRequests = selectedCustomer ? requests.filter((r) => r.customer.name === selectedCustomer) : requests;
+        const q = searchText.trim().toLowerCase();
+        const filteredRequests = requests.filter((r) => {
+          if (selectedCustomer && r.customer.name !== selectedCustomer) return false;
+          if (!q) return true;
+          if (r.customer.name.toLowerCase().includes(q)) return true;
+          if (r.customer.company?.toLowerCase().includes(q)) return true;
+          return r.items.some((item) =>
+            (item.productName ?? item.product?.name ?? "").toLowerCase().includes(q)
+          );
+        });
         return (
           <>
             <div className="flex items-center justify-between">
@@ -333,10 +343,22 @@ export default function RequestsPage() {
                     {requests.length}件
                   </span>
                 )}
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="会員名・商品名で検索"
+                    className="w-52 border border-gray-300 rounded-lg pl-8 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <svg className="absolute left-2.5 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
                 <select
                   value={selectedCustomer}
                   onChange={(e) => setSelectedCustomer(e.target.value)}
-                  className="w-56 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-44 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">すべての会員</option>
                   {customerNames.map((name) => (
