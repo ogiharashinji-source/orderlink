@@ -62,9 +62,6 @@ export default function AdminChatListPage() {
               onClick={() => router.push(`/chat/${r.customerId}`)}
               className={`w-full flex items-center gap-4 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${r.unreadCount > 0 ? "bg-blue-50/60" : ""}`}
             >
-              <div className="w-11 h-11 rounded-full bg-[#1e3a5f] text-white flex items-center justify-center font-bold text-sm shrink-0">
-                {r.customerName.slice(0, 1)}
-              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <span className={`text-sm truncate ${r.unreadCount > 0 ? "font-bold text-gray-900" : "font-medium text-gray-800"}`}>
