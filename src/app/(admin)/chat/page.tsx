@@ -60,7 +60,7 @@ export default function AdminChatListPage() {
             <button
               key={r.customerId}
               onClick={() => router.push(`/chat/${r.customerId}`)}
-              className={`w-full flex items-center gap-4 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${r.unreadCount > 0 ? "bg-blue-50/60" : ""}`}
+              className={`w-full flex items-center gap-4 px-4 py-3 text-left hover:bg-gray-100 transition-colors ${r.unreadCount > 0 ? "bg-blue-50/60" : ""}`}
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
