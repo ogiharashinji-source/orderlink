@@ -33,7 +33,15 @@ type ModalState = {
 
 function downloadCsv(requests: OrderRequest[]) {
   const headers = ["リクエスト日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
-  const rows = requests.flatMap((req) =>
+  const sorted = [...requests].sort((a, b) => {
+    const an = a.customer.memberNumber;
+    const bn = b.customer.memberNumber;
+    if (!an && !bn) return 0;
+    if (!an) return 1;
+    if (!bn) return -1;
+    return an.localeCompare(bn, "ja", { numeric: true });
+  });
+  const rows = sorted.flatMap((req) =>
     req.items.map((item) => {
       const wp = item.volume === "1800ml"
         ? item.product?.wholesalePrice1800
