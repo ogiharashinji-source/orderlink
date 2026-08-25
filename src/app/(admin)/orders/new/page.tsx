@@ -39,6 +39,8 @@ export default function NewOrderPage() {
     parseInt(volume === "1800ml" ? (p.unit1800 ?? "1") : (p.unit720 ?? "1")) || 1;
   const getWp = (p: Product, volume: string) =>
     volume === "1800ml" ? p.wholesalePrice1800 : p.wholesalePrice720;
+  const getRetail = (p: Product, volume: string) =>
+    volume === "1800ml" ? p.price1800 : p.price720;
   const getStock = (p: Product, volume: string) =>
     volume === "1800ml" ? p.stock1800 : p.stock720;
 
@@ -65,7 +67,7 @@ export default function NewOrderPage() {
     setSaving(true);
     const items = lineItems.map((li) => {
       const p = products.find((p) => p.id === li.productId)!;
-      return { productId: li.productId, quantity: li.qty, unitPrice: getWp(p, li.volume) ?? 0, volume: li.volume };
+      return { productId: li.productId, quantity: li.qty, unitPrice: getRetail(p, li.volume) ?? 0, volume: li.volume };
     });
     const res = await fetch("/api/orders", {
       method: "POST",

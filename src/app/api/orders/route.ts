@@ -78,7 +78,6 @@ export async function POST(req: NextRequest) {
 
   // ポータル会員向け OrderRequest を先に作成（customerId がある場合のみ）
   let requestId: number | null = null;
-  let requestItemIds: number[] = [];
 
   if (customerId) {
     const orderRequest = await prisma.orderRequest.create({
@@ -94,28 +93,15 @@ export async function POST(req: NextRequest) {
         sellerPhone:   setting?.phone       ?? null,
         sellerFax:     setting?.faxNumber   ?? null,
         sellerEmail:   setting?.email       ?? null,
-        items: {
-          create: (items as ItemInput[]).map((item) => ({
-            product:           { connect: { id: Number(item.productId) } },
-            productName:       productMap[Number(item.productId)]?.name       ?? null,
-            productCategory:   productMap[Number(item.productId)]?.category   ?? null,
-            productSakaMai:    productMap[Number(item.productId)]?.sakaMai    ?? null,
-            productSeimaiWari: productMap[Number(item.productId)]?.seimaiWari ?? null,
-            productAlcohol:    productMap[Number(item.productId)]?.alcohol    ?? null,
-            requestedQty: Number(item.quantity),
-            confirmedQty: Number(item.quantity),
-            unitPrice:    Number(item.unitPrice),
-            volume:       item.volume ?? null,
-          })),
-        },
       },
-      include: { items: { select: { id: true } } },
     });
-    requestId      = orderRequest.id;
-    requestItemIds = orderRequest.items.map((i) => i.id);
+    requestId = orderRequest.id;
   }
 
-  // 商品ごとに 1 Order 作成
+  // 商品ごとに 1 Order（＋対応する RequestItem）を作成
+  // ※ RequestItem は各商品ごとに個別に作成し、その場で返ってきたidを直接使う。
+  //   配列のまとめてcreate＋includeで返る順序に依存すると、順序が入力と一致しない場合があり
+  //   別商品のRequestItemが誤って紐付く不具合の原因になるため避ける。
   const createdOrders = [];
   for (let idx = 0; idx < (items as ItemInput[]).length; idx++) {
     const item    = (items as ItemInput[])[idx];
@@ -147,11 +133,22 @@ export async function POST(req: NextRequest) {
       include: { customer: true, items: { include: { product: true } } },
     });
 
-    // RequestItem に orderId をセット
-    if (requestItemIds[idx] != null) {
-      await prisma.requestItem.update({
-        where: { id: requestItemIds[idx] },
-        data:  { orderId: order.id },
+    if (requestId != null) {
+      await prisma.requestItem.create({
+        data: {
+          request:           { connect: { id: requestId } },
+          product:            { connect: { id: Number(item.productId) } },
+          productName:       product?.name       ?? null,
+          productCategory:   product?.category   ?? null,
+          productSakaMai:    product?.sakaMai    ?? null,
+          productSeimaiWari: product?.seimaiWari ?? null,
+          productAlcohol:    product?.alcohol    ?? null,
+          requestedQty: Number(item.quantity),
+          confirmedQty: Number(item.quantity),
+          unitPrice:    Number(item.unitPrice),
+          volume:       item.volume ?? null,
+          order:        { connect: { id: order.id } },
+        },
       });
     }
 
