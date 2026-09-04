@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import * as XLSX from "xlsx";
 
 type RequestItem = {
   id: number;
@@ -31,7 +32,7 @@ type ModalState = {
   modalQtys: Record<number, string>;
 } | null;
 
-function downloadCsv(flatRows: { req: OrderRequest; item: RequestItem }[]) {
+function downloadExcel(flatRows: { req: OrderRequest; item: RequestItem }[]) {
   const headers = ["リクエスト日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
   // 表示内容（検索・会員・容量の絞り込み）はそのまま反映しつつ、出力順は常に会員コード順に固定する
   const sorted = [...flatRows].sort((a, b) => {
@@ -43,40 +44,34 @@ function downloadCsv(flatRows: { req: OrderRequest; item: RequestItem }[]) {
     return an.localeCompare(bn, "ja", { numeric: true });
   });
   const rows = sorted.map(({ req, item }) => {
-      const wp = item.volume === "1800ml"
-        ? item.product?.wholesalePrice1800
-        : item.volume === "720ml"
-        ? item.product?.wholesalePrice720
-        : item.product?.wholesalePriceOther;
-      const lot = item.volume === "1800ml"
-        ? (item.product?.unit1800 ?? "")
-        : item.volume === "720ml"
-        ? (item.product?.unit720 ?? "")
-        : (item.product?.unitOther ?? "");
-      return [
-        new Date(req.requestedAt).toLocaleString("ja-JP"),
-        req.customer.memberNumber ?? "",
-        req.customer.name,
-        item.productName ?? item.product?.name ?? "",
-        item.productCategory ?? item.product?.category ?? "",
-        item.productSakaMai ?? item.product?.sakaMai ?? "",
-        item.volume ?? "",
-        item.unitPrice,
-        wp ?? "",
-        lot,
-        item.requestedQty,
-      ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",");
-    }
-  );
-  const bom = "﻿";
-  const csv = bom + [headers.join(","), ...rows].join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `リクエスト一覧_${new Date().toLocaleDateString("ja-JP").replace(/\//g, "")}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+    const wp = item.volume === "1800ml"
+      ? item.product?.wholesalePrice1800
+      : item.volume === "720ml"
+      ? item.product?.wholesalePrice720
+      : item.product?.wholesalePriceOther;
+    const lot = item.volume === "1800ml"
+      ? (item.product?.unit1800 ?? "")
+      : item.volume === "720ml"
+      ? (item.product?.unit720 ?? "")
+      : (item.product?.unitOther ?? "");
+    return [
+      new Date(req.requestedAt).toLocaleString("ja-JP"),
+      req.customer.memberNumber ?? "",
+      req.customer.name,
+      item.productName ?? item.product?.name ?? "",
+      item.productCategory ?? item.product?.category ?? "",
+      item.productSakaMai ?? item.product?.sakaMai ?? "",
+      item.volume ?? "",
+      item.unitPrice,
+      wp ?? "",
+      lot,
+      item.requestedQty,
+    ];
+  });
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "リクエスト一覧");
+  XLSX.writeFile(workbook, `リクエスト一覧_${new Date().toLocaleDateString("ja-JP").replace(/\//g, "")}.xlsx`);
 }
 
 export default function RequestsPage() {
@@ -403,11 +398,11 @@ export default function RequestsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => downloadCsv(flatRows)}
+                  onClick={() => downloadExcel(flatRows)}
                   disabled={flatRows.length === 0}
                   className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
                 >
-                  CSV
+                  Excel
                 </button>
                 <Link href="/orders/new" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
                   + 受注登録
