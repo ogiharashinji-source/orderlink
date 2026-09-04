@@ -63,19 +63,19 @@ export default function NewOrderPage() {
     e.preventDefault();
     if (!customerId) return alert("顧客を選択してください");
     if (lineItems.length === 0) return alert("数量を1件以上入力してください");
-    if (!confirm("受注登録してよろしいですか？")) return;
+    if (!confirm("この内容でリクエストを登録しますか？\n登録後、リクエスト一覧の「確認」から受注確定してください。")) return;
     setSaving(true);
     const items = lineItems.map((li) => {
       const p = products.find((p) => p.id === li.productId)!;
       return { productId: li.productId, quantity: li.qty, unitPrice: getRetail(p, li.volume) ?? 0, volume: li.volume };
     });
-    const res = await fetch("/api/orders", {
+    const res = await fetch("/api/requests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ customerId, items, notes }),
     });
     setSaving(false);
-    if (res.ok) router.push("/orders");
+    if (res.ok) router.push("/requests");
     else alert("登録に失敗しました");
   };
 
@@ -197,7 +197,7 @@ export default function NewOrderPage() {
         <div className="flex gap-3">
           <button type="submit" disabled={saving || lineItems.length === 0}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-            {saving ? "登録中..." : "受注する"}
+            {saving ? "登録中..." : "リクエストを登録"}
           </button>
           <button type="button" onClick={() => router.push("/orders")}
             className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">
