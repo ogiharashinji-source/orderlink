@@ -303,7 +303,17 @@ export default function SuperAdminCustomersPage() {
                     <td className="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">
                       {c.registeredAt ? new Date(c.registeredAt).toLocaleDateString("ja-JP") : "—"}
                     </td>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">{c.name}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      <a
+                        href={`/api/superadmin/customers/${c.id}/impersonate`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-blue-600 hover:underline"
+                        title="この会員としてログインした状態で開く"
+                      >
+                        {c.name}
+                      </a>
+                    </td>
                     <td className="px-4 py-3 text-sm text-gray-600">{c.address || "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">{c.phone || "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{c.email || "—"}</td>
