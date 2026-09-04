@@ -31,18 +31,18 @@ type ModalState = {
   modalQtys: Record<number, string>;
 } | null;
 
-function downloadCsv(requests: OrderRequest[]) {
+function downloadCsv(flatRows: { req: OrderRequest; item: RequestItem }[]) {
   const headers = ["リクエスト日", "会員コード", "会社名", "商品", "種別", "酒米", "容量", "小売値", "卸売値", "ロット", "希望ケース"];
-  const sorted = [...requests].sort((a, b) => {
-    const an = a.customer.memberNumber;
-    const bn = b.customer.memberNumber;
+  // 表示内容（検索・会員・容量の絞り込み）はそのまま反映しつつ、出力順は常に会員コード順に固定する
+  const sorted = [...flatRows].sort((a, b) => {
+    const an = a.req.customer.memberNumber;
+    const bn = b.req.customer.memberNumber;
     if (!an && !bn) return 0;
     if (!an) return 1;
     if (!bn) return -1;
     return an.localeCompare(bn, "ja", { numeric: true });
   });
-  const rows = sorted.flatMap((req) =>
-    req.items.map((item) => {
+  const rows = sorted.map(({ req, item }) => {
       const wp = item.volume === "1800ml"
         ? item.product?.wholesalePrice1800
         : item.volume === "720ml"
@@ -66,7 +66,7 @@ function downloadCsv(requests: OrderRequest[]) {
         lot,
         item.requestedQty,
       ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",");
-    })
+    }
   );
   const bom = "﻿";
   const csv = bom + [headers.join(","), ...rows].join("\n");
@@ -348,11 +348,6 @@ export default function RequestsPage() {
         let flatRows = filteredRequests
           .flatMap((req) => req.items.map((item) => ({ req, item })))
           .filter(({ item }) => !selectedVolume || item.volume === selectedVolume);
-        const csvRequests = selectedVolume
-          ? filteredRequests
-              .map((req) => ({ ...req, items: req.items.filter((item) => item.volume === selectedVolume) }))
-              .filter((req) => req.items.length > 0)
-          : filteredRequests;
         if (volumeSort) {
           const volumeMl = (v: string | null) => v ? parseInt(v) || 0 : -1;
           flatRows = [...flatRows].sort((a, b) => {
@@ -408,7 +403,7 @@ export default function RequestsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => downloadCsv(csvRequests)}
+                  onClick={() => downloadCsv(flatRows)}
                   disabled={flatRows.length === 0}
                   className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
                 >
