@@ -82,6 +82,7 @@ function downloadCsv(requests: OrderRequest[]) {
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
   const [volumeSort, setVolumeSort] = useState<"asc" | "desc" | null>(null);
+  const [selectedVolume, setSelectedVolume] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [searchText, setSearchText] = useState("");
   const [unansweredOpen, setUnansweredOpen] = useState(false);
@@ -342,7 +343,16 @@ export default function RequestsPage() {
             (item.productName ?? item.product?.name ?? "").toLowerCase().includes(q)
           );
         });
-        let flatRows = filteredRequests.flatMap((req) => req.items.map((item) => ({ req, item })));
+        const volumeOptions = Array.from(new Set(requests.flatMap((r) => r.items.map((i) => i.volume).filter((v): v is string => !!v))))
+          .sort((a, b) => (parseInt(a) || 0) - (parseInt(b) || 0));
+        let flatRows = filteredRequests
+          .flatMap((req) => req.items.map((item) => ({ req, item })))
+          .filter(({ item }) => !selectedVolume || item.volume === selectedVolume);
+        const csvRequests = selectedVolume
+          ? filteredRequests
+              .map((req) => ({ ...req, items: req.items.filter((item) => item.volume === selectedVolume) }))
+              .filter((req) => req.items.length > 0)
+          : filteredRequests;
         if (volumeSort) {
           const volumeMl = (v: string | null) => v ? parseInt(v) || 0 : -1;
           flatRows = [...flatRows].sort((a, b) => {
@@ -382,14 +392,24 @@ export default function RequestsPage() {
                     <option key={name} value={name}>{name}</option>
                   ))}
                 </select>
+                <select
+                  value={selectedVolume}
+                  onChange={(e) => setSelectedVolume(e.target.value)}
+                  className="w-32 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">すべての容量</option>
+                  {volumeOptions.map((v) => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
                 <button onClick={openUnanswered} className="text-sm text-blue-600 hover:underline">
                   未返答
                 </button>
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => downloadCsv(filteredRequests)}
-                  disabled={filteredRequests.length === 0}
+                  onClick={() => downloadCsv(csvRequests)}
+                  disabled={flatRows.length === 0}
                   className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
                 >
                   CSV
