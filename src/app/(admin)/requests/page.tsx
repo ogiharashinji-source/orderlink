@@ -81,6 +81,7 @@ function downloadCsv(requests: OrderRequest[]) {
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState<OrderRequest[]>([]);
+  const [volumeSort, setVolumeSort] = useState<"asc" | "desc" | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [searchText, setSearchText] = useState("");
   const [unansweredOpen, setUnansweredOpen] = useState(false);
@@ -341,6 +342,14 @@ export default function RequestsPage() {
             (item.productName ?? item.product?.name ?? "").toLowerCase().includes(q)
           );
         });
+        let flatRows = filteredRequests.flatMap((req) => req.items.map((item) => ({ req, item })));
+        if (volumeSort) {
+          const volumeMl = (v: string | null) => v ? parseInt(v) || 0 : -1;
+          flatRows = [...flatRows].sort((a, b) => {
+            const diff = volumeMl(a.item.volume) - volumeMl(b.item.volume);
+            return volumeSort === "asc" ? diff : -diff;
+          });
+        }
         return (
           <>
             <div className="flex items-center justify-between">
@@ -400,7 +409,12 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-left">商品</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
-              <th className="px-4 py-3 text-center">容量</th>
+              <th
+                className="px-4 py-3 text-center cursor-pointer select-none hover:text-gray-900"
+                onClick={() => setVolumeSort((s) => (s === "asc" ? "desc" : s === "desc" ? null : "asc"))}
+              >
+                容量{volumeSort === "asc" ? " ▲" : volumeSort === "desc" ? " ▼" : ""}
+              </th>
               <th className="px-4 py-3 text-center">小売値</th>
               <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
@@ -409,15 +423,14 @@ export default function RequestsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredRequests.length === 0 ? (
+            {flatRows.length === 0 ? (
               <tr>
                 <td colSpan={11} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
             ) : (
-              filteredRequests.flatMap((req) =>
-                req.items.map((item) => (
+              flatRows.map(({ req, item }) => (
                   <tr key={`${req.id}-${item.id}`} className="border-t border-gray-100 hover:bg-gray-50 border-b-2 border-b-gray-200">
                     <td className="px-4 py-3 text-gray-500 text-center whitespace-nowrap">
                       {new Date(req.requestedAt).toLocaleDateString("ja-JP")}
@@ -457,8 +470,7 @@ export default function RequestsPage() {
                       </button>
                     </td>
                   </tr>
-                ))
-              )
+              ))
             )}
           </tbody>
         </table>
