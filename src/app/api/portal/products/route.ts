@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCustomerSession } from "@/lib/customerAuth";
 import { prisma } from "@/lib/prisma";
+import { visibleProductWhere } from "@/lib/productVisibility";
 
 export async function GET(req: NextRequest) {
   const customer = await getCustomerSession();
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
   }
 
   const products = await prisma.product.findMany({
-    where: { companyId, deleted: false, published: true },
+    where: visibleProductWhere(companyId, customerData.id),
     orderBy: { name: "asc" },
   });
   return NextResponse.json(products);

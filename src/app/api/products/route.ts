@@ -14,6 +14,7 @@ export async function GET(req: NextRequest) {
       ? { companyId, deleted: false, OR: [{ name: { contains: q } }, { description: { contains: q } }] }
       : { companyId, deleted: false },
     orderBy: { createdAt: "asc" },
+    include: { _count: { select: { visibleTo: true } } },
   });
 
   return NextResponse.json(products);

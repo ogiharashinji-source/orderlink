@@ -110,6 +110,7 @@ model Customer {
   orderLinks           OrderLink[]
   orderRequests        OrderRequest[]
   chatRooms            ChatRoom[]
+  productVisibilities  ProductVisibility[]
 
   @@index([companyId])
 }
@@ -242,14 +243,35 @@ model Product {
   price        Float         @default(0)
   unit         String        @default("本")
   stock        Int           @default(0)
-  published    Boolean       @default(true)
+  publishScope PublishScope  @default(PUBLIC)
   deleted      Boolean       @default(false)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   orderItems   OrderItem[]
   requestItems RequestItem[]
+  visibleTo    ProductVisibility[]
 
   @@index([companyId])
+}
+
+enum PublishScope {
+  PRIVATE // 非公開
+  PUBLIC  // 全体公開
+  LIMITED // 限定公開（visibleTo で指定した取引先のみ）
+}
+
+// 商品を限定公開する取引先（publishScope = LIMITED のときだけ意味を持つ）
+// 非公開/全体公開に切り替えても削除しない。限定公開に戻したときに復元するため。
+model ProductVisibility {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([productId, customerId])
+  @@index([customerId])
 }
 
 // 受注（確定済み）

@@ -2,7 +2,10 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import ProductPublishModal from "@/components/ProductPublishModal";
 
+
+type PublishScope = "PRIVATE" | "PUBLIC" | "LIMITED";
 
 type Product = {
   id: number;
@@ -12,7 +15,8 @@ type Product = {
   sakaMai: string | null;
   seimaiWari: string | null;
   alcohol: string | null;
-  published: boolean;
+  publishScope: PublishScope;
+  _count: { visibleTo: number };
   price1800: number | null;
   wholesalePrice1800: number | null;
   unit1800: string | null;
@@ -46,6 +50,7 @@ export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [publishModalProduct, setPublishModalProduct] = useState<Product | null>(null);
   const allCheckRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -81,15 +86,10 @@ export default function ProductsPage() {
     });
   };
 
-  const handleTogglePublished = async (id: number, current: boolean) => {
-    const msg = current ? "この商品を非公開にしますか？\n発注ポータルに表示されなくなります。" : "この商品を公開しますか？\n発注ポータルに表示されます。";
-    if (!confirm(msg)) return;
-    await fetch(`/api/products/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ published: !current }),
-    });
-    load();
+  const publishBadge = (p: Product) => {
+    if (p.publishScope === "PUBLIC") return { label: "全体公開", className: "bg-green-100 text-green-700 hover:bg-green-200" };
+    if (p.publishScope === "LIMITED") return { label: `限定公開（${p._count.visibleTo}社）`, className: "bg-amber-100 text-amber-700 hover:bg-amber-200" };
+    return { label: "非公開", className: "bg-gray-100 text-gray-500 hover:bg-gray-200" };
   };
 
   const handleDelete = async (id: number) => {
@@ -182,9 +182,9 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-right text-gray-400">—</td>
                       <td className="px-4 py-3 text-center">
-                        <button onClick={() => handleTogglePublished(p.id, p.published)}
-                          className={`text-xs font-medium px-2 py-0.5 rounded-full ${p.published ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
-                          {p.published ? "公開中" : "非公開"}
+                        <button onClick={() => setPublishModalProduct(p)}
+                          className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${publishBadge(p).className}`}>
+                          {publishBadge(p).label}
                         </button>
                       </td>
                       <td className="px-4 py-3 text-right">
@@ -236,9 +236,9 @@ export default function ProductsPage() {
                         </td>
                         {idx === 0 && (
                           <td className="px-4 py-3 text-center align-top" rowSpan={variants.length}>
-                            <button onClick={() => handleTogglePublished(p.id, p.published)}
-                              className={`text-xs font-medium px-2 py-0.5 rounded-full ${p.published ? "bg-green-100 text-green-700 hover:bg-green-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
-                              {p.published ? "公開中" : "非公開"}
+                            <button onClick={() => setPublishModalProduct(p)}
+                              className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${publishBadge(p).className}`}>
+                              {publishBadge(p).label}
                             </button>
                           </td>
                         )}
@@ -256,6 +256,14 @@ export default function ProductsPage() {
           </tbody>
         </table>
       </div>
+
+      {publishModalProduct && (
+        <ProductPublishModal
+          product={publishModalProduct}
+          onClose={() => setPublishModalProduct(null)}
+          onSaved={() => { setPublishModalProduct(null); load(); }}
+        />
+      )}
     </div>
   );
 }
