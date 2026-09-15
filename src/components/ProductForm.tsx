@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const CATEGORIES = [
@@ -14,6 +14,7 @@ type ProductData = {
   seimaiWari: string;
   alcohol: string;
   description: string;
+  imageUrl: string;
   price1800: string;
   wholesalePrice1800: string;
   unit1800: string;
@@ -43,7 +44,7 @@ type Props = {
 
 const empty: ProductData = {
   name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "",
-  description: "",
+  description: "", imageUrl: "",
   price1800: "", wholesalePrice1800: "", unit1800: "6", jan1800: "", stock1800: "",
   price720: "",  wholesalePrice720: "", unit720: "12", jan720: "", stock720: "",
   volumeOther: "", priceOther: "", wholesalePriceOther: "", unitOther: "", janOther: "", stockOther: "",
@@ -57,7 +58,25 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
   const [has1800, setHas1800] = useState(productId ? (!noPriceData ? !!(initialData?.price1800) : true) : true);
   const [has720, setHas720] = useState(productId ? (!noPriceData ? !!(initialData?.price720) : true) : true);
   const [hasOther, setHasOther] = useState(!!(initialData?.priceOther));
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  const uploadImage = async (file: File) => {
+    if (!file.type.startsWith("image/")) { alert("画像ファイルを選択してください"); return; }
+    setUploading(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    if (res.ok) {
+      const data = await res.json();
+      setForm((f) => ({ ...f, imageUrl: data.url }));
+    } else {
+      alert("画像のアップロードに失敗しました");
+    }
+    setUploading(false);
+  };
 
   const toHalf = (str: string) =>
     str.replace(/[！-～]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0)).replace(/　/g, " ");
@@ -109,6 +128,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       seimaiWari: form.seimaiWari || null,
       alcohol: form.alcohol || null,
       description: form.description || null,
+      imageUrl: form.imageUrl || null,
     };
     const empty1800 = { price1800: null, wholesalePrice1800: null, unit1800: null, jan1800: null, stock1800: 0 };
     const empty720 = { price720: null, wholesalePrice720: null, unit720: null, jan720: null, stock720: 0 };
@@ -207,6 +227,55 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       <Field label="説明">
         <textarea value={form.description} onChange={set("description")} onBlur={blur("description")} rows={6} className={inputCls} />
       </Field>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">商品画像</label>
+        {form.imageUrl ? (
+          <div className="flex items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={form.imageUrl} alt={form.name || "商品画像"} className="w-32 h-32 object-cover rounded-lg border border-gray-200" />
+            <div className="flex flex-col gap-2">
+              <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm text-blue-600 hover:text-blue-800 text-left">
+                画像を変更
+              </button>
+              <button type="button" onClick={() => setForm((f) => ({ ...f, imageUrl: "" }))} className="text-sm text-red-500 hover:text-red-700 text-left">
+                削除
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const file = e.dataTransfer.files?.[0];
+              if (file) uploadImage(file);
+            }}
+            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-lg px-4 py-6 flex flex-col items-center gap-2 cursor-pointer transition-colors ${
+              dragOver ? "border-blue-400 bg-blue-50" : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+            }`}
+          >
+            {uploading ? (
+              <span className="text-sm text-gray-500">アップロード中...</span>
+            ) : (
+              <>
+                <span className="text-sm text-gray-500">ここに画像をドラッグ、または</span>
+                <span className="text-sm text-blue-600 font-medium underline">ファイルを選択</span>
+              </>
+            )}
+          </div>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => { const file = e.target.files?.[0]; if (file) uploadImage(file); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+        />
+      </div>
 
       <div>
         <div className="flex gap-6">
@@ -314,7 +383,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       )}
 
       <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={saving} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+        <button type="submit" disabled={saving || uploading} className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
           {saving ? "登録中..." : "登録"}
         </button>
         <button type="button" onClick={() => router.push("/products")} className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50">

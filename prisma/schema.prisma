@@ -224,6 +224,7 @@ model Product {
   seimaiWari   String?       // 精米歩合
   alcohol      String?       // アルコール度数
   description  String?
+  imageUrl     String?
   price1800         Float?
   wholesalePrice1800 Float?
   unit1800          String?       @default("本")

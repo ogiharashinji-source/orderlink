@@ -10,6 +10,7 @@ type PublishScope = "PRIVATE" | "PUBLIC" | "LIMITED";
 type Product = {
   id: number;
   name: string;
+  imageUrl: string | null;
   description: string | null;
   category: string | null;
   sakaMai: string | null;
@@ -170,7 +171,15 @@ export default function ProductsPage() {
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
                       </td>
                       <td className="px-4 py-3 text-gray-900">
-                        {p.name}
+                        <div className="flex items-center gap-2">
+                          {p.imageUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
+                          ) : (
+                            <span className="w-8 h-8 rounded bg-gray-100 shrink-0" />
+                          )}
+                          {p.name}
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
@@ -210,7 +219,15 @@ export default function ProductsPage() {
                         )}
                         {idx === 0 && (
                           <td className="px-4 py-3 text-gray-900 align-top" rowSpan={variants.length}>
-                            {p.name}
+                            <div className="flex items-center gap-2">
+                              {p.imageUrl ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
+                              ) : (
+                                <span className="w-8 h-8 rounded bg-gray-100 shrink-0" />
+                              )}
+                              {p.name}
+                            </div>
                           </td>
                         )}
                         {idx === 0 && (

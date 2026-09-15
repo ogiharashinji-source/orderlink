@@ -40,6 +40,7 @@ export default function EditProductPage() {
           seimaiWari: String(product.seimaiWari ?? ""),
           alcohol: String(product.alcohol ?? ""),
           description: String(product.description ?? ""),
+          imageUrl: String(product.imageUrl ?? ""),
           price1800: product.price1800 != null ? String(product.price1800) : "",
           wholesalePrice1800: product.wholesalePrice1800 != null ? String(product.wholesalePrice1800) : "",
           unit1800: product.unit1800 != null ? String(product.unit1800) : "6",

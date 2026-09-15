@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 type Product = {
   id: number;
   name: string;
+  imageUrl: string | null;
   description: string | null;
   category: string | null;
   sakaMai: string | null;
@@ -301,7 +302,15 @@ function PortalOrderContent() {
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 text-gray-900" title={v.product.name}>
-                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}
+                    <div className="flex items-center gap-2">
+                      {v.product.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={v.product.imageUrl} alt="" className="w-9 h-9 object-cover rounded shrink-0" />
+                      ) : (
+                        <span className="w-9 h-9 rounded bg-gray-100 shrink-0" />
+                      )}
+                      <span>{v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}</span>
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
@@ -352,6 +361,10 @@ function PortalOrderContent() {
           return (
             <div key={v.key} className={`bg-white rounded-xl shadow p-4 ${qty > 0 ? "ring-2 ring-blue-400" : ""}`}>
               <div className="flex items-start justify-between gap-2 mb-3">
+                {v.product.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={v.product.imageUrl} alt="" className="w-12 h-12 object-cover rounded-lg shrink-0" />
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-gray-900">{v.product.name}</span>
