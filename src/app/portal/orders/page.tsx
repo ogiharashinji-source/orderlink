@@ -156,7 +156,7 @@ export default function PortalOrdersPage() {
             <tr>
               <th className="px-4 py-3 text-left">発注日時</th>
               <th className="px-4 py-3 text-left">発注先</th>
-              <th className="px-4 py-3 text-left">商品名</th>
+              <th className="px-4 py-3 text-left w-72">商品名</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">容量</th>
@@ -189,7 +189,7 @@ export default function PortalOrdersPage() {
                       <div className="mt-0.5">{timeStr}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-800 whitespace-nowrap">{seller}</td>
-                    {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 text-gray-900 cursor-default" title={n}>{n.length > 14 ? n.slice(0, 14) + "…" : n}</td>; })()}
+                    {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 text-gray-900 cursor-default" title={n}>{n.length > 22 ? n.slice(0, 22) + "、、、" : n}</td>; })()}
                     <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
