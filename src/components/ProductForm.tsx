@@ -102,36 +102,67 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
     }
 
     setSaving(true);
-    const payload = {
+    const base = {
       name: form.name,
       category: form.category || null,
       sakaMai: form.sakaMai || null,
       seimaiWari: form.seimaiWari || null,
       alcohol: form.alcohol || null,
       description: form.description || null,
-      price1800: has1800 && form.price1800 ? parseFloat(form.price1800) : null,
-      wholesalePrice1800: has1800 && form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
-      unit1800: has1800 ? (form.unit1800 || "本") : null,
-      jan1800: has1800 ? (form.jan1800 || null) : null,
-      stock1800: has1800 ? (parseInt(form.stock1800) || 0) : 0,
-      price720: has720 && form.price720 ? parseFloat(form.price720) : null,
-      wholesalePrice720: has720 && form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
-      unit720: has720 ? (form.unit720 || "本") : null,
-      jan720: has720 ? (form.jan720 || null) : null,
-      stock720: has720 ? (parseInt(form.stock720) || 0) : 0,
-      volumeOther: hasOther && form.volumeOther ? (form.volumeOther.endsWith("ml") ? form.volumeOther : `${form.volumeOther}ml`) : null,
-      priceOther: hasOther && form.priceOther ? parseFloat(form.priceOther) : null,
-      wholesalePriceOther: hasOther && form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
-      unitOther: hasOther ? (form.unitOther || null) : null,
-      janOther: hasOther ? (form.janOther || null) : null,
-      stockOther: hasOther ? (parseInt(form.stockOther) || 0) : 0,
-      price: parseFloat((has1800 ? form.price1800 : "") || (has720 ? form.price720 : "") || (hasOther ? form.priceOther : "") || "0") || 0,
-      unit: (has1800 ? form.unit1800 : "") || "本",
-      stock: (has1800 ? parseInt(form.stock1800) || 0 : 0) + (has720 ? parseInt(form.stock720) || 0 : 0),
     };
-    const url = productId ? `/api/products/${productId}` : "/api/products";
-    const method = productId ? "PUT" : "POST";
-    await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const empty1800 = { price1800: null, wholesalePrice1800: null, unit1800: null, jan1800: null, stock1800: 0 };
+    const empty720 = { price720: null, wholesalePrice720: null, unit720: null, jan720: null, stock720: 0 };
+    const emptyOther = { volumeOther: null, priceOther: null, wholesalePriceOther: null, unitOther: null, janOther: null, stockOther: 0 };
+    const fields1800 = has1800 ? {
+      price1800: form.price1800 ? parseFloat(form.price1800) : null,
+      wholesalePrice1800: form.wholesalePrice1800 ? parseFloat(form.wholesalePrice1800) : null,
+      unit1800: form.unit1800 || "本",
+      jan1800: form.jan1800 || null,
+      stock1800: parseInt(form.stock1800) || 0,
+    } : empty1800;
+    const fields720 = has720 ? {
+      price720: form.price720 ? parseFloat(form.price720) : null,
+      wholesalePrice720: form.wholesalePrice720 ? parseFloat(form.wholesalePrice720) : null,
+      unit720: form.unit720 || "本",
+      jan720: form.jan720 || null,
+      stock720: parseInt(form.stock720) || 0,
+    } : empty720;
+    const fieldsOther = hasOther ? {
+      volumeOther: form.volumeOther ? (form.volumeOther.endsWith("ml") ? form.volumeOther : `${form.volumeOther}ml`) : null,
+      priceOther: form.priceOther ? parseFloat(form.priceOther) : null,
+      wholesalePriceOther: form.wholesalePriceOther ? parseFloat(form.wholesalePriceOther) : null,
+      unitOther: form.unitOther || null,
+      janOther: form.janOther || null,
+      stockOther: parseInt(form.stockOther) || 0,
+    } : emptyOther;
+
+    if (productId) {
+      // 編集は既存どおり、1商品に複数サイズをまとめたまま更新する
+      const payload = {
+        ...base,
+        ...fields1800, ...fields720, ...fieldsOther,
+        price: parseFloat((has1800 ? form.price1800 : "") || (has720 ? form.price720 : "") || (hasOther ? form.priceOther : "") || "0") || 0,
+        unit: (has1800 ? form.unit1800 : "") || "本",
+        stock: (has1800 ? parseInt(form.stock1800) || 0 : 0) + (has720 ? parseInt(form.stock720) || 0 : 0),
+      };
+      await fetch(`/api/products/${productId}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      router.push("/products");
+      return;
+    }
+
+    // 新規登録: サイズごとに別商品として1件ずつ登録する(まとめない)
+    const submissions: Array<{ price: number; unit: string; stock: number; extra: object }> = [];
+    if (has1800) submissions.push({ price: fields1800.price1800 ?? 0, unit: fields1800.unit1800 || "本", stock: fields1800.stock1800, extra: { ...fields1800, ...empty720, ...emptyOther } });
+    if (has720) submissions.push({ price: fields720.price720 ?? 0, unit: fields720.unit720 || "本", stock: fields720.stock720, extra: { ...empty1800, ...fields720, ...emptyOther } });
+    if (hasOther) submissions.push({ price: fieldsOther.priceOther ?? 0, unit: fieldsOther.unitOther || "本", stock: fieldsOther.stockOther, extra: { ...empty1800, ...empty720, ...fieldsOther } });
+
+    await Promise.all(submissions.map((s) =>
+      fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...base, ...s.extra, price: s.price, unit: s.unit, stock: s.stock }),
+      })
+    ));
     router.push("/products");
   };
 
