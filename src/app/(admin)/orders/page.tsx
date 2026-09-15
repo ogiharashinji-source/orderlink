@@ -147,9 +147,9 @@ export default function OrdersPage() {
             <tr>
               <th className="px-4 py-3 text-center">受注日時</th>
               <th className="px-4 py-3 text-left">会社名</th>
-              <th className="px-4 py-3 text-left">商品</th>
-              <th className="px-4 py-3 text-left">種別</th>
-              <th className="px-4 py-3 text-left">酒米</th>
+              <th className="px-4 py-3 text-left w-80">商品</th>
+              <th className="px-2 py-3 text-left">種別</th>
+              <th className="px-2 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-center">小売値</th>
               <th className="px-4 py-3 text-center">卸売値</th>
@@ -193,14 +193,14 @@ export default function OrdersPage() {
 
                       {/* 商品名 */}
                       <td className="px-4 py-3 text-left text-gray-800" title={item.productName ?? item.product?.name ?? ""}>
-                        {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 14 ? n.slice(0, 14) + "…" : n; })()}
+                        {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 28 ? n.slice(0, 25) + "、、、" : n; })()}
                       </td>
 
                       {/* 種別 */}
-                      <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                      <td className="px-2 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
 
                       {/* 酒米 */}
-                      <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                      <td className="px-2 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
 
                       {/* 容量 */}
                       <td className="px-4 py-3 text-center whitespace-nowrap">
