@@ -277,7 +277,7 @@ function PortalOrderContent() {
         <table className="w-full text-sm whitespace-nowrap">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
             <tr>
-              <th className="px-4 py-3 text-left w-72">商品名</th>
+              <th className="px-4 py-3 text-left w-80">商品名</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-2 py-3 text-center">精米歩合</th>
@@ -301,7 +301,7 @@ function PortalOrderContent() {
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 text-gray-900" title={v.product.name}>
-                    {v.product.name.length > 22 ? v.product.name.slice(0, 22) + "、、、" : v.product.name}
+                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "、、、" : v.product.name}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
