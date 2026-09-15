@@ -193,7 +193,7 @@ export default function OrdersPage() {
 
                       {/* 商品名 */}
                       <td className="px-4 py-3 text-left text-gray-800" title={item.productName ?? item.product?.name ?? ""}>
-                        {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 28 ? n.slice(0, 25) + "、、、" : n; })()}
+                        {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 28 ? n.slice(0, 25) + "..." : n; })()}
                       </td>
 
                       {/* 種別 */}

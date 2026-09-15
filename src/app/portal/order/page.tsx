@@ -301,7 +301,7 @@ function PortalOrderContent() {
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 text-gray-900" title={v.product.name}>
-                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "、、、" : v.product.name}
+                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
