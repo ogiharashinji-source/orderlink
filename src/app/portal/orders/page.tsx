@@ -157,8 +157,8 @@ export default function PortalOrdersPage() {
               <th className="px-4 py-3 text-left">発注日時</th>
               <th className="px-4 py-3 text-left">発注先</th>
               <th className="px-4 py-3 text-left w-80">商品名</th>
-              <th className="px-4 py-3 text-left">種別</th>
-              <th className="px-4 py-3 text-left">酒米</th>
+              <th className="px-2 py-3 text-left">種別</th>
+              <th className="px-2 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-right">小売値</th>
               <th className="px-4 py-3 text-right">卸売値</th>
@@ -190,8 +190,8 @@ export default function PortalOrdersPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-800 whitespace-nowrap">{seller}</td>
                     {(() => { const n = item.productName ?? item.product?.name ?? "—"; return <td className="px-4 py-3 text-gray-900 cursor-default" title={n}>{n.length > 28 ? n.slice(0, 25) + "、、、" : n}</td>; })()}
-                    <td className="px-4 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-2 py-3 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
+                    <td className="px-2 py-3 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume}</span>
                     </td>
