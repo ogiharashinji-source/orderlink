@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   const [setting, pendingRequests, unapprovedPrimary, unapprovedSecondaryLinks, chatRooms] = await Promise.all([
     prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true } }),
-    prisma.orderRequest.findMany({ where: { companyId, status: "PENDING" }, select: { id: true } }),
+    prisma.orderRequest.findMany({ where: { companyId, status: "PENDING" }, select: { customerId: true } }),
     prisma.customer.findMany({ where: { companyId, approved: false, deleted: false }, select: { id: true } }),
     prisma.customerCompany.findMany({ where: { companyId, approved: false }, select: { customerId: true } }),
     prisma.chatRoom.findMany({ where: { companyId }, select: { id: true, adminLastReadAt: true } }),
@@ -34,9 +34,11 @@ export async function GET(req: NextRequest) {
     ? await prisma.customer.count({ where: { id: { in: extraCustomerIds }, deleted: false } })
     : 0;
 
+  const pendingCompanyCount = new Set(pendingRequests.map((r) => r.customerId).filter((id): id is number => id != null)).size;
+
   return NextResponse.json({
     companyName: setting?.companyName ?? "",
-    pendingCount: pendingRequests.length,
+    pendingCount: pendingCompanyCount,
     approvalCount: unapprovedPrimary.length + validSecondary,
     chatUnreadCount,
   });
