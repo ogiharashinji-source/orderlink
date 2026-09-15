@@ -524,3 +524,66 @@ export async function sendOrderLinkEmail({
       : [],
   });
 }
+
+export async function sendChatMessageEmail(to: string, recipientName: string, senderName: string, preview: string, loginUrl: string) {
+  const subject = `【OrderLink】${senderName}様からメッセージが届いています`;
+  const trimmed = preview.length > 200 ? preview.slice(0, 200) + "..." : preview;
+
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Helvetica Neue',Arial,'Hiragino Kaku Gothic ProN',sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:40px 0;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+        <tr>
+          <td style="background:#1e3a5f;padding:28px 40px;text-align:center;">
+            <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:2px;">OrderLink</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:40px 40px 32px;">
+            <p style="margin:0 0 8px;font-size:16px;color:#222;">${recipientName} 様</p>
+            <p style="margin:0 0 20px;font-size:15px;color:#333;line-height:1.9;">
+              ${senderName}様からチャットにメッセージが届きました。
+            </p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;border-radius:6px;margin-bottom:28px;">
+              <tr><td style="padding:16px 20px;font-size:14px;color:#444;line-height:1.8;">${nl2br(trimmed)}</td></tr>
+            </table>
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td align="center" style="padding:0 0 32px;">
+                  <a href="${loginUrl}"
+                     style="display:inline-block;background:#1e3a5f;color:#ffffff;font-size:15px;font-weight:bold;text-decoration:none;padding:14px 40px;border-radius:6px;letter-spacing:0.5px;">
+                    チャットを確認する
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0;font-size:13px;color:#888;">ログインURL: <a href="${loginUrl}" style="color:#1e3a5f;">${loginUrl}</a></p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f4f6f8;padding:20px 40px;text-align:center;border-top:1px solid #e8eaed;">
+            <p style="margin:0;font-size:12px;color:#999;">このメールはOrderLinkから自動送信されています。返信はお受けできません。</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `${recipientName} 様\n\n${senderName}様からチャットにメッセージが届きました。\n\n${trimmed}\n\n${loginUrl}`;
+
+  if (DEV) {
+    console.log("========== [チャット通知メール] ==========");
+    console.log(`宛先: ${to}`);
+    console.log(`件名: ${subject}`);
+    console.log(text);
+    console.log("==========================================");
+    return;
+  }
+
+  await getResend().emails.send({ from: FROM, to, subject, html, text });
+}

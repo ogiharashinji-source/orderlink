@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminCompanyId } from "@/lib/adminAuth";
 import { isCustomerApprovedForCompany, getOrCreateChatRoom } from "@/lib/chatAccess";
+import { sendChatMessageEmail } from "@/lib/mailer";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ customerId: string }> }) {
   const companyId = await getAdminCompanyId(req);
@@ -57,6 +58,20 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cus
     where: { id: room.id },
     data: { lastMessageAt: now, adminLastReadAt: now },
   });
+
+  const [customer, setting] = await Promise.all([
+    prisma.customer.findUnique({ where: { id: customerId }, select: { email: true, name: true } }),
+    prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true } }),
+  ]);
+  if (customer?.email) {
+    sendChatMessageEmail(
+      customer.email,
+      customer.name,
+      setting?.companyName ?? "蔵元",
+      text,
+      "https://www.orderlink.jp/portal/login"
+    ).catch((e) => console.error("[チャット通知メール] 送信エラー:", e));
+  }
 
   return NextResponse.json(
     { id: message.id, senderType: message.senderType, body: message.body, createdAt: message.createdAt },
