@@ -7,8 +7,6 @@ import ProductPublishModal from "@/components/ProductPublishModal";
 
 type PublishScope = "PRIVATE" | "PUBLIC" | "LIMITED";
 
-const isPdfUrl = (url: string) => /\.pdf($|\?)/i.test(url);
-
 type Product = {
   id: number;
   name: string;
@@ -173,19 +171,7 @@ export default function ProductsPage() {
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
                       </td>
                       <td className="px-4 py-3 text-gray-900">
-                        <div className="flex items-center gap-2">
-                          {p.imageUrl ? (
-                            isPdfUrl(p.imageUrl) ? (
-                              <span className="w-8 h-8 rounded bg-gray-100 shrink-0 flex items-center justify-center text-xs">📄</span>
-                            ) : (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
-                            )
-                          ) : (
-                            <span className="w-8 h-8 rounded bg-gray-100 shrink-0" />
-                          )}
-                          {p.name}
-                        </div>
+                        {p.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
@@ -225,15 +211,7 @@ export default function ProductsPage() {
                         )}
                         {idx === 0 && (
                           <td className="px-4 py-3 text-gray-900 align-top" rowSpan={variants.length}>
-                            <div className="flex items-center gap-2">
-                              {p.imageUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
-                              ) : (
-                                <span className="w-8 h-8 rounded bg-gray-100 shrink-0" />
-                              )}
-                              {p.name}
-                            </div>
+                            {p.name}
                           </td>
                         )}
                         {idx === 0 && (
