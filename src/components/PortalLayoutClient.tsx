@@ -7,6 +7,7 @@ const navItems = [
   { href: "/portal/order",  label: "発注依頼" },
   { href: "/portal/orders", label: "発注管理" },
   { href: "/portal/chat",   label: "チャット", chatBadge: true },
+  { href: "/portal/announcements", label: "お知らせ", announcementBadge: true },
 ];
 
 const LS_KEY = "portal_customer_name";
@@ -25,6 +26,7 @@ export default function PortalLayoutClient({ children }: { children: React.React
   const [authChecked, setAuthChecked] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [chatUnread, setChatUnread] = useState(0);
+  const [announcementUnread, setAnnouncementUnread] = useState(0);
   const authenticated = useRef(false);
 
   useEffect(() => {
@@ -70,6 +72,14 @@ export default function PortalLayoutClient({ children }: { children: React.React
     return () => clearInterval(id);
   }, [pathname, authChecked]);
 
+  useEffect(() => {
+    if (isPublicPath(pathname) || !authChecked) return;
+    const load = () => fetch("/api/portal/announcements/unread").then((r) => r.ok ? r.json() : null).then((d) => { if (d) setAnnouncementUnread(d.unread ?? 0); }).catch(() => {});
+    load();
+    const id = setInterval(load, 60000);
+    return () => clearInterval(id);
+  }, [pathname, authChecked]);
+
   if (isPublicPath(pathname)) return <>{children}</>;
   if (redirecting || !authChecked) return null;
 
@@ -93,6 +103,11 @@ export default function PortalLayoutClient({ children }: { children: React.React
                     {item.chatBadge && chatUnread > 0 && (
                       <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
                         {chatUnread}
+                      </span>
+                    )}
+                    {item.announcementBadge && announcementUnread > 0 && (
+                      <span style={{ position: "absolute", top: -4, right: -4, background: "#ef4444", color: "white", fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, padding: "0 3px", borderRadius: 9999, display: "flex", alignItems: "center", justifyContent: "center", lineHeight: 1 }}>
+                        {announcementUnread}
                       </span>
                     )}
                   </a>

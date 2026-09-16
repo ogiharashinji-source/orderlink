@@ -11,6 +11,7 @@ const navItems = [
   { href: "/customers", label: "顧客", customerBadge: true },
   { href: "/fax", label: "メール" },
   { href: "/chat", label: "チャット", chatBadge: true },
+  { href: "/announcements", label: "お知らせ" },
 ];
 
 let _cachedCompanyName = "";

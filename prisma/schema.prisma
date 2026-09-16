@@ -53,6 +53,7 @@ model Company {
   orderRequests OrderRequest[]
   orderLinks    OrderLink[]
   chatRooms     ChatRoom[]
+  announcements Announcement[]
 }
 
 // 会社ごとの招待トークン
@@ -111,6 +112,7 @@ model Customer {
   orderRequests        OrderRequest[]
   chatRooms            ChatRoom[]
   productVisibilities  ProductVisibility[]
+  announcementReads    AnnouncementRead[]
 
   @@index([companyId])
 }
@@ -145,6 +147,32 @@ model ChatMessage {
 enum SenderType {
   ADMIN
   CUSTOMER
+}
+
+// 蔵元からポータル会員へのお知らせ
+model Announcement {
+  id        Int                @id @default(autoincrement())
+  companyId Int
+  company   Company            @relation(fields: [companyId], references: [id])
+  title     String
+  body      String
+  createdAt DateTime           @default(now())
+  reads     AnnouncementRead[]
+
+  @@index([companyId])
+}
+
+// お知らせの既読状態(会員ごと)
+model AnnouncementRead {
+  id             Int          @id @default(autoincrement())
+  announcementId Int
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  customerId     Int
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  readAt         DateTime     @default(now())
+
+  @@unique([announcementId, customerId])
+  @@index([customerId])
 }
 
 // QRコード付き発注書リンク
