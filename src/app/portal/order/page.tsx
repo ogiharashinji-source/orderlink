@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+const isPdfUrl = (url: string) => /\.pdf($|\?)/i.test(url);
+
 type Product = {
   id: number;
   name: string;
@@ -245,8 +247,15 @@ function PortalOrderContent() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-3" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-base font-bold text-gray-900">{descModal.name}</h2>
             {descModal.imageUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={descModal.imageUrl} alt={descModal.name} className="w-full max-h-64 object-cover rounded-lg" />
+              isPdfUrl(descModal.imageUrl) ? (
+                <a href={descModal.imageUrl} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-blue-600 hover:underline">
+                  <span className="text-xl">📄</span>PDFを開く
+                </a>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={descModal.imageUrl} alt={descModal.name} className="w-full max-h-64 object-cover rounded-lg" />
+              )
             )}
             {descModal.description && (
               <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>

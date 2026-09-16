@@ -2,6 +2,8 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+const isPdfUrl = (url: string) => /\.pdf($|\?)/i.test(url);
+
 const CATEGORIES = [
   "純米大吟醸", "大吟醸", "純米吟醸", "吟醸酒",
   "純米酒", "本醸造", "普通酒", "リキュール", "その他",
@@ -64,7 +66,10 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
   const router = useRouter();
 
   const uploadImage = async (file: File) => {
-    if (!file.type.startsWith("image/")) { alert("画像ファイルを選択してください"); return; }
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+      alert("画像またはPDFファイルを選択してください");
+      return;
+    }
     setUploading(true);
     const fd = new FormData();
     fd.append("file", file);
@@ -73,7 +78,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       const data = await res.json();
       setForm((f) => ({ ...f, imageUrl: data.url }));
     } else {
-      alert("画像のアップロードに失敗しました");
+      alert("アップロードに失敗しました");
     }
     setUploading(false);
   };
@@ -229,14 +234,22 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       </Field>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">商品画像</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">商品画像・PDF</label>
         {form.imageUrl ? (
           <div className="flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={form.imageUrl} alt={form.name || "商品画像"} className="w-32 h-32 object-cover rounded-lg border border-gray-200" />
+            {isPdfUrl(form.imageUrl) ? (
+              <a href={form.imageUrl} target="_blank" rel="noopener noreferrer"
+                className="w-32 h-32 flex flex-col items-center justify-center gap-1 rounded-lg border border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100">
+                <span className="text-3xl">📄</span>
+                <span className="text-xs">PDFを開く</span>
+              </a>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={form.imageUrl} alt={form.name || "商品画像"} className="w-32 h-32 object-cover rounded-lg border border-gray-200" />
+            )}
             <div className="flex flex-col gap-2">
               <button type="button" onClick={() => fileInputRef.current?.click()} className="text-sm text-blue-600 hover:text-blue-800 text-left">
-                画像を変更
+                変更
               </button>
               <button type="button" onClick={() => setForm((f) => ({ ...f, imageUrl: "" }))} className="text-sm text-red-500 hover:text-red-700 text-left">
                 削除
@@ -262,7 +275,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
               <span className="text-sm text-gray-500">アップロード中...</span>
             ) : (
               <>
-                <span className="text-sm text-gray-500">ここに画像をドラッグ、または</span>
+                <span className="text-sm text-gray-500">ここに画像・PDFをドラッグ、または</span>
                 <span className="text-sm text-blue-600 font-medium underline">ファイルを選択</span>
               </>
             )}
@@ -271,7 +284,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,application/pdf"
           className="hidden"
           onChange={(e) => { const file = e.target.files?.[0]; if (file) uploadImage(file); if (fileInputRef.current) fileInputRef.current.value = ""; }}
         />

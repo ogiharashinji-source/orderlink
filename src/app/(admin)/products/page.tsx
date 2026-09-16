@@ -7,6 +7,8 @@ import ProductPublishModal from "@/components/ProductPublishModal";
 
 type PublishScope = "PRIVATE" | "PUBLIC" | "LIMITED";
 
+const isPdfUrl = (url: string) => /\.pdf($|\?)/i.test(url);
+
 type Product = {
   id: number;
   name: string;
@@ -173,8 +175,12 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-gray-900">
                         <div className="flex items-center gap-2">
                           {p.imageUrl ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
+                            isPdfUrl(p.imageUrl) ? (
+                              <span className="w-8 h-8 rounded bg-gray-100 shrink-0 flex items-center justify-center text-xs">📄</span>
+                            ) : (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={p.imageUrl} alt="" className="w-8 h-8 object-cover rounded shrink-0" />
+                            )
                           ) : (
                             <span className="w-8 h-8 rounded bg-gray-100 shrink-0" />
                           )}
