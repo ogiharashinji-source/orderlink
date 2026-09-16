@@ -29,14 +29,17 @@ export async function POST(req: NextRequest) {
   const companyId = await getAdminCompanyId(req);
   if (!companyId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { body } = await req.json();
+  const { body, customerIds } = await req.json();
   const text = typeof body === "string" ? body.trim() : "";
   if (!text) return NextResponse.json({ error: "メッセージを入力してください" }, { status: 400 });
   if (text.length > 2000) return NextResponse.json({ error: "メッセージが長すぎます" }, { status: 400 });
 
-  const customers = await getApprovedCustomers(companyId);
+  const approved = await getApprovedCustomers(companyId);
+  const customers = Array.isArray(customerIds) && customerIds.length > 0
+    ? approved.filter((c) => customerIds.includes(c.id))
+    : approved;
   if (customers.length === 0) {
-    return NextResponse.json({ error: "承認済みの会員がいません" }, { status: 400 });
+    return NextResponse.json({ error: "送信先の会員がいません" }, { status: 400 });
   }
 
   const setting = await prisma.adminSetting.findUnique({ where: { companyId }, select: { companyName: true } });
