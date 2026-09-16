@@ -99,6 +99,60 @@ export default function OrdersPage() {
     downloadCsv(`注文一覧_${date}.csv`, [header, ...rows]);
   };
 
+  // 佐川急便用CSV: 会社コードごとに数量・税込金額を合計して出力
+  const handleSagawaCsvExport = () => {
+    type Agg = { code: string; qty: number; taxInc: number };
+    const map = new Map<string, Agg>();
+    const orderedKeys: string[] = [];
+
+    orders.forEach((o) => {
+      const cancelled = o.status === "CANCELLED";
+      const memberCode = o.customer?.memberNumber ?? "";
+      const key = memberCode || `name:${o.customerName ?? o.customer?.name ?? ""}`;
+      if (!map.has(key)) {
+        map.set(key, { code: memberCode, qty: 0, taxInc: 0 });
+        orderedKeys.push(key);
+      }
+      const entry = map.get(key)!;
+
+      o.items.filter((item) => matchesFilter(o, item)).forEach((item) => {
+        if (cancelled || item.quantity === 0) return;
+        const lot = parseInt(
+          item.volume === "1800ml" ? (item.product?.unit1800 ?? "1")
+          : item.volume === "720ml" ? (item.product?.unit720 ?? "1")
+          : (item.product?.unitOther ?? "1")
+        ) || 1;
+        const wp = item.volume === "1800ml"
+          ? item.product?.wholesalePrice1800
+          : item.volume === "720ml"
+          ? item.product?.wholesalePrice720
+          : item.product?.wholesalePriceOther;
+        const wholesale = typeof wp === "number" ? wp : 0;
+        entry.qty += item.quantity;
+        if (wholesale > 0) entry.taxInc += Math.floor(item.quantity * lot * wholesale * 1.1);
+      });
+    });
+
+    const header = ["会社コード", "数量", "税込金額合計"];
+    const sortedKeys = orderedKeys
+      .filter((key) => map.get(key)!.qty !== 0) // キャンセルのみ・数量0の会社は出力しない
+      .sort((a, b) => {
+        const codeA = map.get(a)!.code;
+        const codeB = map.get(b)!.code;
+        const numA = codeA && /^\d+$/.test(codeA) ? parseInt(codeA) : Infinity;
+        const numB = codeB && /^\d+$/.test(codeB) ? parseInt(codeB) : Infinity;
+        return numA - numB;
+      });
+    const rows: (string | number)[][] = sortedKeys.map((key) => {
+      const e = map.get(key)!;
+      const codeCell = e.code ? `="${e.code}"` : "";
+      return [codeCell, e.qty, e.taxInc];
+    });
+
+    const date = new Date().toISOString().slice(0, 10);
+    downloadCsv(`佐川急便用CSV_${date}.csv`, [header, ...rows]);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">
@@ -138,6 +192,9 @@ export default function OrdersPage() {
         <div className="flex-1" />
         <button onClick={handleCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 shrink-0">
           CSV出力
+        </button>
+        <button onClick={handleSagawaCsvExport} className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 shrink-0">
+          佐川急便用CSV出力
         </button>
       </div>
 
