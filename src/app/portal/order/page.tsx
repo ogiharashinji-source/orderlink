@@ -40,7 +40,7 @@ function PortalOrderContent() {
   const [companies, setCompanies] = useState<{ companyId: number; companyName: string }[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
   const [productsLoaded, setProductsLoaded] = useState(false);
-  const [descModal, setDescModal] = useState<{ name: string; description: string } | null>(null);
+  const [descModal, setDescModal] = useState<{ name: string; description: string; imageUrl?: string | null } | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -244,7 +244,13 @@ function PortalOrderContent() {
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={() => setDescModal(null)}>
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-3" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-base font-bold text-gray-900">{descModal.name}</h2>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>
+            {descModal.imageUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={descModal.imageUrl} alt={descModal.name} className="w-full max-h-64 object-cover rounded-lg" />
+            )}
+            {descModal.description && (
+              <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{descModal.description}</p>
+            )}
             <div className="flex justify-end pt-1">
               <button onClick={() => setDescModal(null)} className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">閉じる</button>
             </div>
@@ -302,15 +308,7 @@ function PortalOrderContent() {
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 text-gray-900" title={v.product.name}>
-                    <div className="flex items-center gap-2">
-                      {v.product.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={v.product.imageUrl} alt="" className="w-9 h-9 object-cover rounded shrink-0" />
-                      ) : (
-                        <span className="w-9 h-9 rounded bg-gray-100 shrink-0" />
-                      )}
-                      <span>{v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}</span>
-                    </div>
+                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
@@ -324,8 +322,8 @@ function PortalOrderContent() {
                   <td className="px-4 py-3 text-right text-gray-500">{v.lot}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{v.stock != null && v.stock !== 0 ? v.stock : ""}</td>
                   <td className="px-2 py-3 text-center">
-                    {v.product.description && (
-                      <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
+                    {(v.product.description || v.product.imageUrl) && (
+                      <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description ?? "", imageUrl: v.product.imageUrl })}
                         className="w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center hover:bg-blue-200 transition">?</button>
                     )}
                   </td>
