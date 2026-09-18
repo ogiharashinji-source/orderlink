@@ -469,7 +469,14 @@ export default function RequestsPage() {
                     <td className="px-4 py-3 text-center text-sm text-gray-700">
                       {item.volume === "1800ml" ? (item.product?.unit1800 ?? "—") : item.volume === "720ml" ? (item.product?.unit720 ?? "—") : (item.product?.unitOther ?? "—")}
                     </td>
-                    <td className="px-4 py-3 text-center text-gray-700">{item.requestedQty}</td>
+                    <td className="px-4 py-3 text-center text-gray-700">
+                      <span className="inline-flex items-center gap-1">
+                        {item.requestedQty}
+                        {req.notes && (
+                          <span title={`メッセージ: ${req.notes}`} className="text-blue-500 text-xs">💬</span>
+                        )}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={() => handleConfirm(req)}
