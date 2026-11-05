@@ -51,6 +51,15 @@ export async function POST(req: NextRequest) {
 
     // 全DB操作をトランザクションで囲む（失敗時は自動ロールバック）
     const customer = await prisma.$transaction(async (tx) => {
+      // email/loginIdはDB上グローバルにユニークなため、削除済み顧客が
+      // 値を保持したままだと再利用時にUnique constraintで失敗する。
+      // 上の重複チェックで「未削除」の重複がないことは確認済みなので、
+      // ここでヒットするのは削除済みレコードのみ → 値を解放してから作成する。
+      await tx.customer.updateMany({ where: { loginId, deleted: true }, data: { loginId: null } });
+      if (email) {
+        await tx.customer.updateMany({ where: { email, deleted: true }, data: { email: null } });
+      }
+
       const customerNumber = await nextCustomerNumber();
       const record = await tx.customer.create({
         data: {
