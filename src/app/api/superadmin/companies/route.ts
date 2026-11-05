@@ -14,11 +14,31 @@ export async function GET() {
     include: {
       setting: { select: { companyName: true, email: true, phone: true, address: true } },
       admins: { select: { id: true, loginId: true, password: true, createdAt: true } },
-      _count: { select: { memberships: { where: { approved: true } }, orders: true } },
+      _count: { select: { orders: true } },
     },
   });
 
-  return NextResponse.json(companies.map((c) => ({ ...c, companyNumber: numberMap[c.id] ?? null })));
+  // 顧客数は「承認済み かつ 削除済みでない顧客」のみをカウントする。
+  // CustomerCompanyにCustomerへのリレーションがないため手動で突き合わせる
+  // （顧客一覧ポップアップ側の members/route.ts と同じ絞り込み条件に揃える）。
+  const [approvedLinks, activeCustomers] = await Promise.all([
+    prisma.customerCompany.findMany({ where: { approved: true }, select: { companyId: true, customerId: true } }),
+    prisma.customer.findMany({ where: { deleted: false }, select: { id: true } }),
+  ]);
+  const activeCustomerIds = new Set(activeCustomers.map((c) => c.id));
+  const membershipCountMap: Record<number, number> = {};
+  for (const link of approvedLinks) {
+    if (!activeCustomerIds.has(link.customerId)) continue;
+    membershipCountMap[link.companyId] = (membershipCountMap[link.companyId] ?? 0) + 1;
+  }
+
+  return NextResponse.json(
+    companies.map((c) => ({
+      ...c,
+      companyNumber: numberMap[c.id] ?? null,
+      _count: { ...c._count, memberships: membershipCountMap[c.id] ?? 0 },
+    }))
+  );
 }
 
 export async function POST(req: Request) {
