@@ -17,6 +17,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ toke
     return NextResponse.json({ error: "このリンクは期限切れです" }, { status: 410 });
   }
 
+  if (!preview && link.customer && (link.customer.deleted || link.customer.suspended)) {
+    return NextResponse.json({ error: "このリンクはご利用いただけません" }, { status: 410 });
+  }
+
 
   const productIds: number[] = JSON.parse(link.productIds);
 

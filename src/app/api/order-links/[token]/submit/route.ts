@@ -10,9 +10,12 @@ function genRequestNumber() {
 export async function POST(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
-  const link = await prisma.orderLink.findUnique({ where: { token } });
+  const link = await prisma.orderLink.findUnique({ where: { token }, include: { customer: true } });
   if (!link) return NextResponse.json({ error: "リンクが見つかりません" }, { status: 404 });
   if (link.expiresAt && link.expiresAt < new Date()) return NextResponse.json({ error: "期限切れです" }, { status: 410 });
+  if (link.customer && (link.customer.deleted || link.customer.suspended)) {
+    return NextResponse.json({ error: "このリンクはご利用いただけません" }, { status: 410 });
+  }
 
   const { items, notes } = await req.json() as {
     items: { productId: number; quantity: number; unitPrice: number; volume?: string }[];

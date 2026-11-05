@@ -127,7 +127,12 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     await prisma.orderRequest.deleteMany({ where: { id: { in: pendingIds } } });
   }
 
-  // deletedフラグを立てる（セッションは維持したままプルダウン・商品を非表示にする）
-  await prisma.customer.update({ where: { id: customerId }, data: { deleted: true, approved: false } });
+  // deletedフラグを立てる（プルダウン・商品を非表示にする）。
+  // email/loginIdはDB上グローバルにユニークなので、削除時に解放しておかないと
+  // 新規顧客が同じメール/IDで登録できなくなる。過去の注文履歴・顧客IDはそのまま残す。
+  await prisma.customer.update({
+    where: { id: customerId },
+    data: { deleted: true, approved: false, email: null, loginId: null },
+  });
   return NextResponse.json({ ok: true });
 }
