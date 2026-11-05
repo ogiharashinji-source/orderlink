@@ -103,6 +103,7 @@ model Customer {
   customerNumber       Int?           @unique
   approved             Boolean        @default(false)
   deleted              Boolean        @default(false)
+  suspended            Boolean        @default(false)
   passwordResetToken   String?        @unique
   passwordResetExpiry  DateTime?
   createdAt            DateTime       @default(now())

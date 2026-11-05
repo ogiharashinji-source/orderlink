@@ -16,9 +16,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const customer = await prisma.customer.findUnique({
     where: { id: customerId },
-    select: { id: true, deleted: true },
+    select: { id: true, deleted: true, suspended: true },
   });
-  if (!customer || customer.deleted) {
+  if (!customer || customer.deleted || customer.suspended) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 

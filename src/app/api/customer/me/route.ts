@@ -8,10 +8,13 @@ export async function GET() {
 
   const customer = await prisma.customer.findUnique({
     where: { id: customerId },
-    select: { id: true, deleted: true },
+    select: { id: true, deleted: true, suspended: true },
   });
   if (!customer || customer.deleted) {
     return NextResponse.json({ error: "アカウントが削除されました" }, { status: 401 });
+  }
+  if (customer.suspended) {
+    return NextResponse.json({ error: "アカウントが停止されています" }, { status: 401 });
   }
 
   return NextResponse.json({ id: customerId });

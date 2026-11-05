@@ -25,8 +25,11 @@ export async function verifyCustomerToken(): Promise<number | null> {
   const expected = crypto.createHmac("sha256", SECRET).update(String(customerId)).digest("hex");
   if (expected !== hmac) return null;
 
-  const exists = await prisma.customer.findUnique({ where: { id: customerId }, select: { id: true } });
-  if (!exists) return null;
+  const exists = await prisma.customer.findUnique({
+    where: { id: customerId },
+    select: { id: true, deleted: true, suspended: true },
+  });
+  if (!exists || exists.deleted || exists.suspended) return null;
 
   return customerId;
 }

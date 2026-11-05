@@ -16,6 +16,7 @@ type Customer = {
   memberNumber: string | null;
   customerNumber: number | null;
   approved: boolean;
+  suspended: boolean;
   createdAt: string;
   joinedAt: string | null;
   approvedAt: string | null;
@@ -147,6 +148,17 @@ export default function CustomersPage() {
     window.location.reload();
   };
 
+  const handleToggleSuspend = async (c: Customer) => {
+    const next = !c.suspended;
+    if (!confirm(next ? "この顧客を停止しますか？ポータルにログインできなくなります。" : "この顧客の停止を解除しますか？")) return;
+    await fetch(`/api/customers/${c.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ suspended: next }),
+    });
+    setCustomers((prev) => prev.map((x) => x.id === c.id ? { ...x, suspended: next } : x));
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm("削除しますか？")) return;
     await fetch(`/api/customers/${id}`, { method: "DELETE" });
@@ -261,11 +273,19 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 text-gray-600">{c.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-600">{c.faxNumber ?? "—"}</td>
                     <td className="px-4 py-3 text-center">
-                      {c.approved
-                        ? <span className="text-xs text-gray-400">承認済</span>
-                        : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600">未承認</button>}
+                      <div className="flex flex-col items-center gap-1">
+                        {c.approved
+                          ? <span className="text-xs text-gray-400">承認済</span>
+                          : <button onClick={() => handleApprove(c.id)} className="text-xs font-bold px-3 py-1 rounded-full bg-red-500 text-white hover:bg-red-600">未承認</button>}
+                        {c.suspended && (
+                          <span className="text-xs font-bold px-3 py-1 rounded-full bg-gray-200 text-gray-600">停止中</span>
+                        )}
+                      </div>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
+                      <button onClick={() => handleToggleSuspend(c)} className="text-gray-500 hover:underline text-xs mr-3">
+                        {c.suspended ? "解除" : "停止"}
+                      </button>
                       <button onClick={() => handleDelete(c.id)} className="text-red-500 hover:underline text-xs">削除</button>
                     </td>
                   </tr>

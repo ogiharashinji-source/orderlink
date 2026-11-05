@@ -9,6 +9,8 @@ export async function POST(req: NextRequest) {
   const customer = await prisma.customer.findUnique({ where: { loginId } });
   if (!customer || !customer.password) return NextResponse.json({ error: "IDまたはパスワードが違います" }, { status: 401 });
   if (customer.password !== password) return NextResponse.json({ error: "IDまたはパスワードが違います" }, { status: 401 });
+  if (customer.deleted) return NextResponse.json({ error: "IDまたはパスワードが違います" }, { status: 401 });
+  if (customer.suspended) return NextResponse.json({ error: "このアカウントは停止されています。詳細は管理者にお問い合わせください" }, { status: 403 });
 
   const token = makeSessionToken(customer.id);
   const res = NextResponse.json({ ok: true });
