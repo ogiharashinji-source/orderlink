@@ -16,6 +16,7 @@ type Product = {
   category: string | null;
   sakaMai: string | null;
   seimaiWari: string | null;
+  kind: string | null;
   alcohol: string | null;
   publishScope: PublishScope;
   _count: { visibleTo: number };
@@ -147,6 +148,7 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-4 py-3 text-center">精米歩合</th>
+              <th className="px-4 py-3 text-center">種類</th>
               <th className="px-4 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-center">小売値</th>
@@ -158,7 +160,7 @@ export default function ProductsPage() {
           </thead>
           <tbody>
             {products.length === 0 ? (
-              <tr><td colSpan={13} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
+              <tr><td colSpan={14} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
               products.map((p, productIdx) => {
                 const variants = getVariants(p);
@@ -180,6 +182,7 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.seimaiWari ?? "—"}</td>
+                      <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.kind ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{p.alcohol ?? "—"}</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
@@ -230,6 +233,9 @@ export default function ProductsPage() {
                         )}
                         {idx === 0 && (
                           <td className="px-4 py-3 text-center text-gray-600 text-xs align-top" rowSpan={variants.length}>{p.seimaiWari ?? "—"}</td>
+                        )}
+                        {idx === 0 && (
+                          <td className="px-4 py-3 text-center text-gray-600 text-xs align-top" rowSpan={variants.length}>{p.kind ?? "—"}</td>
                         )}
                         {idx === 0 && (
                           <td className="px-4 py-3 text-center text-gray-600 text-xs align-top" rowSpan={variants.length}>{p.alcohol ?? "—"}</td>
