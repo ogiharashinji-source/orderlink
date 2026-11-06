@@ -176,8 +176,8 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
                         {new Date(p.createdAt).toLocaleDateString("ja-JP")}
                       </td>
-                      <td className="px-4 py-3 text-gray-900">
-                        {p.name}
+                      <td className="px-4 py-3 text-gray-900" title={p.name}>
+                        {p.name.length > 8 ? p.name.slice(0, 8) + "..." : p.name}
                       </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.category ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{p.sakaMai ?? "—"}</td>
@@ -221,8 +221,8 @@ export default function ProductsPage() {
                           </td>
                         )}
                         {idx === 0 && (
-                          <td className="px-4 py-3 text-gray-900 align-top" rowSpan={variants.length}>
-                            {p.name}
+                          <td className="px-4 py-3 text-gray-900 align-top" rowSpan={variants.length} title={p.name}>
+                            {p.name.length > 8 ? p.name.slice(0, 8) + "..." : p.name}
                           </td>
                         )}
                         {idx === 0 && (
