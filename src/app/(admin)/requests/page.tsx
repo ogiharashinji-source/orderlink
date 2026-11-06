@@ -548,15 +548,16 @@ export default function RequestsPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       {bulkMode ? (
-                        <input
-                          type="number" min="0" max={item.requestedQty}
+                        <select
                           value={bulkQtys[item.id] ?? ""}
                           onChange={(e) => setBulkQtys((q) => ({ ...q, [item.id]: e.target.value }))}
-                          onKeyDown={(e) => e.preventDefault()}
-                          onPaste={(e) => e.preventDefault()}
-                          placeholder="—"
-                          className="w-16 text-center border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                          className="border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        >
+                          <option value="">—</option>
+                          {Array.from({ length: item.requestedQty + 1 }, (_, i) => (
+                            <option key={i} value={i}>{i}</option>
+                          ))}
+                        </select>
                       ) : (
                         <button
                           onClick={() => handleConfirm(req)}
