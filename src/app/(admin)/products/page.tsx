@@ -91,7 +91,7 @@ export default function ProductsPage() {
 
   const publishBadge = (p: Product) => {
     if (p.publishScope === "PUBLIC") return { label: "全体公開", className: "bg-green-100 text-green-700 hover:bg-green-200" };
-    if (p.publishScope === "LIMITED") return { label: `限定公開（${p._count.visibleTo}社）`, className: "bg-amber-100 text-amber-700 hover:bg-amber-200" };
+    if (p.publishScope === "LIMITED") return { label: `（${p._count.visibleTo}）`, className: "bg-amber-100 text-amber-700 hover:bg-amber-200" };
     return { label: "非公開", className: "bg-gray-100 text-gray-500 hover:bg-gray-200" };
   };
 
