@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     where: unapproved
       ? { companyId, deleted: false, approved: false }
       : approvedOnly
-      ? { companyId, deleted: false, approved: true, ...(q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] } : {}) }
+      ? { companyId, deleted: false, suspended: false, approved: true, ...(q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] } : {}) }
       : q
       ? { companyId, deleted: false, OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] }
       : { companyId, deleted: false },
@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
         where: {
           id: { in: extraIds },
           deleted: false,
+          ...(approvedOnly ? { suspended: false } : {}),
           ...(q ? { OR: [{ name: { contains: q } }, { email: { contains: q } }, { company: { contains: q } }, { phone: { contains: q } }] } : {}),
         },
         orderBy: { createdAt: "desc" },

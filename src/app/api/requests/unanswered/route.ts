@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   // 承認済み会員（主所属 + 招待経由の追加所属）
   const primaryCustomers = await prisma.customer.findMany({
-    where: { companyId, deleted: false, approved: true },
+    where: { companyId, deleted: false, suspended: false, approved: true },
     select: { id: true, name: true, email: true, phone: true },
   });
   const primaryIds = new Set(primaryCustomers.map((c) => c.id));
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const secondaryCustomers = extraIds.length > 0
     ? await prisma.customer.findMany({
-        where: { id: { in: extraIds }, deleted: false },
+        where: { id: { in: extraIds }, deleted: false, suspended: false },
         select: { id: true, name: true, email: true, phone: true },
       })
     : [];

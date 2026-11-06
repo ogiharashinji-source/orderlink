@@ -11,15 +11,22 @@ async function filterApprovedCustomerIds(companyId: number, customerIds: number[
   if (customerIds.length === 0) return [];
 
   const primary = await prisma.customer.findMany({
-    where: { id: { in: customerIds }, companyId, deleted: false, approved: true },
+    where: { id: { in: customerIds }, companyId, deleted: false, suspended: false, approved: true },
     select: { id: true },
   });
-  const secondary = await prisma.customerCompany.findMany({
+  const secondaryLinks = await prisma.customerCompany.findMany({
     where: { companyId, approved: true, customerId: { in: customerIds } },
     select: { customerId: true },
   });
+  const secondaryIds = secondaryLinks.map((l) => l.customerId);
+  const secondaryValid = secondaryIds.length > 0
+    ? await prisma.customer.findMany({
+        where: { id: { in: secondaryIds }, deleted: false, suspended: false },
+        select: { id: true },
+      })
+    : [];
 
-  const validIds = new Set<number>([...primary.map((c) => c.id), ...secondary.map((l) => l.customerId)]);
+  const validIds = new Set<number>([...primary.map((c) => c.id), ...secondaryValid.map((c) => c.id)]);
   return customerIds.filter((id) => validIds.has(id));
 }
 

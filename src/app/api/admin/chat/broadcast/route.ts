@@ -7,7 +7,7 @@ import { sendChatMessageEmail } from "@/lib/mailer";
 // 承認済みの全会員(プライマリ + CustomerCompany経由の招待会員)を取得
 async function getApprovedCustomers(companyId: number) {
   const primary = await prisma.customer.findMany({
-    where: { companyId, deleted: false, approved: true },
+    where: { companyId, deleted: false, suspended: false, approved: true },
     select: { id: true, name: true, email: true },
   });
   const secondaryLinks = await prisma.customerCompany.findMany({
@@ -18,7 +18,7 @@ async function getApprovedCustomers(companyId: number) {
   const extraIds = secondaryLinks.map((l) => l.customerId).filter((id) => !primaryIds.has(id));
   const secondary = extraIds.length > 0
     ? await prisma.customer.findMany({
-        where: { id: { in: extraIds }, deleted: false },
+        where: { id: { in: extraIds }, deleted: false, suspended: false },
         select: { id: true, name: true, email: true },
       })
     : [];
