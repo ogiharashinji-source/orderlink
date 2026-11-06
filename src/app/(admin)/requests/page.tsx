@@ -88,6 +88,9 @@ export default function RequestsPage() {
   const [confirming, setConfirming] = useState<number | null>(null);
   const [modal, setModal] = useState<ModalState>(null);
   const [adminReply, setAdminReply] = useState("");
+  const [bulkMode, setBulkMode] = useState(false);
+  const [bulkQtys, setBulkQtys] = useState<Record<number, string>>({});
+  const [bulkSubmitting, setBulkSubmitting] = useState(false);
   const router = useRouter();
 
   const handleOutOfStock = async () => {
@@ -200,6 +203,53 @@ export default function RequestsPage() {
       const result = await res.json();
       alert(result.error ?? "エラーが発生しました");
       setConfirming(null);
+    }
+  };
+
+  const handleBulkConfirm = async (flatRows: { req: OrderRequest; item: RequestItem }[]) => {
+    // 販売数が入力されている行だけを対象にする（未入力の行はそのまま残す）
+    const targets = flatRows.filter(({ item }) => {
+      const v = bulkQtys[item.id];
+      return v != null && v.trim() !== "" && !isNaN(parseInt(v));
+    });
+
+    if (targets.length === 0) {
+      alert("販売数が入力されたリクエストがありません");
+      return;
+    }
+    if (!confirm(`まとめて${targets.length}件のリクエストを確定しますか？`)) return;
+
+    setBulkSubmitting(true);
+    const results = await Promise.all(targets.map(async ({ req, item }) => {
+      const res = await fetch(`/api/requests/${req.id}/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          confirmedItems: [{
+            requestItemId: item.id,
+            confirmedQty: parseInt(bulkQtys[item.id]) || 0,
+            unitPrice: item.unitPrice,
+          }],
+        }),
+      });
+      return { req, ok: res.ok };
+    }));
+
+    const failed = results.filter((r) => !r.ok);
+    setBulkSubmitting(false);
+    setBulkMode(false);
+    setBulkQtys({});
+
+    if (failed.length > 0) {
+      alert(`${failed.length}件の確定に失敗しました（${failed.map((f) => f.req.customer.name).join("、")}）`);
+    }
+
+    const remaining: OrderRequest[] = await fetch("/api/requests").then((r) => r.json());
+    const pendingCount = remaining.filter((r) => r.status === "PENDING").length;
+    if (pendingCount === 0) {
+      router.push("/orders");
+    } else {
+      load();
     }
   };
 
@@ -434,7 +484,18 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
               <th className="px-4 py-3 text-center">希望ケース</th>
-              <th className="px-4 py-3 text-center">操作</th>
+              <th className="px-4 py-3 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <span>操作</span>
+                  <button
+                    type="button"
+                    onClick={() => { setBulkMode((m) => !m); setBulkQtys({}); }}
+                    className={`normal-case text-xs font-bold px-2 py-1 rounded-full ${bulkMode ? "bg-gray-600 text-white" : "bg-blue-100 text-blue-700 hover:bg-blue-200"}`}
+                  >
+                    {bulkMode ? "一括解除" : "一括"}
+                  </button>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -486,13 +547,23 @@ export default function RequestsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <button
-                        onClick={() => handleConfirm(req)}
-                        disabled={confirming === req.id}
-                        className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-50 whitespace-nowrap"
-                      >
-                        {confirming === req.id ? "処理中..." : "確認"}
-                      </button>
+                      {bulkMode ? (
+                        <input
+                          type="number" min="0" max={item.requestedQty}
+                          value={bulkQtys[item.id] ?? ""}
+                          onChange={(e) => setBulkQtys((q) => ({ ...q, [item.id]: e.target.value }))}
+                          placeholder="—"
+                          className="w-16 text-center border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      ) : (
+                        <button
+                          onClick={() => handleConfirm(req)}
+                          disabled={confirming === req.id}
+                          className="bg-red-600 text-white px-5 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700 disabled:opacity-50 whitespace-nowrap"
+                        >
+                          {confirming === req.id ? "処理中..." : "確認"}
+                        </button>
+                      )}
                     </td>
                   </tr>
               ))
@@ -500,6 +571,18 @@ export default function RequestsPage() {
           </tbody>
         </table>
       </div>
+
+      {bulkMode && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => handleBulkConfirm(flatRows)}
+            disabled={bulkSubmitting}
+            className="bg-blue-600 text-white px-8 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50"
+          >
+            {bulkSubmitting ? "確定中..." : "確定する"}
+          </button>
+        </div>
+      )}
           </>
         );
       })()}
