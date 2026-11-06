@@ -575,17 +575,28 @@ export default function RequestsPage() {
         </table>
       </div>
 
-      {bulkMode && (
-        <div className="flex justify-end">
-          <button
-            onClick={() => handleBulkConfirm(flatRows)}
-            disabled={bulkSubmitting}
-            className="bg-blue-600 text-white px-8 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50"
-          >
-            {bulkSubmitting ? "確定中..." : "確定する"}
-          </button>
-        </div>
-      )}
+      {bulkMode && (() => {
+        const totalRequested = flatRows.reduce((s, { item }) => s + item.requestedQty, 0);
+        const totalEntered = flatRows.reduce((s, { item }) => {
+          const v = bulkQtys[item.id];
+          return v != null && v.trim() !== "" && !isNaN(parseInt(v)) ? s + parseInt(v) : s;
+        }, 0);
+        return (
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-sm text-gray-600">
+              入力合計ケース数：<span className="font-bold text-gray-900">{totalEntered}</span>
+              　／　希望ケース合計：<span className="font-bold text-gray-900">{totalRequested}</span>
+            </p>
+            <button
+              onClick={() => handleBulkConfirm(flatRows)}
+              disabled={bulkSubmitting}
+              className="bg-blue-600 text-white px-8 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 disabled:opacity-50"
+            >
+              {bulkSubmitting ? "確定中..." : "確定する"}
+            </button>
+          </div>
+        );
+      })()}
           </>
         );
       })()}
