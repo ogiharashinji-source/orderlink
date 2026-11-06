@@ -15,7 +15,7 @@ type RequestItem = {
   productSeimaiWari: string | null;
   productAlcohol: string | null;
   order: { status: string } | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; jan1800: string | null; jan720: string | null; janOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; jan1800: string | null; jan720: string | null; janOther: string | null; stock1800: number | null; stock720: number | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; kind: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null; description: string | null } | null;
 };
 
 type OrderRequest = {
@@ -220,6 +220,7 @@ export default function PortalOrderDetailPage() {
               <th className="px-3 py-2 text-left">種別</th>
               <th className="px-3 py-2 text-left">酒米</th>
               <th className="px-3 py-2 text-center">精米歩合</th>
+              <th className="px-3 py-2 text-center">種類</th>
               <th className="px-3 py-2 text-center">アルコール</th>
               <th className="px-3 py-2 text-center">容量</th>
               <th className="px-3 py-2 text-right">小売値</th>
@@ -238,10 +239,13 @@ export default function PortalOrderDetailPage() {
               return (
                 <Fragment key={item.id}>
                 <tr className="border-t border-gray-100">
-                  <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                  <td className="px-3 py-2 font-medium" title={item.productName ?? item.product?.name ?? ""}>
+                    {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 8 ? n.slice(0, 8) + "..." : n; })()}
+                  </td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                   <td className="px-3 py-2 text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
                   <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
+                  <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.product?.kind ?? "—"}</td>
                   <td className="px-3 py-2 text-center text-gray-500 text-xs">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                   <td className="px-3 py-2 text-center">
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>

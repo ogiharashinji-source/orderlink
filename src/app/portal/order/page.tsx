@@ -12,6 +12,7 @@ type Product = {
   category: string | null;
   sakaMai: string | null;
   seimaiWari: string | null;
+  kind: string | null;
   alcohol: string | null;
   price1800: number | null;
   wholesalePrice1800: number | null;
@@ -160,6 +161,7 @@ function PortalOrderContent() {
               <th className="px-3 py-3 text-left">種別</th>
               <th className="px-3 py-3 text-left">酒米</th>
               <th className="px-3 py-3 text-center">精米歩合</th>
+              <th className="px-3 py-3 text-center">種類</th>
               <th className="px-3 py-3 text-center">アルコール</th>
               <th className="px-3 py-3 text-center">容量</th>
               <th className="px-3 py-3 text-center">小売値</th>
@@ -174,10 +176,13 @@ function PortalOrderContent() {
               const qty = quantities[v.key] ?? 0;
               return (
                 <tr key={v.key} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-gray-900">{v.product.name}</td>
+                  <td className="px-4 py-3 text-gray-900" title={v.product.name}>
+                    {v.product.name.length > 8 ? v.product.name.slice(0, 8) + "..." : v.product.name}
+                  </td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-3 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
+                  <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.kind ?? "—"}</td>
                   <td className="px-3 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
                   <td className="px-3 py-3 text-center">
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
@@ -296,6 +301,7 @@ function PortalOrderContent() {
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
               <th className="px-2 py-3 text-center">精米歩合</th>
+              <th className="px-2 py-3 text-center">種類</th>
               <th className="px-2 py-3 text-center">アルコール</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-right">小売値</th>
@@ -307,7 +313,7 @@ function PortalOrderContent() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {selectedCompanyId && productsLoaded && variants.length === 0 && (
-              <tr><td colSpan={11} className="px-4 py-8 text-center text-red-500 font-medium">商品が登録されていません</td></tr>
+              <tr><td colSpan={12} className="px-4 py-8 text-center text-red-500 font-medium">商品が登録されていません</td></tr>
             )}
             {variants.map((v, rowIdx) => {
               const qty = quantities[v.key] ?? 0;
@@ -315,11 +321,12 @@ function PortalOrderContent() {
               return (
                 <tr key={v.key} className={rowBg}>
                   <td className="px-4 py-3 text-gray-900" title={v.product.name}>
-                    {v.product.name.length > 28 ? v.product.name.slice(0, 25) + "..." : v.product.name}
+                    {v.product.name.length > 8 ? v.product.name.slice(0, 8) + "..." : v.product.name}
                   </td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.category ?? "—"}</td>
                   <td className="px-4 py-3 text-gray-500 text-xs">{v.product.sakaMai ?? "—"}</td>
                   <td className="px-2 py-3 text-center text-gray-500 text-xs">{v.product.seimaiWari ?? "—"}</td>
+                  <td className="px-2 py-3 text-center text-gray-500 text-xs">{v.product.kind ?? "—"}</td>
                   <td className="px-2 py-3 text-center text-gray-500 text-xs">{v.product.alcohol ?? "—"}</td>
                   <td className="px-4 py-3 text-center">
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${v.volume === "1800ml" ? "bg-amber-100 text-amber-700" : v.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{v.volume}</span>
