@@ -29,7 +29,7 @@ type Product = {
 };
 
 type VariantKey = string;
-type Variant = { key: string; product: Product; volume: string; price: number; wholesalePrice: number | null; lot: number; stock: number | null };
+type Variant = { key: string; product: Product; volume: string; price: number; wholesalePrice: number | null; lot: number };
 
 function PortalOrderContent() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -90,19 +90,18 @@ function PortalOrderContent() {
     setQuantities({});
   }, [selectedCompanyId]);
 
-  const setQty = (key: VariantKey, val: number, maxStock?: number | null) => {
-    let v = Math.max(0, isNaN(val) ? 0 : val);
-    if (maxStock != null && maxStock > 0) v = Math.min(v, maxStock);
+  const setQty = (key: VariantKey, val: number) => {
+    const v = Math.max(0, isNaN(val) ? 0 : val);
     setQuantities((p) => ({ ...p, [key]: v }));
   };
 
   const variants: Variant[] = products.flatMap((p) => {
     const list: Variant[] = [];
-    if (p.price1800 != null) list.push({ key: `${p.id}_1800`, product: p, volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, lot: parseInt(p.unit1800 ?? "1") || 1, stock: p.stock1800 });
-    if (p.price720  != null) list.push({ key: `${p.id}_720`,  product: p, volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  lot: parseInt(p.unit720  ?? "1") || 1, stock: p.stock720  });
+    if (p.price1800 != null) list.push({ key: `${p.id}_1800`, product: p, volume: "1800ml", price: p.price1800, wholesalePrice: p.wholesalePrice1800, lot: parseInt(p.unit1800 ?? "1") || 1 });
+    if (p.price720  != null) list.push({ key: `${p.id}_720`,  product: p, volume: "720ml",  price: p.price720,  wholesalePrice: p.wholesalePrice720,  lot: parseInt(p.unit720  ?? "1") || 1 });
     if (p.priceOther != null && p.volumeOther) {
       const vol = p.volumeOther.endsWith("ml") ? p.volumeOther : `${p.volumeOther}ml`;
-      list.push({ key: `${p.id}_other`, product: p, volume: vol, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, lot: parseInt(p.unitOther ?? "1") || 1, stock: p.stockOther });
+      list.push({ key: `${p.id}_other`, product: p, volume: vol, price: p.priceOther, wholesalePrice: p.wholesalePriceOther, lot: parseInt(p.unitOther ?? "1") || 1 });
     }
     return list;
   });
@@ -302,14 +301,13 @@ function PortalOrderContent() {
               <th className="px-4 py-3 text-right">小売値</th>
               <th className="px-4 py-3 text-right">卸売値</th>
               <th className="px-4 py-3 text-right">ロット</th>
-              <th className="px-4 py-3 text-right">限定</th>
               <th className="px-4 py-3 text-center w-8"></th>
               <th className="px-4 py-3 text-center w-36">ケース数</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {selectedCompanyId && productsLoaded && variants.length === 0 && (
-              <tr><td colSpan={12} className="px-4 py-8 text-center text-red-500 font-medium">商品が登録されていません</td></tr>
+              <tr><td colSpan={11} className="px-4 py-8 text-center text-red-500 font-medium">商品が登録されていません</td></tr>
             )}
             {variants.map((v, rowIdx) => {
               const qty = quantities[v.key] ?? 0;
@@ -329,7 +327,6 @@ function PortalOrderContent() {
                   <td className="px-4 py-3 text-right text-gray-600">¥{v.price.toLocaleString()}</td>
                   <td className="px-4 py-3 text-right text-gray-600">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                   <td className="px-4 py-3 text-right text-gray-500">{v.lot}</td>
-                  <td className="px-4 py-3 text-right text-gray-500">{v.stock != null && v.stock !== 0 ? v.stock : ""}</td>
                   <td className="px-2 py-3 text-center">
                     {(v.product.description || v.product.imageUrl) && (
                       <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description ?? "", imageUrl: v.product.imageUrl })}
@@ -338,15 +335,14 @@ function PortalOrderContent() {
                   </td>
                   <td className="px-4 py-3 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button onClick={() => setQty(v.key, qty - 1, v.stock)} disabled={qty === 0}
+                      <button onClick={() => setQty(v.key, qty - 1)} disabled={qty === 0}
                         className="w-7 h-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center disabled:opacity-25 hover:bg-gray-200">−</button>
-                      <input type="number" min="0" max={v.stock != null && v.stock > 0 ? v.stock : undefined}
+                      <input type="number" min="0"
                         value={qty === 0 ? "" : qty}
-                        onChange={(e) => setQty(v.key, parseInt(e.target.value), v.stock)}
+                        onChange={(e) => setQty(v.key, parseInt(e.target.value))}
                         placeholder="0"
                         className="w-12 text-center text-sm font-bold border-b-2 border-gray-200 focus:border-blue-800 outline-none py-1 bg-transparent" />
-                      <button onClick={() => setQty(v.key, qty + 1, v.stock)}
-                        disabled={v.stock != null && v.stock > 0 && qty >= v.stock}
+                      <button onClick={() => setQty(v.key, qty + 1)}
                         className="w-7 h-7 rounded-full text-white flex items-center justify-center disabled:opacity-40" style={{ background: "#1e3a8a" }}>+</button>
                     </div>
                   </td>
@@ -383,7 +379,6 @@ function PortalOrderContent() {
                   <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
                     {v.wholesalePrice != null && <span>卸売値 <span className="font-medium text-gray-700">¥{v.wholesalePrice.toLocaleString()}</span></span>}
                     <span>ロット <span className="font-medium text-gray-700">{v.lot}</span></span>
-                    {v.stock != null && v.stock > 0 && <span>限定 <span className="font-medium text-gray-700">{v.stock}</span></span>}
                     {v.product.description && (
                       <button onClick={() => setDescModal({ name: v.product.name, description: v.product.description! })}
                         className="w-5 h-5 rounded-full bg-gray-200 text-gray-500 text-xs font-bold flex items-center justify-center">?</button>
@@ -394,15 +389,14 @@ function PortalOrderContent() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500">ケース数</span>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => setQty(v.key, qty - 1, v.stock)} disabled={qty === 0}
+                  <button onClick={() => setQty(v.key, qty - 1)} disabled={qty === 0}
                     className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 text-lg flex items-center justify-center disabled:opacity-25 hover:bg-gray-200">−</button>
-                  <input type="number" min="0" max={v.stock != null && v.stock > 0 ? v.stock : undefined}
+                  <input type="number" min="0"
                     value={qty === 0 ? "" : qty}
-                    onChange={(e) => setQty(v.key, parseInt(e.target.value), v.stock)}
+                    onChange={(e) => setQty(v.key, parseInt(e.target.value))}
                     placeholder="0"
                     className="w-14 text-center text-xl font-bold border-b-2 border-gray-300 focus:border-blue-800 outline-none py-1 bg-transparent" />
-                  <button onClick={() => setQty(v.key, qty + 1, v.stock)}
-                    disabled={v.stock != null && v.stock > 0 && qty >= v.stock}
+                  <button onClick={() => setQty(v.key, qty + 1)}
                     className="w-10 h-10 rounded-full text-white text-lg flex items-center justify-center disabled:opacity-40" style={{ background: "#1e3a8a" }}>+</button>
                 </div>
               </div>
