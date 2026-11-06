@@ -552,6 +552,8 @@ export default function RequestsPage() {
                           type="number" min="0" max={item.requestedQty}
                           value={bulkQtys[item.id] ?? ""}
                           onChange={(e) => setBulkQtys((q) => ({ ...q, [item.id]: e.target.value }))}
+                          onKeyDown={(e) => e.preventDefault()}
+                          onPaste={(e) => e.preventDefault()}
                           placeholder="—"
                           className="w-16 text-center border border-gray-300 rounded-lg px-2 py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
