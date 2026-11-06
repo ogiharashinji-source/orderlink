@@ -14,7 +14,7 @@ type RequestItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; unitOther: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null } | null;
+  product: { name: string; unit: string; unit1800: string | null; unit720: string | null; unitOther: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; kind: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null } | null;
 };
 type OrderRequest = {
   id: number;
@@ -419,6 +419,7 @@ export default function RequestsPage() {
               <th className="px-4 py-3 text-left">商品</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
+              <th className="px-4 py-3 text-left">種類</th>
               <th
                 className="px-4 py-3 text-center cursor-pointer select-none hover:text-gray-900"
                 onClick={() => setVolumeSort((s) => (s === "asc" ? "desc" : s === "desc" ? null : "asc"))}
@@ -435,7 +436,7 @@ export default function RequestsPage() {
           <tbody>
             {flatRows.length === 0 ? (
               <tr>
-                <td colSpan={11} className="text-center py-12 text-gray-400">
+                <td colSpan={12} className="text-center py-12 text-gray-400">
                   未確認のリクエストはありません
                 </td>
               </tr>
@@ -449,9 +450,12 @@ export default function RequestsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-left text-gray-800">{req.customer.name}</td>
-                    <td className="px-4 py-3 text-left text-gray-800">{item.productName ?? item.product?.name ?? "—"}</td>
+                    <td className="px-4 py-3 text-left text-gray-800" title={item.productName ?? item.product?.name ?? ""}>
+                      {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 8 ? n.slice(0, 8) + "..." : n; })()}
+                    </td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-4 py-3 text-left text-gray-500 text-xs">{item.product?.kind ?? "—"}</td>
                     <td className="px-4 py-3 text-center whitespace-nowrap">
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${item.volume === "1800ml" ? "bg-amber-100 text-amber-700" : item.volume === "720ml" ? "bg-sky-100 text-sky-700" : "bg-purple-100 text-purple-700"}`}>{item.volume ?? "—"}</span>
                     </td>
