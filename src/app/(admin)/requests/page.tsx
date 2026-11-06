@@ -584,8 +584,8 @@ export default function RequestsPage() {
         return (
           <div className="flex flex-col items-end gap-2">
             <p className="text-sm text-gray-600">
-              入力合計ケース数：<span className="font-bold text-gray-900">{totalEntered}</span>
-              　／　希望ケース合計：<span className="font-bold text-gray-900">{totalRequested}</span>
+              希望ケース合計：<span className="font-bold text-gray-900">{totalRequested}</span>
+              　／　入力合計ケース数：<span className="font-bold text-gray-900">{totalEntered}</span>
             </p>
             <button
               onClick={() => handleBulkConfirm(flatRows)}
