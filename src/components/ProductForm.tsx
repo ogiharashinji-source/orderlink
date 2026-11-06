@@ -93,6 +93,22 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       setErrors((err) => ({ ...err, [key]: undefined }));
     };
 
+  // 新規登録時のみ：小売値入力に合わせて卸売値を自動計算（30%引き）する。
+  // 既存商品の編集では自動計算しない（過去データの入力値をそのまま尊重する）。
+  const setRetailPrice = (priceKey: "price1800" | "price720" | "priceOther", wholesaleKey: "wholesalePrice1800" | "wholesalePrice720" | "wholesalePriceOther") =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setForm((f) => {
+        const next = { ...f, [priceKey]: value };
+        if (!productId) {
+          const num = parseFloat(value);
+          if (!isNaN(num) && num > 0) next[wholesaleKey] = String(Math.round(num * 0.7));
+        }
+        return next;
+      });
+      setErrors((err) => ({ ...err, [priceKey]: undefined, [wholesaleKey]: undefined }));
+    };
+
   const blur = (key: keyof ProductData) =>
     (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [key]: toHalf(e.target.value) }));
@@ -331,7 +347,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
           <p className="text-sm font-semibold text-gray-700 mb-3">1800ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required error={errors.price1800}>
-              <input type="text" inputMode="numeric" value={form.price1800} onChange={set("price1800")} onBlur={blur("price1800")} className={nc(errors.price1800)} />
+              <input type="text" inputMode="numeric" value={form.price1800} onChange={setRetailPrice("price1800", "wholesalePrice1800")} onBlur={blur("price1800")} className={nc(errors.price1800)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePrice1800}>
               <input type="text" inputMode="numeric" value={form.wholesalePrice1800} onChange={set("wholesalePrice1800")} onBlur={blur("wholesalePrice1800")} className={nc(errors.wholesalePrice1800)} />
@@ -355,7 +371,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
           <p className="text-sm font-semibold text-gray-700 mb-3">720ml</p>
           <div className="grid grid-cols-2 gap-4">
             <Field label="小売値 (円)" required error={errors.price720}>
-              <input type="text" inputMode="numeric" value={form.price720} onChange={set("price720")} onBlur={blur("price720")} className={nc(errors.price720)} />
+              <input type="text" inputMode="numeric" value={form.price720} onChange={setRetailPrice("price720", "wholesalePrice720")} onBlur={blur("price720")} className={nc(errors.price720)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePrice720}>
               <input type="text" inputMode="numeric" value={form.wholesalePrice720} onChange={set("wholesalePrice720")} onBlur={blur("wholesalePrice720")} className={nc(errors.wholesalePrice720)} />
@@ -385,7 +401,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
               <input type="number" min="0" value={form.stockOther} onChange={set("stockOther")} className={inputCls} />
             </Field>
             <Field label="小売値 (円)" required error={errors.priceOther}>
-              <input type="text" inputMode="numeric" value={form.priceOther} onChange={set("priceOther")} onBlur={blur("priceOther")} className={nc(errors.priceOther)} />
+              <input type="text" inputMode="numeric" value={form.priceOther} onChange={setRetailPrice("priceOther", "wholesalePriceOther")} onBlur={blur("priceOther")} className={nc(errors.priceOther)} />
             </Field>
             <Field label="卸売値 (円)" required error={errors.wholesalePriceOther}>
               <input type="text" inputMode="numeric" value={form.wholesalePriceOther} onChange={set("wholesalePriceOther")} onBlur={blur("wholesalePriceOther")} className={nc(errors.wholesalePriceOther)} />
