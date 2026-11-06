@@ -10,6 +10,7 @@ type PublishScope = "PRIVATE" | "PUBLIC" | "LIMITED";
 type Product = {
   id: number;
   name: string;
+  createdAt: string;
   imageUrl: string | null;
   description: string | null;
   category: string | null;
@@ -141,6 +142,7 @@ export default function ProductsPage() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                 />
               </th>
+              <th className="px-4 py-3 text-left">登録日時</th>
               <th className="px-4 py-3 text-left">商品名</th>
               <th className="px-4 py-3 text-left">種別</th>
               <th className="px-4 py-3 text-left">酒米</th>
@@ -157,7 +159,7 @@ export default function ProductsPage() {
           </thead>
           <tbody>
             {products.length === 0 ? (
-              <tr><td colSpan={13} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
+              <tr><td colSpan={14} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
               products.map((p, productIdx) => {
                 const variants = getVariants(p);
@@ -169,6 +171,9 @@ export default function ProductsPage() {
                       <td className="px-3 py-3 text-center">
                         <input type="checkbox" checked={isChecked} onChange={() => toggleOne(p.id)}
                           className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+                      </td>
+                      <td className="px-4 py-3 text-gray-500 text-xs whitespace-nowrap">
+                        {new Date(p.createdAt).toLocaleDateString("ja-JP")}
                       </td>
                       <td className="px-4 py-3 text-gray-900">
                         {p.name}
@@ -207,6 +212,11 @@ export default function ProductsPage() {
                           <td className="px-3 py-3 text-center align-top" rowSpan={variants.length}>
                             <input type="checkbox" checked={isChecked} onChange={() => toggleOne(p.id)}
                               className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+                          </td>
+                        )}
+                        {idx === 0 && (
+                          <td className="px-4 py-3 text-gray-500 text-xs align-top whitespace-nowrap" rowSpan={variants.length}>
+                            {new Date(p.createdAt).toLocaleDateString("ja-JP")}
                           </td>
                         )}
                         {idx === 0 && (
