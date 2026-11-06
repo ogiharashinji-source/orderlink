@@ -219,6 +219,7 @@ export default function RequestsPage() {
                   <th className="px-3 py-2 text-left">商品名</th>
                   <th className="px-3 py-2 text-left">種別</th>
                   <th className="px-3 py-2 text-left">酒米</th>
+                  <th className="px-3 py-2 text-left">種類</th>
                   <th className="px-3 py-2 text-center">精米歩合</th>
                   <th className="px-3 py-2 text-center">アルコール</th>
                   <th className="px-3 py-2 text-center">容量</th>
@@ -229,9 +230,12 @@ export default function RequestsPage() {
               <tbody className="divide-y divide-gray-100">
                 {modal.freshReq.items.map((item) => (
                   <tr key={item.id}>
-                    <td className="px-3 py-2 font-medium">{item.productName ?? item.product?.name ?? "—"}</td>
+                    <td className="px-3 py-2 font-medium" title={item.productName ?? item.product?.name ?? ""}>
+                      {(() => { const n = item.productName ?? item.product?.name ?? "—"; return n.length > 8 ? n.slice(0, 8) + "..." : n; })()}
+                    </td>
                     <td className="px-3 py-2 text-gray-500">{item.productCategory ?? item.product?.category ?? "—"}</td>
                     <td className="px-3 py-2 text-gray-500">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+                    <td className="px-3 py-2 text-gray-500">{item.product?.kind ?? "—"}</td>
                     <td className="px-3 py-2 text-center text-gray-500">{item.productSeimaiWari ?? item.product?.seimaiWari ?? "—"}</td>
                     <td className="px-3 py-2 text-center text-gray-500">{item.productAlcohol ?? item.product?.alcohol ?? "—"}</td>
                     <td className="px-3 py-2 text-center">
