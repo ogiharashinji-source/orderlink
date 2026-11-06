@@ -39,6 +39,7 @@ export default function EditProductPage() {
           sakaMai: String(product.sakaMai ?? ""),
           seimaiWari: String(product.seimaiWari ?? ""),
           alcohol: String(product.alcohol ?? ""),
+          kind: String(product.kind ?? ""),
           description: String(product.description ?? ""),
           imageUrl: String(product.imageUrl ?? ""),
           price1800: product.price1800 != null ? String(product.price1800) : "",

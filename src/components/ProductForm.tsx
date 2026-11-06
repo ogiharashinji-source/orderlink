@@ -15,6 +15,7 @@ type ProductData = {
   sakaMai: string;
   seimaiWari: string;
   alcohol: string;
+  kind: string;
   description: string;
   imageUrl: string;
   price1800: string;
@@ -45,7 +46,7 @@ type Props = {
 };
 
 const empty: ProductData = {
-  name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "",
+  name: "", category: "", sakaMai: "", seimaiWari: "", alcohol: "", kind: "",
   description: "", imageUrl: "",
   price1800: "", wholesalePrice1800: "", unit1800: "6", jan1800: "", stock1800: "",
   price720: "",  wholesalePrice720: "", unit720: "12", jan720: "", stock720: "",
@@ -132,6 +133,7 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
       sakaMai: form.sakaMai || null,
       seimaiWari: form.seimaiWari || null,
       alcohol: form.alcohol || null,
+      kind: form.kind || null,
       description: form.description || null,
       imageUrl: form.imageUrl || null,
     };
@@ -226,6 +228,9 @@ export default function ProductForm({ initialData, productId, onBack, onDelete }
         </Field>
         <Field label="アルコール">
           <input value={form.alcohol} onChange={set("alcohol")} onBlur={blur("alcohol")} placeholder="例：15度" className={inputCls} />
+        </Field>
+        <Field label="種類">
+          <input value={form.kind} onChange={set("kind")} onBlur={blur("kind")} className={inputCls} />
         </Field>
       </div>
 

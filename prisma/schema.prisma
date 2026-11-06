@@ -252,6 +252,7 @@ model Product {
   sakaMai      String?       // 酒米
   seimaiWari   String?       // 精米歩合
   alcohol      String?       // アルコール度数
+  kind         String?       // 種類（手入力）
   description  String?
   imageUrl     String?
   price1800         Float?
