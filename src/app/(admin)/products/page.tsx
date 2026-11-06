@@ -152,14 +152,13 @@ export default function ProductsPage() {
               <th className="px-4 py-3 text-center">小売値</th>
               <th className="px-4 py-3 text-center">卸売値</th>
               <th className="px-4 py-3 text-center">ロット</th>
-              <th className="px-4 py-3 text-right">限定</th>
               <th className="px-4 py-3 text-center">公開</th>
               <th className="px-4 py-3 text-right">操作</th>
             </tr>
           </thead>
           <tbody>
             {products.length === 0 ? (
-              <tr><td colSpan={14} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
+              <tr><td colSpan={13} className="text-center py-8 text-gray-400">商品データがありません</td></tr>
             ) : (
               products.map((p, productIdx) => {
                 const variants = getVariants(p);
@@ -186,7 +185,6 @@ export default function ProductsPage() {
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
                       <td className="px-4 py-3 text-center text-gray-400">—</td>
-                      <td className="px-4 py-3 text-right text-gray-400">—</td>
                       <td className="px-4 py-3 text-center">
                         <button onClick={() => setPublishModalProduct(p)}
                           className={`text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${publishBadge(p).className}`}>
@@ -242,9 +240,6 @@ export default function ProductsPage() {
                         <td className="px-4 py-3 text-center text-sm text-gray-700">¥{v.price.toLocaleString()}</td>
                         <td className="px-4 py-3 text-center text-sm text-gray-700">{v.wholesalePrice != null ? `¥${v.wholesalePrice.toLocaleString()}` : "—"}</td>
                         <td className="px-4 py-3 text-center text-gray-600">{v.unit}</td>
-                        <td className="px-4 py-3 text-right">
-                          <span className="font-semibold text-gray-700">{v.stock != null && v.stock !== 0 ? v.stock : ""}</span>
-                        </td>
                         {idx === 0 && (
                           <td className="px-4 py-3 text-center align-top" rowSpan={variants.length}>
                             <button onClick={() => setPublishModalProduct(p)}
