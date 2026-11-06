@@ -13,7 +13,7 @@ type OrderItem = {
   productSakaMai: string | null;
   productSeimaiWari: string | null;
   productAlcohol: string | null;
-  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null } | null;
+  product: { name: string; unit1800: string | null; unit720: string | null; unitOther: string | null; category: string | null; sakaMai: string | null; seimaiWari: string | null; alcohol: string | null; kind: string | null; wholesalePrice1800: number | null; wholesalePrice720: number | null; wholesalePriceOther: number | null } | null;
 };
 
 type Order = {
@@ -207,6 +207,7 @@ export default function OrdersPage() {
               <th className="px-4 py-3 text-left w-80">商品</th>
               <th className="px-2 py-3 text-left">種別</th>
               <th className="px-2 py-3 text-left">酒米</th>
+              <th className="px-2 py-3 text-left">種類</th>
               <th className="px-4 py-3 text-center">容量</th>
               <th className="px-4 py-3 text-center">小売値</th>
               <th className="px-4 py-3 text-center">卸売値</th>
@@ -222,7 +223,7 @@ export default function OrdersPage() {
               if (rowCount === 0) {
                 return (
                   <tr>
-                    <td colSpan={12} className="text-center py-12 text-gray-400">受注データがありません</td>
+                    <td colSpan={13} className="text-center py-12 text-gray-400">受注データがありません</td>
                   </tr>
                 );
               }
@@ -258,6 +259,9 @@ export default function OrdersPage() {
 
                       {/* 酒米 */}
                       <td className="px-2 py-3 text-left text-gray-500 text-xs">{item.productSakaMai ?? item.product?.sakaMai ?? "—"}</td>
+
+                      {/* 種類 */}
+                      <td className="px-2 py-3 text-left text-gray-500 text-xs">{item.product?.kind ?? "—"}</td>
 
                       {/* 容量 */}
                       <td className="px-4 py-3 text-center whitespace-nowrap">
